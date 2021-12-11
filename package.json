@@ -1,6 +1,6 @@
 {
   "name": "nobejs",
-  "version": "0.0.1",
+  "version": "0.0.21",
   "main": "index.js",
   "author": "Rajiv Seelam",
   "license": "MIT",
@@ -15,7 +15,10 @@
     "db": "knex",
     "db:migrate": "knex migrate:latest",
     "db:rollback": "knex migrate:rollback",
-    "db:migration": "knex migrate:make"
+    "db:migration": "knex migrate:make",
+    "release": "gh release create",
+    "bump": "npm version patch",
+    "bump:minor": "npm version minor"
   },
   "devDependencies": {
     "nodemon": "^2.0.13"
