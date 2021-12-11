@@ -5,6 +5,8 @@ if (process.env.ENVFILE) {
 
 const executeStrategy = require("./core/executeStrategy");
 
+global.queueJobStrategy = executeStrategy(["prepare", "authorize", "handle"]);
+
 global.endpointStrategy = executeStrategy([
   "prepare",
   "authorize",

@@ -1,5 +1,6 @@
 const Config = require("./config")();
 const httpServer = requireHttpServer();
+const rabbitSendMessage = requireUtil("rabbitSendMessage");
 
 const server = httpServer({
   logger: process.env.DEBUG === "true" ? true : false,
