@@ -7,7 +7,7 @@
 | uuid | Unique user uuid generated on registration. Used as sub |
 | password | A user has only one password |
 | profile | JSON Object of user information |
-| status | active - in-active |
+| status | active - in-active (Not added yet) |
 | created_at | Self Explanatory |
 | updated_at | Self Explanatory |
 

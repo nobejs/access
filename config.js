@@ -41,7 +41,13 @@ module.exports = () => {
     loadEndpoints: "./core/loadEndpoints",
     validator: "./core/validator",
     endpoints: "./src/endpoints",
-    excludeFromAuth: ["GET /liveness", "POST /readiness"],
+    excludeFromAuth: [
+      "GET /liveness",
+      "POST /readiness",
+      "POST /register",
+      "POST /login",
+      "POST /verify",
+    ],
     responseKey: "respondResult",
   };
 };
