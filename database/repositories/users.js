@@ -4,6 +4,7 @@ const attributesRepo = requireRepo("attributes");
 const verificationsRepo = requireRepo("verifications");
 const generateOTP = requireFunction("generateOTP");
 const table = "users";
+const postEvent = requireFunction("postEvent");
 
 const countAll = async (where = {}, whereNot = {}) => {
   return await baseRepo.countAll(table, where, whereNot);
@@ -75,13 +76,27 @@ const registerWithPassword = async (payload) => {
       password: bcrypt.hashSync(payload.password, 5),
     });
 
+    let token = generateOTP();
+
     await verificationsRepo.create({
       user_uuid: user.uuid,
       attribute_type: payload.type,
       attribute_value: payload.value,
-      token: generateOTP(),
+      token: token,
       purpose: "register",
       expires_at: new Date(new Date().getTime() + 10 * 60000).toISOString(),
+    });
+
+    await postEvent({
+      event_type: "auth.register_verification_with_email",
+      data: {
+        token,
+        attribute_type: payload.type,
+        attribute_value: payload.value,
+      },
+      notifications: {
+        email: payload.value,
+      },
     });
 
     return user;
@@ -90,13 +105,24 @@ const registerWithPassword = async (payload) => {
       uuid: verification.user_uuid,
     });
 
+    let token = generateOTP();
+
     await verificationsRepo.update(
       { uuid: verification.uuid },
       {
-        token: generateOTP(),
+        token: token,
         expires_at: new Date(new Date().getTime() + 10 * 60000).toISOString(),
       }
     );
+
+    await postEvent({
+      event_type: "auth.register_verification_with_email",
+      data: {
+        token,
+        attribute_type: payload.type,
+        attribute_value: payload.value,
+      },
+    });
 
     return user;
   }

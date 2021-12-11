@@ -3,6 +3,7 @@ const attributesRepo = requireRepo("attributes");
 const verificationsRepo = requireRepo("verifications");
 const usersRepo = requireRepo("users");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
+const { URL } = require("url");
 
 const prepare = ({ req }) => {
   const payload = findKeysFromRequest(req, ["type", "value", "password"]);
