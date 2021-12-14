@@ -37,20 +37,6 @@ const validateInput = async (payload) => {
         allowEmpty: false,
         message: "^Please enter a value",
       },
-      type: "string",
-      // custom_callback: {
-      //   message: "Invalid Username or Password",
-      //   callback: async (payload) => {
-      //     let count =
-      //       typeof payload.value === "string"
-      //         ? await attributesRepo.countAll({
-      //             value: payload.value,
-      //             type: payload.type,
-      //           })
-      //         : -1;
-      //     return count === 1 ? true : false;
-      //   },
-      // },
     },
   };
 

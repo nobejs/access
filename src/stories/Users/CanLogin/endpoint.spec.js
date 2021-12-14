@@ -12,6 +12,38 @@ describe("Test API Users/CanLogin", () => {
     await knex("attributes").truncate();
   });
 
+  it("user_cannot_login", async () => {
+    let respondResult;
+    try {
+      const app = httpServer();
+
+      await createVerifiedUser({
+        type: "email",
+        value: "rajiv+7@betalectic.com",
+        password: "GoodPassword",
+      });
+
+      const payload = {
+        type: "email",
+        value: "rajiv+7@betalectic.com",
+        password: "GoodPassword",
+      };
+
+      respondResult = await app.inject({
+        method: "POST",
+        url: "/login", // This should be in endpoints.js
+        payload,
+      });
+    } catch (error) {
+      respondResult = error;
+    }
+
+    expect(respondResult.statusCode).toBe(200);
+    expect(respondResult.json()).toMatchObject({
+      message: "Invalid Username or Password",
+    });
+  });
+
   it("user_cannot_login_with_wrong_password", async () => {
     let respondResult;
     try {
