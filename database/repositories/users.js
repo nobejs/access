@@ -139,9 +139,7 @@ const registerWithPassword = async (payload) => {
 
   if (verification === undefined) {
     // If no, create a user and also verification for them
-    user = await baseRepo.create(table, {
-      password: bcrypt.hashSync(payload.password, 5),
-    });
+    user = await createUserWithPassword(payload.password);
 
     await verificationsRepo.create({
       user_uuid: user.uuid,
