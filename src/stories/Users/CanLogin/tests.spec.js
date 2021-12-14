@@ -17,6 +17,7 @@ describe("Test Handler Users/CanLogin", () => {
         type: "email",
         value: "rajiv+7@betalectic.com",
         password: "GoodPassword",
+        purpose: "register",
       });
 
       result = await testStrategy("Users/CanLogin", {
@@ -48,7 +49,6 @@ describe("Test Handler Users/CanLogin", () => {
       });
     } catch (error) {
       respondResult = error;
-      debugLogger(error);
     }
 
     expect(respondResult).toMatchObject({

@@ -19,6 +19,7 @@ const createAttributeForUUID = async (uuid, payload, verify = false) => {
     verified_at: verify ? new Date().toISOString() : NULL,
     type: payload.type,
     value: payload.value,
+    purpose: payload.purpose,
   });
 };
 

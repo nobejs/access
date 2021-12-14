@@ -19,6 +19,7 @@
 | user_uuid | User who owns the attribute |
 | type | allowed_types configuration from ENV |
 | value | Value of the attribute |
+| purpose | Value of the attribute |
 | verified_at | Date and Time or NULL |
 | created_at | Self Explanatory |
 | updated_at | Self Explanatory |
