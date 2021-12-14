@@ -13,7 +13,12 @@ async function dropTestDatabase() {
     },
   });
   try {
-    await knex.raw(`DROP DATABASE IF EXISTS ${process.env.DB_NAME}`);
+    if (process.env.GITHUB_ACTIONS) {
+      console.log("No need to drop db, as container would be destroyed");
+    } else {
+      await dropTestDatabase();
+      console.log("Test database dropped successfully");
+    }
   } catch (error) {
     throw new Error(error);
   } finally {
