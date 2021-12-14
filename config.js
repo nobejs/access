@@ -47,6 +47,7 @@ module.exports = () => {
       "POST /register",
       "POST /login",
       "POST /verify",
+      "POST /request-verify",
     ],
     responseKey: "respondResult",
   };

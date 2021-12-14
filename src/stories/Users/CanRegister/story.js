@@ -3,6 +3,7 @@ const attributesRepo = requireRepo("attributes");
 const verificationsRepo = requireRepo("verifications");
 const usersRepo = requireRepo("users");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
+const getAllowedTypes = requireFunction("getAllowedTypes");
 
 const prepare = ({ req }) => {
   const payload = findKeysFromRequest(req, ["type", "value", "password"]);
@@ -27,7 +28,7 @@ const validateInput = async (payload) => {
         message: "^Please choose type",
       },
       inclusion: {
-        within: ["email", "mobile"],
+        within: getAllowedTypes(),
         message: "^Please choose valid type",
       },
     },
@@ -69,7 +70,9 @@ const handle = async ({ prepareResult }) => {
 };
 
 const respond = ({ handleResult }) => {
-  return handleResult;
+  return {
+    message: "Successfully Registered",
+  };
 };
 
 module.exports = {
