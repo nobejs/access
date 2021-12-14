@@ -13,12 +13,7 @@ async function dropTestDatabase() {
     },
   });
   try {
-    if (process.env.GITHUB_ACTIONS) {
-      console.log("No need to drop db, as container would be destroyed");
-    } else {
-      await dropTestDatabase();
-      console.log("Test database dropped successfully");
-    }
+    await knex.raw(`DROP DATABASE IF EXISTS ${process.env.DB_NAME}`);
   } catch (error) {
     throw new Error(error);
   } finally {
@@ -28,8 +23,12 @@ async function dropTestDatabase() {
 
 module.exports = async () => {
   try {
-    await dropTestDatabase();
-    console.log("Test database dropped successfully");
+    if (process.env.GITHUB_ACTIONS) {
+      console.log("No need to drop db, as container would be destroyed");
+    } else {
+      await dropTestDatabase();
+      console.log("Test database dropped successfully");
+    }
   } catch (error) {
     console.log(error);
     process.exit(1);
