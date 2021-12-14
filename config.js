@@ -27,6 +27,7 @@ global.requireGlobal = () => require(`./global.js`);
 global.requireKnex = () => require(`./database/knex.js`);
 
 global.requireTestFunction = (name) => require(`./src/functions/tests/${name}`);
+global.testHelper = (name) => require(`./src/testHelpers/${name}`);
 global.requireFunction = (name) => require(`./src/functions/${name}`);
 
 module.exports = () => {

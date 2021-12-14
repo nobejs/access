@@ -4,14 +4,9 @@ const knex = requireKnex();
 const httpServer = requireHttpServer();
 
 describe("Test API Users/CanRegister", () => {
-  beforeAll(async () => {
-    contextClassRef.user = randomUser();
-    contextClassRef.headers = {
-      Authorization: `Bearer ${contextClassRef.user.token}`, // An authenticated user is making the api call
-    };
-  });
+  beforeAll(async () => {});
 
-  it("dummy_story_which_will_pass", async () => {
+  it("user_can_register_with_email", async () => {
     let respondResult;
     try {
       const app = httpServer();

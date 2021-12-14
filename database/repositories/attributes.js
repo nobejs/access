@@ -13,8 +13,18 @@ const first = async (payload) => {
   return await baseRepo.first(table, payload);
 };
 
+const createAttributeForUUID = async (uuid, payload, verify = false) => {
+  await baseRepo.create(table, {
+    user_uuid: uuid,
+    verified_at: verify ? new Date().toISOString() : NULL,
+    type: payload.type,
+    value: payload.value,
+  });
+};
+
 module.exports = {
   create,
   first,
   countAll,
+  createAttributeForUUID,
 };

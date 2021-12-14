@@ -2,34 +2,71 @@ const contextClassRef = requireUtil("contextHelper");
 const randomUser = requireUtil("randomUser");
 const knex = requireKnex();
 const httpServer = requireHttpServer();
+const createVerifiedUser = testHelper("createVerifiedUser");
+
+// yarn test -i src/stories/Users/CanLogin/endpoint.spec.js
 
 describe("Test API Users/CanLogin", () => {
-  beforeAll(async () => {
-    contextClassRef.user = randomUser();
-    contextClassRef.headers = {
-      Authorization: `Bearer ${contextClassRef.user.token}`, // An authenticated user is making the api call
-    };
+  beforeEach(async () => {
+    await knex("users").truncate();
+    await knex("attributes").truncate();
   });
 
-  it("dummy_story_which_will_pass", async () => {
+  it("user_cannot_login_with_wrong_password", async () => {
     let respondResult;
     try {
       const app = httpServer();
 
-      const payload = {};
+      await createVerifiedUser({
+        type: "email",
+        value: "rajiv+7@betalectic.com",
+        password: "GoodPassword",
+      });
 
-      // respondResult = await app.inject({
-      //   method: "POST",
-      //   url: "/api_endpoint", // This should be in endpoints.js
-      //   payload,
-      //   headers,
-      // });
+      const payload = {
+        type: "email",
+        value: "rajiv+7@betalectic.com",
+        password: "BadPassword",
+      };
+
+      respondResult = await app.inject({
+        method: "POST",
+        url: "/login", // This should be in endpoints.js
+        payload,
+      });
     } catch (error) {
       respondResult = error;
     }
 
-    // expect(respondResult.statusCode).toBe(200);
-    // expect(respondResult.json()).toMatchObject({});
-    expect(1).toBe(1);
+    expect(respondResult.statusCode).toBe(401);
+    expect(respondResult.json()).toMatchObject({
+      message: "Invalid Username or Password",
+    });
+  });
+
+  it("user_cannot_login_with_invalid_credentials", async () => {
+    let respondResult;
+    try {
+      const app = httpServer();
+
+      const payload = {
+        type: "email",
+        value: "rajiv+7@betalectic.com",
+        password: "BadPassword",
+      };
+
+      respondResult = await app.inject({
+        method: "POST",
+        url: "/login", // This should be in endpoints.js
+        payload,
+      });
+    } catch (error) {
+      respondResult = error;
+    }
+
+    expect(respondResult.statusCode).toBe(401);
+    expect(respondResult.json()).toMatchObject({
+      message: "Invalid Username or Password",
+    });
   });
 });

@@ -10,11 +10,34 @@ const countAll = async (where = {}, whereNot = {}) => {
   return await baseRepo.countAll(table, where, whereNot);
 };
 
+const create = async (payload) => {
+  return await baseRepo.create(table, payload);
+};
+
+const first = async (payload) => {
+  return await baseRepo.first(table, payload);
+};
+
+const update = async (where, payload) => {
+  return await baseRepo.update(table, where, payload);
+};
+
+const remove = async (payload) => {
+  return await baseRepo.remove(table, payload, "hard");
+};
+
 const authenticateWithPassword = async (payload) => {
   let attribute = await attributesRepo.first({
     type: payload.type,
     value: payload.value,
   });
+
+  if (attribute === undefined) {
+    throw {
+      statusCode: 401,
+      message: "Invalid Username or Password",
+    };
+  }
 
   let user = await baseRepo.first(table, {
     uuid: attribute.user_uuid,
@@ -76,12 +99,11 @@ const verifyAttributeForRegistration = async (payload) => {
 
     if (verification !== undefined && verification.purpose === "register") {
       if (payload.token === verification.token) {
-        await attributesRepo.create({
-          user_uuid: verification.user_uuid,
-          verified_at: new Date().toISOString(),
-          type: payload.type,
-          value: payload.value,
-        });
+        await attributesRepo.createAttributeForUUID(
+          verification.user_uuid,
+          payload,
+          true
+        );
         await verificationsRepo.remove({
           uuid: verification.uuid,
         });
@@ -95,6 +117,12 @@ const verifyAttributeForRegistration = async (payload) => {
   } catch (error) {
     throw error;
   }
+};
+
+const createUserWithPassword = async (password) => {
+  return await baseRepo.create(table, {
+    password: bcrypt.hashSync(password, 5),
+  });
 };
 
 const registerWithPassword = async (payload) => {
@@ -145,9 +173,11 @@ const registerWithPassword = async (payload) => {
 };
 
 module.exports = {
+  createUserWithPassword,
   registerWithPassword,
   authenticateWithPassword,
   verifyAttributeForRegistration,
   requestAttributeVerificationForRegistration,
   countAll,
+  create,
 };

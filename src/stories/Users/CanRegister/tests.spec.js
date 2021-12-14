@@ -27,4 +27,6 @@ describe("Test Handler Users/CanRegister", () => {
       message: "Successfully Registered",
     });
   });
+
+  it.skip("user_cannot_register_with_existing_email", async () => {});
 });
