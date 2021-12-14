@@ -9,7 +9,7 @@ It is built on and dependent on:
 
 ### Links
 
-- APIs (_docs/APIs.md)
+- [APIs](_docs/APIs.md)
 
 **Why we made this?**
 
