@@ -6,7 +6,7 @@ const generateOTP = requireFunction("generateOTP");
 const table = "users";
 const postEvent = requireFunction("postEvent");
 const { registrationVerificationEvent } = require("../events");
-const { getMinutesFromNow 10} = require("../utils");
+const { getMinutesFromNow } = require("../utils");
 
 const countAll = async (where = {}, whereNot = {}) => {
   return await baseRepo.countAll(table, where, whereNot);
