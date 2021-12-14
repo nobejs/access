@@ -1,5 +1,7 @@
 require("../config");
 const httpsRequestPromise = requireUtil("httpsRequestPromise");
+const fs = require("fs-extra");
+const path = require("path");
 
 (async () => {
   const releaseOptions = {
@@ -13,7 +15,11 @@ const httpsRequestPromise = requireUtil("httpsRequestPromise");
     },
   };
 
-  console.log("Version: v0.1.0");
+  const versionMdFile = path.resolve(`core/VERSION.md`);
+
+  let versionMdContents = fs.readFileSync(versionMdFile, "utf8");
+
+  console.log("Current Version: ", versionMdContents);
 
   try {
     let response = await httpsRequestPromise(releaseOptions);
