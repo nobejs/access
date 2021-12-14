@@ -2,11 +2,9 @@ const bcrypt = require("bcrypt");
 const baseRepo = requireUtil("baseRepo");
 const attributesRepo = requireRepo("attributes");
 const verificationsRepo = requireRepo("verifications");
-const generateOTP = requireFunction("generateOTP");
-const table = "users";
-const postEvent = requireFunction("postEvent");
 const { registrationVerificationEvent } = require("../events");
-const { getMinutesFromNow } = require("../utils");
+const { getMinutesFromNow, generateOTP } = require("../utils");
+const table = "users";
 
 const countAll = async (where = {}, whereNot = {}) => {
   return await baseRepo.countAll(table, where, whereNot);
