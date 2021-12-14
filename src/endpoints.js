@@ -11,8 +11,12 @@ module.exports = (app) => {
     {
       endpoints: [
         ["post", "/register", "Users/CanRegister"],
-        ["post", "/request-verify", "Users/RequestVerify"],
-        ["post", "/verify", "Users/Verify"],
+        [
+          "post",
+          "/request-verify-registration",
+          "Users/RequestVerifyRegistration",
+        ],
+        ["post", "/verify-registration", "Users/VerifyRegistration"],
         ["post", "/login", "Users/CanLogin"],
         ["get", "/user", "Users/ViewLoggedInUser"],
         ["get", "/verify", "Users/ViewLoggedInUser"],

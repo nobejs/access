@@ -1,8 +1,8 @@
-#### Current Constraints
+#### Current Limitations
 
 1. There is no way to disable any API yet
 2. Test Case Coverage (Jest) is not 100%
-3. It is being developed to fit multiple use-cases
+3. It is being developed to fit multiple use-cases. So, in places it might feel "weird".
 
 ### Register
 
@@ -22,5 +22,18 @@ Request:
 }
 ```
 
+### Login
 
+The value which is passed should be verified, else system won't allow to login. There is currently no way to override this.
 
+Endpoint: `POST /login`
+
+Request:
+
+```
+{
+    "type": "email",
+    "value": "rajiv@betalectic.com",
+    "password": "AnotherPassword"
+}
+```

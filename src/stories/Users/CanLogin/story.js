@@ -1,9 +1,8 @@
 const validator = requireValidator();
 const attributesRepo = requireRepo("attributes");
-const verificationsRepo = requireRepo("verifications");
 const usersRepo = requireRepo("users");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
-const { URL } = require("url");
+const getAllowedTypes = requireFunction("getAllowedTypes");
 
 const prepare = ({ req }) => {
   const payload = findKeysFromRequest(req, ["type", "value", "password"]);
@@ -11,6 +10,7 @@ const prepare = ({ req }) => {
 };
 
 const authorize = ({ prepareResult }) => {
+  // Anyone can access this endpoint
   return true;
 };
 
@@ -19,7 +19,7 @@ const validateInput = async (payload) => {
     password: {
       presence: {
         allowEmpty: false,
-        message: "^Please choose password",
+        message: "^Please enter password",
       },
     },
     type: {
@@ -28,18 +28,18 @@ const validateInput = async (payload) => {
         message: "^Please choose type",
       },
       inclusion: {
-        within: ["email", "mobile"],
+        within: getAllowedTypes(),
         message: "^Please choose valid type",
       },
     },
     value: {
       presence: {
         allowEmpty: false,
-        message: "^Please enter value",
+        message: "^Please enter a value",
       },
       type: "string",
       custom_callback: {
-        message: "Value should be unique",
+        message: "Invalid username or password",
         callback: async (payload) => {
           let count =
             typeof payload.value === "string"
@@ -65,8 +65,6 @@ const handle = async ({ prepareResult }) => {
   } catch (error) {
     throw error;
   }
-
-  return {};
 };
 
 const respond = ({ handleResult }) => {

@@ -5,6 +5,8 @@ const verificationsRepo = requireRepo("verifications");
 const generateOTP = requireFunction("generateOTP");
 const table = "users";
 const postEvent = requireFunction("postEvent");
+const { registrationVerificationEvent } = require("../events");
+const { getMinutesFromNow 10} = require("../utils");
 
 const countAll = async (where = {}, whereNot = {}) => {
   return await baseRepo.countAll(table, where, whereNot);
@@ -32,14 +34,47 @@ const authenticateWithPassword = async (payload) => {
   }
 };
 
-const verifyTokenForAttribute = async (payload) => {
+const requestAttributeVerificationForRegistration = async (payload) => {
   try {
+    // Find if there is already an existing verification for this
     let verification = await verificationsRepo.first({
       attribute_type: payload.type,
       attribute_value: payload.value,
     });
 
-    console.log("verifyTokenForAttribute", verification);
+    // If verification is present already, we can update it
+    if (verification !== undefined && verification.purpose === "register") {
+      let token = generateOTP();
+      await verificationsRepo.update(
+        { uuid: verification.uuid },
+        {
+          token: token,
+          expires_at: getMinutesFromNow(10),
+        }
+      );
+
+      await registrationVerificationEvent({
+        token,
+        type: payload.type,
+        value: payload.value,
+      });
+    } else {
+      throw {
+        statusCode: 422,
+        message: "Not registered yet",
+      };
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+const verifyAttributeForRegistration = async (payload) => {
+  try {
+    let verification = await verificationsRepo.first({
+      attribute_type: payload.type,
+      attribute_value: payload.value,
+    });
 
     if (verification !== undefined && verification.purpose === "register") {
       if (payload.token === verification.token) {
@@ -65,18 +100,22 @@ const verifyTokenForAttribute = async (payload) => {
 };
 
 const registerWithPassword = async (payload) => {
+  // Find if there is already a registration in process
+
   let verification = await verificationsRepo.first({
     attribute_type: payload.type,
     attribute_value: payload.value,
     purpose: "register",
   });
 
+  let user = null;
+  let token = generateOTP();
+
   if (verification === undefined) {
-    let user = await baseRepo.create(table, {
+    // If no, create a user and also verification for them
+    user = await baseRepo.create(table, {
       password: bcrypt.hashSync(payload.password, 5),
     });
-
-    let token = generateOTP();
 
     await verificationsRepo.create({
       user_uuid: user.uuid,
@@ -84,53 +123,33 @@ const registerWithPassword = async (payload) => {
       attribute_value: payload.value,
       token: token,
       purpose: "register",
-      expires_at: new Date(new Date().getTime() + 10 * 60000).toISOString(),
+      expires_at: getMinutesFromNow(10),
     });
-
-    await postEvent({
-      event_type: "auth.register_verification_with_email",
-      data: {
-        token,
-        attribute_type: payload.type,
-        attribute_value: payload.value,
-      },
-      notifications: {
-        email: payload.value,
-      },
-    });
-
-    return user;
   } else {
-    let user = await baseRepo.first(table, {
-      uuid: verification.user_uuid,
-    });
-
-    let token = generateOTP();
+    // If there is a verification, update verification with new token and timestamp
 
     await verificationsRepo.update(
       { uuid: verification.uuid },
       {
         token: token,
-        expires_at: new Date(new Date().getTime() + 10 * 60000).toISOString(),
+        expires_at: getMinutesFromNow(10),
       }
     );
-
-    await postEvent({
-      event_type: "auth.register_verification_with_email",
-      data: {
-        token,
-        attribute_type: payload.type,
-        attribute_value: payload.value,
-      },
-    });
-
-    return user;
   }
+
+  await registrationVerificationEvent({
+    token,
+    type: payload.type,
+    value: payload.value,
+  });
+
+  return true;
 };
 
 module.exports = {
   registerWithPassword,
   authenticateWithPassword,
-  verifyTokenForAttribute,
+  verifyAttributeForRegistration,
+  requestAttributeVerificationForRegistration,
   countAll,
 };

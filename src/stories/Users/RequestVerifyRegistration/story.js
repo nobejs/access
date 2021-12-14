@@ -1,15 +1,12 @@
-const prepare = ({ reqQuery, reqBody, reqParams }) => {
-  return {};
+const findKeysFromRequest = requireUtil("findKeysFromRequest");
+
+const prepare = ({ req }) => {
+  const payload = findKeysFromRequest(req, ["type", "value"]);
+  return payload;
 };
 
 const authorize = ({ prepareResult }) => {
-  if (0) {
-    throw {
-      statusCode: 401,
-      message: "Unauthorized",
-    };
-  }
-
+  // Anyone can request to verify an attribute
   return true;
 };
 

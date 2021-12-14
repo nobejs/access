@@ -10,7 +10,8 @@ const prepare = ({ req }) => {
   return payload;
 };
 
-const authorize = ({}) => {
+const authorize = () => {
+  // Anyone can access this endpoint
   return true;
 };
 
@@ -65,11 +66,9 @@ const handle = async ({ prepareResult }) => {
   } catch (error) {
     throw error;
   }
-
-  return {};
 };
 
-const respond = ({ handleResult }) => {
+const respond = () => {
   return {
     message: "Successfully Registered",
   };
