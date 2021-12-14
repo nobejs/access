@@ -66,4 +66,6 @@ describe("Test API Users/RequestVerifyRegistration", () => {
       })
     );
   });
+
+  it.skip("user_cannot_otp_after_3_times_within_10_minutes", async () => {});
 });
