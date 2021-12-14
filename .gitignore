@@ -4,3 +4,5 @@ upgrade-nobejs/
 .DS_Store
 .git
 .env.jest
+private.pem
+public.pem

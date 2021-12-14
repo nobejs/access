@@ -56,4 +56,32 @@ describe("Test Handler Users/CanLogin", () => {
       message: "Invalid Username or Password",
     });
   });
+
+  it("user_can_login", async () => {
+    let result = {};
+    try {
+      await createVerifiedUser({
+        type: "email",
+        value: "rajiv@betalectic.com",
+        password: "GoodPassword",
+        purpose: "register",
+      });
+
+      result = await testStrategy("Users/CanLogin", {
+        prepareResult: {
+          type: "email",
+          value: "rajiv@betalectic.com",
+          password: "GoodPassword",
+        },
+      });
+    } catch (error) {
+      respondResult = error;
+    }
+
+    const { respondResult } = result;
+
+    expect(respondResult).toMatchObject({
+      token: expect.any(String),
+    });
+  });
 });

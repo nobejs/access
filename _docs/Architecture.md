@@ -31,11 +31,11 @@ allowed_types: email, mobile, google, facebook, linkedin
 | Column | Remarks |
 |--------|---------|
 | uuid | Primary key and used as jti |
-| user_uuid | User who owns the token |
+| of_uuid | User who owns the token |
+| of_type | User who owns the token |
 | abilities | JSONB |
 | user_agent | JSONB |
-| created_via | login or api_token |
-| expires_at | User who owns the token |
+| expires_at | When will this token expire |
 | created_at | Self Explanatory |
 | updated_at | Self Explanatory, also works as last_accessed_at |
 

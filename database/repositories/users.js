@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const baseRepo = requireUtil("baseRepo");
 const attributesRepo = requireRepo("attributes");
 const verificationsRepo = requireRepo("verifications");
+const tokensRepo = requireRepo("tokens");
 const { registrationVerificationEvent } = require("../events");
 const { getMinutesFromNow, generateOTP } = require("../utils");
 const table = "users";
@@ -46,6 +47,7 @@ const authenticateWithPassword = async (payload) => {
   const result = bcrypt.compareSync(payload.password, user.password);
 
   if (result) {
+    await tokensRepo.createTokenForUser(user);
     return user;
   } else {
     throw {

@@ -19,7 +19,8 @@
     "db:migration": "ENVFILE=.env knex migrate:make",
     "release": "gh release create",
     "bump": "npm version patch",
-    "bump:minor": "npm version minor"
+    "bump:minor": "npm version minor",
+    "key:generate": "node ./src/functions/JWT/generateKeyPair.js"
   },
   "devDependencies": {
     "nodemon": "^2.0.13"
@@ -33,9 +34,11 @@
     "fastify": "^3.21.6",
     "fs-extra": "^10.0.0",
     "jest": "^27.2.1",
+    "jose": "^4.3.7",
     "jwt-decode": "^3.1.2",
     "knex": "^0.95.11",
     "njwt": "^1.1.0",
+    "openpgp": "^5.0.1",
     "path-to-regexp": "^6.2.0",
     "pg": "^8.7.1",
     "supertest": "^6.1.6",
