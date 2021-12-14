@@ -2,34 +2,68 @@ const contextClassRef = requireUtil("contextHelper");
 const randomUser = requireUtil("randomUser");
 const knex = requireKnex();
 const httpServer = requireHttpServer();
+const debugLogger = requireUtil("debugLogger");
+const usersRepo = requireRepo("users");
 
-describe("Test API Users/RequestVerify", () => {
-  beforeAll(async () => {
-    contextClassRef.user = randomUser();
-    contextClassRef.headers = {
-      Authorization: `Bearer ${contextClassRef.user.token}`, // An authenticated user is making the api call
-    };
-  });
+// yarn test -i src/stories/Users/RequestVerifyRegistration/endpoint.spec.js
 
-  it.skip("dummy_story_which_will_pass", async () => {
+describe("Test API Users/RequestVerifyRegistration", () => {
+  beforeAll(async () => {});
+
+  it("call_endpoint_with_empty_payload", async () => {
     let respondResult;
     try {
       const app = httpServer();
 
       const payload = {};
 
-      // respondResult = await app.inject({
-      //   method: "POST",
-      //   url: "/api_endpoint", // This should be in endpoints.js
-      //   payload,
-      //   headers,
-      // });
+      respondResult = await app.inject({
+        method: "POST",
+        url: "/request-verify-registration", // This should be in endpoints.js
+        payload,
+      });
     } catch (error) {
       respondResult = error;
     }
 
-    // expect(respondResult.statusCode).toBe(200);
-    // expect(respondResult.json()).toMatchObject({});
-    expect(1).toBe(1);
+    expect(respondResult.statusCode).toBe(422);
+    expect(respondResult.json()).toEqual(
+      expect.objectContaining({
+        errorCode: expect.stringMatching("InputNotValid"),
+      })
+    );
+  });
+
+  it("user_can_request_code_if_registered", async () => {
+    let respondResult;
+    try {
+      await usersRepo.registerWithPassword({
+        type: "email",
+        value: "rajiv@betalectic.com",
+        password: "AnotherPassword",
+      });
+
+      const app = httpServer();
+
+      const payload = {
+        type: "email",
+        value: "rajiv@betalectic.com",
+      };
+
+      respondResult = await app.inject({
+        method: "POST",
+        url: "/request-verify-registration", // This should be in endpoints.js
+        payload,
+      });
+    } catch (error) {
+      respondResult = error;
+    }
+
+    expect(respondResult.statusCode).toBe(200);
+    expect(respondResult.json()).toEqual(
+      expect.objectContaining({
+        message: "Request for verification successfully",
+      })
+    );
   });
 });
