@@ -1,16 +1,30 @@
 const debugLogger = requireUtil("debugLogger");
+const knex = requireKnex();
 
 describe("Test Handler Users/CanRegister", () => {
-  it("dummy_story_which_will_pass", async () => {
+  beforeEach(async () => {
+    await knex("users").truncate();
+    await knex("verifications").truncate();
+  });
+
+  it("user_can_register_with_email", async () => {
     let result = {};
     try {
       result = await testStrategy("Users/CanRegister", {
-        prepareResult: {},
+        prepareResult: {
+          type: "email",
+          value: "rajiv@betalectic.com",
+          password: "AnotherPassword",
+        },
       });
     } catch (error) {
       debugLogger(error);
     }
+
     const { respondResult } = result;
-    expect(1).toBe(1);
+
+    expect(respondResult).toMatchObject({
+      message: "Successfully Registered",
+    });
   });
 });

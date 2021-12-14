@@ -16,20 +16,24 @@ describe("Test API Users/CanRegister", () => {
     try {
       const app = httpServer();
 
-      const payload = {};
+      const payload = {
+        type: "email",
+        value: "rajiv@betalectic.com",
+        password: "AnotherPassword",
+      };
 
-      // respondResult = await app.inject({
-      //   method: "POST",
-      //   url: "/api_endpoint", // This should be in endpoints.js
-      //   payload,
-      //   headers,
-      // });
+      respondResult = await app.inject({
+        method: "POST",
+        url: "/register", // This should be in endpoints.js
+        payload,
+      });
     } catch (error) {
       respondResult = error;
     }
 
-    // expect(respondResult.statusCode).toBe(200);
-    // expect(respondResult.json()).toMatchObject({});
-    expect(1).toBe(1);
+    expect(respondResult.statusCode).toBe(200);
+    expect(respondResult.json()).toMatchObject({
+      message: "Successfully Registered",
+    });
   });
 });
