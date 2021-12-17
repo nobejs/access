@@ -31,6 +31,22 @@ const createTokenForUser = async (user) => {
   return jwt;
 };
 
+const checkIfValidJti = async (jti) => {
+  try {
+    let token = await baseRepo.first(table, {
+      uuid: jti,
+    });
+
+    if (token === undefined) {
+      throw {
+        message: "Invalid JTI",
+      };
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   create,
   first,
@@ -38,4 +54,5 @@ module.exports = {
   update,
   remove,
   createTokenForUser,
+  checkIfValidJti,
 };
