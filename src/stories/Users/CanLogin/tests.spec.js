@@ -79,8 +79,6 @@ describe("Test Handler Users/CanLogin", () => {
       respondResult = error;
     }
 
-    console.log("result", result);
-
     respondResult = result["respondResult"];
 
     expect(respondResult).toMatchObject({

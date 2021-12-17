@@ -1,5 +1,4 @@
 const validator = requireValidator();
-const attributesRepo = requireRepo("attributes");
 const usersRepo = requireRepo("users");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
 const getAllowedTypes = requireFunction("getAllowedTypes");
