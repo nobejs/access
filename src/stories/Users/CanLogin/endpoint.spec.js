@@ -12,7 +12,7 @@ describe("Test API Users/CanLogin", () => {
     await knex("attributes").truncate();
   });
 
-  it.skip("user_can_login", async () => {
+  it("user_can_login", async () => {
     let respondResult;
     try {
       const app = httpServer();
@@ -40,7 +40,7 @@ describe("Test API Users/CanLogin", () => {
 
     expect(respondResult.statusCode).toBe(200);
     expect(respondResult.json()).toMatchObject({
-      message: "Invalid Username or Password",
+      token: expect.any(String),
     });
   });
 
