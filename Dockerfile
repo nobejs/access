@@ -1,20 +1,15 @@
-FROM node:15-slim
-
-RUN apt-get update \
-    && mkdir -p /usr/share/man/man1 \
-    && mkdir -p /usr/share/man/man7 \
-    && apt-get install -y --no-install-recommends postgresql-client libpq-dev \
-    && rm -rf /var/lib/apt/lists/* \
-    && apt-get clean
-
+FROM node:12-alpine AS stage1
+RUN apk add --update --no-cache postgresql-client
+RUN apk add --update --no-cache python3
+RUN apk --no-cache add --virtual builds-deps build-base python3
 WORKDIR /app
-
 COPY ["package.json", "yarn.lock*", "./"]
-
 RUN yarn
-
 COPY . .
 
-EXPOSE 3000
 
-CMD [ "yarn", "start" ]
+FROM node:12-alpine
+COPY --from=stage1 /app /app
+WORKDIR /app
+EXPOSE 3000
+CMD [ "node", "server.js" ]

@@ -1,0 +1,8 @@
+.env
+.env.example
+.env.jest
+tests
+kube-manifests
+.github
+_docs
+node_modules/
