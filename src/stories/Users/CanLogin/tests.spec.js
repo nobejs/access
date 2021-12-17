@@ -76,7 +76,7 @@ describe("Test Handler Users/CanLogin", () => {
         },
       });
     } catch (error) {
-      debugLogger(error);
+      console.log(error);
       respondResult = error;
     }
 

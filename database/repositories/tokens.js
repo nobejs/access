@@ -23,12 +23,16 @@ const remove = async (payload) => {
 };
 
 const createTokenForUser = async (user) => {
-  let token = await baseRepo.create(table, {
-    sub: user.uuid,
-    issuer: "user",
-  });
-  let jwt = generateJWT(token.uuid, token.sub);
-  return jwt;
+  try {
+    let token = await baseRepo.create(table, {
+      sub: user.uuid,
+      issuer: "user",
+    });
+    let jwt = await generateJWT(token.uuid, token.sub);
+    return jwt;
+  } catch (error) {
+    throw error;
+  }
 };
 
 const checkIfValidJti = async (jti) => {
