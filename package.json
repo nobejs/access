@@ -19,6 +19,7 @@
     "db:migration": "ENVFILE=.env knex migrate:make",
     "release": "gh release create",
     "bump": "npm version patch",
+    "bump:pre": "npm version prerelease --preid=alpha",
     "bump:minor": "npm version minor",
     "key:generate": "node ./src/functions/JWT/generateKeyPair.js"
   },
