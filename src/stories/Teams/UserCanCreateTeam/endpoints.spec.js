@@ -53,24 +53,42 @@ describe("API UserCanCreateTeam", () => {
     });
   });
 
-  // it("User cannot create with same slug", async () => {
-  //   let response;
+  it("user_cannot_create_team_with_same_slug", async () => {
+    let response;
 
-  //   try {
-  //     response = await requireTestFunction("createTeamViaAPI")({
-  //       tenant: "api-test",
-  //       name: "Rajiv's Personal Team",
-  //       slug: "rajiv-personal-team",
-  //     });
-  //   } catch (error) {
-  //     response = error;
-  //   }
+    try {
+      let payload = {
+        tenant: "api-test",
+        name: "Rajiv's Personal Team",
+        slug: "rajiv-personal-team",
+      };
 
-  //   expect(response.statusCode).toBe(422);
-  //   expect(response.json()).toEqual(
-  //     expect.objectContaining({
-  //       errorCode: expect.stringMatching("InputNotValid"),
-  //     })
-  //   );
-  // });
+      let headers = contextClassRef.headers;
+      const app = httpServer();
+      result = await app.inject({
+        method: "POST",
+        url: "/teams",
+        payload,
+        headers,
+      });
+      response = result;
+
+      result = await app.inject({
+        method: "POST",
+        url: "/teams",
+        payload,
+        headers,
+      });
+      response = result;
+    } catch (error) {
+      response = error;
+    }
+
+    expect(response.statusCode).toBe(422);
+    expect(response.json()).toEqual(
+      expect.objectContaining({
+        errorCode: expect.stringMatching("InputNotValid"),
+      })
+    );
+  });
 });
