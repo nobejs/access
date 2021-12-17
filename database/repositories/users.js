@@ -47,10 +47,7 @@ const authenticateWithPassword = async (payload) => {
   const result = bcrypt.compareSync(payload.password, user.password);
 
   if (result) {
-    let token = await tokensRepo.createTokenForUser({
-      sub: user.uuid,
-      issuer: "user",
-    });
+    let token = await tokensRepo.createTokenForUser(user);
     return token;
   } else {
     throw {
@@ -183,4 +180,5 @@ module.exports = {
   requestAttributeVerificationForRegistration,
   countAll,
   create,
+  first,
 };

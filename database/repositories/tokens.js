@@ -22,8 +22,11 @@ const remove = async (payload) => {
   return await baseRepo.remove(table, payload, "hard");
 };
 
-const createTokenForUser = async (payload) => {
-  let token = await baseRepo.create(table, payload);
+const createTokenForUser = async (user) => {
+  let token = await baseRepo.create(table, {
+    sub: user.uuid,
+    issuer: "user",
+  });
   let jwt = generateJWT(token.uuid, token.sub);
   return jwt;
 };

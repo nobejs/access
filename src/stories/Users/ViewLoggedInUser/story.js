@@ -1,24 +1,42 @@
+const tokensRepo = requireRepo("tokens");
+const usersRepo = requireRepo("users");
+const UserSerializer = requireSerializer("user");
+
 const prepare = ({ reqQuery, reqBody, reqParams }) => {
+  // Read the token
   return {};
 };
 
-const authorize = ({ prepareResult }) => {
-  if (0) {
-    throw {
-      statusCode: 401,
-      message: "Unauthorized",
-    };
+const authorize = async ({ prepareResult }) => {
+  // Middleware might have checked - jti, exp
+  // Just take the sub and return the user
+  // Check if issuer is user
+
+  try {
+    let token = await tokensRepo.first({ uuid: prepareResult.jti });
+    if (token["issuer"] === "user") {
+      return token;
+    } else {
+      throw {
+        statusCode: 401,
+        message: "Unauthorized",
+      };
+    }
+  } catch (error) {
+    throw error;
   }
-
-  return true;
 };
 
-const handle = ({ prepareResult, storyName }) => {
-  return {};
+const handle = async ({ authorizeResult }) => {
+  try {
+    return await usersRepo.first({ uuid: authorizeResult.sub });
+  } catch (error) {
+    throw error;
+  }
 };
 
-const respond = ({ handleResult }) => {
-  return handleResult;
+const respond = async ({ handleResult }) => {
+  return await UserSerializer.single(handleResult);
 };
 
 module.exports = {
