@@ -54,6 +54,7 @@ const validateInput = async (payload) => {
 const handle = async ({ prepareResult }) => {
   try {
     let inputPayload = prepareResult;
+    console.log("inputPayload", inputPayload);
     await validateInput(inputPayload);
     await usersRepo.requestAttributeVerificationForRegistration(inputPayload);
   } catch (error) {
