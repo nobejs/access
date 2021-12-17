@@ -123,7 +123,7 @@ const verifyAttributeForRegistration = async (payload) => {
 
 const createUserWithPassword = async (password) => {
   return await baseRepo.create(table, {
-    password: bcrypt.hashSync(password, 5),
+    password: password, //bcrypt.hashSync(password, 5),
   });
 };
 

@@ -13,8 +13,12 @@ module.exports = async (payload) => {
     payload
   );
 
-  return await axios.post(
-    "https://webhook.site/c163ea5d-07b8-469f-bb05-d9f650a3803d",
-    payload
-  );
+  // console.log("process.env", process.env);
+
+  if (process.env.NODE_ENV !== "test") {
+    return await axios.post(
+      "https://webhook.site/c163ea5d-07b8-469f-bb05-d9f650a3803d",
+      payload
+    );
+  }
 };
