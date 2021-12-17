@@ -33,8 +33,9 @@ allowed_types: email, mobile, google, facebook, linkedin
 | uuid | Primary key and used as jti |
 | sub | user_uuid, team_uuid |
 | issuer | user, team |
-| abilities | JSONB |
-| user_agent | JSONB |
+| title | string |
+| permissions | JSONB |
+| other_info | JSONB |
 | created_at | Self Explanatory |
 | updated_at | Self Explanatory, also works as last_accessed_at |
 

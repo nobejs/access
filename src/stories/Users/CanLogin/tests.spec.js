@@ -59,6 +59,7 @@ describe("Test Handler Users/CanLogin", () => {
 
   it("user_can_login", async () => {
     let result = {};
+    let respondResult = {};
     try {
       await createVerifiedUser({
         type: "email",
@@ -78,7 +79,9 @@ describe("Test Handler Users/CanLogin", () => {
       respondResult = error;
     }
 
-    const { respondResult } = result;
+    console.log("result", result);
+
+    respondResult = result["respondResult"];
 
     expect(respondResult).toMatchObject({
       token: expect.any(String),

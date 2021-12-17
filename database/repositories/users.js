@@ -47,8 +47,11 @@ const authenticateWithPassword = async (payload) => {
   const result = bcrypt.compareSync(payload.password, user.password);
 
   if (result) {
-    await tokensRepo.createTokenForUser(user);
-    return user;
+    let token = await tokensRepo.createTokenForUser({
+      sub: user.uuid,
+      issuer: "user",
+    });
+    return token;
   } else {
     throw {
       statusCode: 401,

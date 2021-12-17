@@ -1,4 +1,5 @@
 const baseRepo = requireUtil("baseRepo");
+const generateJWT = requireFunction("JWT/generateJWT");
 const table = "tokens";
 
 const countAll = async (where = {}, whereNot = {}) => {
@@ -22,7 +23,9 @@ const remove = async (payload) => {
 };
 
 const createTokenForUser = async (payload) => {
-  return await baseRepo.remove(table, payload, "hard");
+  let token = await baseRepo.create(table, payload);
+  let jwt = generateJWT(token.uuid, token.sub);
+  return jwt;
 };
 
 module.exports = {

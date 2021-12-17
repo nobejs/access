@@ -6,11 +6,11 @@ exports.up = async function (knex) {
       .notNullable()
       .primary()
       .defaultTo(knex.raw("uuid_generate_v4()"));
-    table.uuid("of_uuid");
-    table.string("of_type", 255);
+    table.uuid("sub");
+    table.string("issuer", 255);
     table.string("title", 255);
-    table.json("abilities");
-    table.datetime("expires_at", { useTz: false });
+    table.json("permissions");
+    table.json("other_info");
     table.datetime("created_at", { useTz: false });
     table.datetime("updated_at", { useTz: false });
     table.datetime("deleted_at", { useTz: false });

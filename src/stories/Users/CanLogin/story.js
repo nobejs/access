@@ -54,7 +54,7 @@ const handle = async ({ prepareResult }) => {
 };
 
 const respond = ({ handleResult }) => {
-  return handleResult;
+  return { token: handleResult };
 };
 
 module.exports = {
