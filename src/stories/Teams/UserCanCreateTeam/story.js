@@ -60,12 +60,20 @@ const validateInput = async (prepareResult) => {
 };
 
 const handle = async ({ prepareResult }) => {
-  await validateInput(prepareResult);
-  return await TeamRepo.create(prepareResult);
+  try {
+    await validateInput(prepareResult);
+    return await TeamRepo.create(prepareResult);
+  } catch (error) {
+    throw error;
+  }
 };
 
 const respond = async ({ handleResult }) => {
-  return await TeamSerializer.single(handleResult);
+  try {
+    return await TeamSerializer.single(handleResult);
+  } catch (error) {
+    throw error;
+  }
 };
 
 module.exports = {

@@ -5,7 +5,7 @@ const knex = requireKnex();
 const httpServer = requireHttpServer();
 
 describe("API UserCanCreateTeam", () => {
-  beforeAll(async () => {
+  beforeEach(async () => {
     const { user, token } = await createUserWithVerifiedToken();
     contextClassRef.token = token;
     contextClassRef.user = user;
