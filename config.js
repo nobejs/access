@@ -38,7 +38,7 @@ module.exports = () => {
     httpServer: "./core/httpServer",
     errorHandler: "./core/errorHandler",
     notFoundHandler: "./core/notFoundHandler",
-    authMiddleware: "./core/authMiddleware",
+    authMiddleware: "./src/functions/authMiddleware",
     loadEndpoints: "./core/loadEndpoints",
     validator: "./core/validator",
     endpoints: "./src/endpoints",

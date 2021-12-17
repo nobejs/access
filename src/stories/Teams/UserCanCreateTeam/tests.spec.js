@@ -3,11 +3,14 @@ const debugLogger = requireUtil("debugLogger");
 
 describe("Handler UserCanCreateTeam", () => {
   beforeEach(async () => {
+    await knex("users").truncate();
+    await knex("verifications").truncate();
+    await knex("attributes").truncate();
     await knex("teams").truncate();
     await knex("team_members").truncate();
   });
 
-  it("a_user_can_create_a_team", async () => {
+  it("user_can_create_a_team", async () => {
     let respondResult;
     try {
       result = await testStrategy("Teams/UserCanCreateTeam", {
@@ -29,7 +32,7 @@ describe("Handler UserCanCreateTeam", () => {
     });
   });
 
-  it("a_user_can_create_a_team_with_same_slug_under_different_tenant", async () => {
+  it("user_can_create_a_team_with_same_slug_under_different_tenant", async () => {
     let respondResult;
     try {
       result = await testStrategy("Teams/UserCanCreateTeam", {
@@ -45,7 +48,7 @@ describe("Handler UserCanCreateTeam", () => {
     expect(respondResult).toMatchObject({ uuid: expect.any(String) });
   });
 
-  it("a_user_should_not_be_able_create_a_team_with_same_slug_under_same_tenant", async () => {
+  it("user_should_not_be_able_create_a_team_with_same_slug_under_same_tenant", async () => {
     let respondResult;
     try {
       result = await testStrategy("Teams/UserCanCreateTeam", {
@@ -78,7 +81,7 @@ describe("Handler UserCanCreateTeam", () => {
     );
   });
 
-  it("a_user_should_be_able_create_a_team_with_different_slug_under_same_tenant", async () => {
+  it("user_should_be_able_create_a_team_with_different_slug_under_same_tenant", async () => {
     let respondResult;
     try {
       result = await testStrategy("Teams/UserCanCreateTeam", {

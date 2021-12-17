@@ -7,6 +7,8 @@ const exclude = Config["excludeFromAuth"];
 module.exports = (req, reply, next) => {
   let needsAuth = true;
 
+  console.log("needsAuth", needsAuth);
+
   exclude.forEach((p) => {
     let [method, path] = p.split(" ");
     let regex = pathToRegexp(path);

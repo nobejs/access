@@ -28,6 +28,8 @@ const remove = async (payload) => {
 };
 
 const authenticateWithPassword = async (payload) => {
+  // console.log("authenticateWithPassword", payload);
+
   let attribute = await attributesRepo.first({
     type: payload.type,
     value: payload.value,
@@ -46,9 +48,16 @@ const authenticateWithPassword = async (payload) => {
 
   const result = bcrypt.compareSync(payload.password, user.password);
 
+  // console.log(
+  //   "What happened to compare password?",
+  //   result,
+  //   payload.password,
+  //   user.password
+  // );
+
   if (result) {
-    await tokensRepo.createTokenForUser(user);
-    return user;
+    let token = await tokensRepo.createTokenForUser(user);
+    return token;
   } else {
     throw {
       statusCode: 401,
@@ -180,4 +189,5 @@ module.exports = {
   requestAttributeVerificationForRegistration,
   countAll,
   create,
+  first,
 };

@@ -5,6 +5,7 @@ describe("Test Handler Users/CanRegister", () => {
   beforeEach(async () => {
     await knex("users").truncate();
     await knex("verifications").truncate();
+    await knex("attributes").truncate();
   });
 
   it("user_can_register_with_email", async () => {
@@ -18,8 +19,11 @@ describe("Test Handler Users/CanRegister", () => {
         },
       });
     } catch (error) {
+      console.log("error ----------> ", error);
       debugLogger(error);
     }
+
+    console.log("result ---------->", result);
 
     const { respondResult } = result;
 

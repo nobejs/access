@@ -15,14 +15,16 @@ const authorize = ({ prepareResult }) => {
 
 const handle = async ({ prepareResult, storyName }) => {
   try {
-    return await usersRepo.verifyTokenForAttribute(prepareResult);
+    return await usersRepo.verifyAttributeForRegistration(prepareResult);
   } catch (error) {
     throw error;
   }
 };
 
 const respond = ({ handleResult }) => {
-  return handleResult;
+  return {
+    message: "Verification Successful",
+  };
 };
 
 module.exports = {

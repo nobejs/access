@@ -10,6 +10,7 @@ module.exports = (app) => {
   return [
     {
       endpoints: [
+        // Register
         ["post", "/register", "Users/CanRegister"],
         [
           "post",
@@ -17,9 +18,12 @@ module.exports = (app) => {
           "Users/RequestVerifyRegistration",
         ],
         ["post", "/verify-registration", "Users/VerifyRegistration"],
+
+        // Login
         ["post", "/login", "Users/CanLogin"],
         ["get", "/user", "Users/ViewLoggedInUser"],
-        ["get", "/verify", "Users/ViewLoggedInUser"],
+
+        // Teams
         ["post", "/teams", "Teams/UserCanCreateTeam"],
       ],
     },

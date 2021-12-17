@@ -1,5 +1,4 @@
 const validator = requireValidator();
-const attributesRepo = requireRepo("attributes");
 const usersRepo = requireRepo("users");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
 const getAllowedTypes = requireFunction("getAllowedTypes");
@@ -54,7 +53,7 @@ const handle = async ({ prepareResult }) => {
 };
 
 const respond = ({ handleResult }) => {
-  return handleResult;
+  return { token: handleResult };
 };
 
 module.exports = {
