@@ -48,7 +48,12 @@ const authenticateWithPassword = async (payload) => {
 
   const result = bcrypt.compareSync(payload.password, user.password);
 
-  console.log("What happened to compare password?", result);
+  console.log(
+    "What happened to compare password?",
+    result,
+    payload.password,
+    user.password
+  );
 
   if (result) {
     let token = await tokensRepo.createTokenForUser(user);
