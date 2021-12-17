@@ -49,6 +49,7 @@ const validateInput = async (prepareResult) => {
                   tenant: prepareResult.tenant,
                 })
               : -1;
+
           return count === 0 ? true : false;
         },
       },

@@ -4,7 +4,7 @@ const baseRepo = requireUtil("baseRepo");
 const table = "teams";
 
 const countAll = async (where = {}, whereNot = {}) => {
-  return await baseRepo.countAll(table);
+  return await baseRepo.countAll(table, where, whereNot);
 };
 
 const create = async (payload) => {
