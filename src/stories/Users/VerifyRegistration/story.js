@@ -22,7 +22,9 @@ const handle = async ({ prepareResult, storyName }) => {
 };
 
 const respond = ({ handleResult }) => {
-  return handleResult;
+  return {
+    message: "Verification Successful",
+  };
 };
 
 module.exports = {
