@@ -4,7 +4,11 @@ const knex = requireKnex();
 const httpServer = requireHttpServer();
 
 describe("Test API Users/CanRegister", () => {
-  beforeAll(async () => {});
+  beforeEach(async () => {
+    await knex("users").truncate();
+    await knex("verifications").truncate();
+    await knex("attributes").truncate();
+  });
 
   it("user_can_register_with_email", async () => {
     let respondResult;

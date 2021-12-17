@@ -19,8 +19,11 @@ describe("Test Handler Users/CanRegister", () => {
         },
       });
     } catch (error) {
+      console.log("error ----------> ", error);
       debugLogger(error);
     }
+
+    console.log("result ---------->", result);
 
     const { respondResult } = result;
 

@@ -24,7 +24,7 @@ const remove = async (payload) => {
 
 const createTokenForUser = async (user) => {
   try {
-    console.log("createTokenForUser", user.uuid);
+    // console.log("createTokenForUser", user.uuid);
     let token = await baseRepo.create(table, {
       sub: user.uuid,
       issuer: "user",

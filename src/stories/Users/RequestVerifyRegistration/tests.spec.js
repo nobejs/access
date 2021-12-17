@@ -8,6 +8,7 @@ describe("Test Handler Users/RequestVerify", () => {
   beforeEach(async () => {
     await knex("users").truncate();
     await knex("verifications").truncate();
+    await knex("attributes").truncate();
   });
 
   it("user_cannot_request_verification_if_not_already_registered", async () => {
