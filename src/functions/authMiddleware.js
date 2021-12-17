@@ -34,7 +34,6 @@ module.exports = async (req, reply) => {
       req.sub = decoded.sub;
       req.jti = decoded.jti;
     } catch (error) {
-      //   debugLogger(error);
       return reply.code(401).send({ message: "Unauthenticated" });
     }
   }

@@ -20,9 +20,11 @@ module.exports = (app) => {
         ["post", "/verify-registration", "Users/VerifyRegistration"],
 
         // Login
-
         ["post", "/login", "Users/CanLogin"],
         ["get", "/user", "Users/ViewLoggedInUser"],
+
+        // Teams
+        ["post", "/teams", "Teams/UserCanCreateTeam"],
       ],
     },
   ];
