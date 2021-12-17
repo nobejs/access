@@ -124,9 +124,17 @@ const verifyAttributeForRegistration = async (payload) => {
           message: "Invalid Token",
         };
       }
+    } else {
+      throw {
+        statusCode: 401,
+        message: "Invalid Token",
+      };
     }
   } catch (error) {
-    throw error;
+    throw {
+      statusCode: 401,
+      message: "Invalid Token",
+    };
   }
 };
 
