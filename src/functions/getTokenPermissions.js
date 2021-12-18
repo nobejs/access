@@ -4,7 +4,7 @@ const TokensRepo = requireRepo("tokens");
 module.exports = (payload) => {
   return new Promise(async (resolve, reject) => {
     try {
-      let team = await TeamsRepo.first({ uuid: payload.sub });
+      let team = await TeamsRepo.findByUuid({ uuid: payload.sub });
 
       if (team !== undefined) {
         let permissions = await TokensRepo.first({ uuid: payload.jti })

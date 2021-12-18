@@ -44,7 +44,7 @@ const validateInput = async (prepareResult) => {
         callback: async (payload) => {
           let count =
             typeof payload.slug === "string"
-              ? await TeamRepo.countAll({
+              ? await TeamRepo.countWithConstraints({
                   slug: prepareResult.slug,
                   tenant: prepareResult.tenant,
                 })
@@ -62,7 +62,7 @@ const validateInput = async (prepareResult) => {
 const handle = async ({ prepareResult }) => {
   try {
     await validateInput(prepareResult);
-    return await TeamRepo.create(prepareResult);
+    return await TeamRepo.createTeamForAUser(prepareResult);
   } catch (error) {
     throw error;
   }

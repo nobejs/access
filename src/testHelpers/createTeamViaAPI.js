@@ -11,7 +11,7 @@ module.exports = async (
   userUuid
 ) => {
   try {
-    let result = await TeamRepo.create(payload);
+    let result = await TeamRepo.createTeamForAUser(payload);
 
     payload["creator_user_uuid"] = userUuid;
 

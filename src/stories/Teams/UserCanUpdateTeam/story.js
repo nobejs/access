@@ -50,7 +50,7 @@ const validateInput = async ({ prepareResult, augmentPrepareResult }) => {
         callback: async (payload) => {
           let count =
             typeof payload.slug === "string"
-              ? await TeamRepo.countAll(
+              ? await TeamRepo.countWithConstraints(
                   {
                     slug: prepareResult.slug,
                     tenant: augmentPrepareResult.team.tenant,
