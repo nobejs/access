@@ -5,16 +5,27 @@ if (process.env.ENVFILE) {
 
 const executeStrategy = require("./core/executeStrategy");
 
-global.queueJobStrategy = executeStrategy(["prepare", "authorize", "handle"]);
+global.queueJobStrategy = executeStrategy([
+  "prepare",
+  "*augmentPrepare",
+  "authorize",
+  "handle",
+]);
 
 global.endpointStrategy = executeStrategy([
   "prepare",
+  "*augmentPrepare",
   "authorize",
   "handle",
   "respond",
 ]);
 
-global.testStrategy = executeStrategy(["authorize", "handle", "respond"]);
+global.testStrategy = executeStrategy([
+  "*augmentPrepare",
+  "authorize",
+  "handle",
+  "respond",
+]);
 
 global.requireStory = (name) => require(`./src/stories/${name}/story.js`);
 global.requireUtil = (name) => require(`./core/utils/${name}`);
