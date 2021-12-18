@@ -3,45 +3,16 @@ const randomUser = requireUtil("randomUser");
 const knex = requireKnex();
 const httpServer = requireHttpServer();
 const teamsRepo = requireRepo("teams");
-const usersRepo = requireRepo("users");
 const tokensRepo = requireRepo("tokens");
 const decodeJWT = requireFunction("JWT/decodeJWT");
+const createUserAndTeam = require("../createUserAndTeam");
+const truncateAllTables = requireFunction("truncateAllTables");
 
 describe("Test API Tokens/TeamAdminCanDeleteToken", () => {
   beforeEach(async () => {
-    await knex("users").truncate();
-    await knex("verifications").truncate();
-    await knex("tokens").truncate();
-    await knex("attributes").truncate();
-    await knex("teams").truncate();
-    await knex("team_members").truncate();
-
-    const { user, token } = await usersRepo.createTestUserWithVerifiedToken({
-      type: "email",
-      value: "rajiv@betalectic.com",
-      password: "GoodPassword",
-      purpose: "register",
-    });
-    contextClassRef.user = user;
-    contextClassRef.token = token;
-
-    const testTeam = await teamsRepo.createTestTeamForUser(
-      {
-        tenant: "handler-test",
-        name: "Rajiv's Personal Team",
-        slug: "rajiv-personal-team",
-        creator_user_uuid: contextClassRef.user.uuid,
-      },
-      contextClassRef.user.uuid
-    );
-    contextClassRef.testTeam = testTeam;
-
-    contextClassRef.headers = {
-      Authorization: `Bearer ${contextClassRef.token}`,
-    };
-
+    await truncateAllTables();
+    await createUserAndTeam();
   });
-
 
   it("team_admin_can_delete_token", async () => {
     let respondResult;
@@ -52,8 +23,8 @@ describe("Test API Tokens/TeamAdminCanDeleteToken", () => {
         team_uuid: contextClassRef.testTeam.uuid,
         title: "Personal",
         permissions: {
-          "create_events": true
-        }
+          create_events: true,
+        },
       });
 
       const decoded = await decodeJWT(token);
@@ -66,12 +37,15 @@ describe("Test API Tokens/TeamAdminCanDeleteToken", () => {
         headers,
       });
     } catch (error) {
+      console.log("error", error);
       respondResult = error;
     }
 
+    // console.log(respondResult.json());
+
     expect(respondResult.statusCode).toBe(200);
     expect(respondResult.json()).toMatchObject({
-      message: "Token deleted Successfully"
+      message: "Token deleted Successfully",
     });
   });
 });

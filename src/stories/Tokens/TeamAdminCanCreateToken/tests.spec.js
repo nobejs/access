@@ -1,39 +1,13 @@
 const debugLogger = requireUtil("debugLogger");
-const teamsRepo = requireRepo("teams");
-const usersRepo = requireRepo("users");
-const knex = requireKnex();
+const truncateAllTables = requireFunction("truncateAllTables");
 const contextClassRef = requireUtil("contextHelper");
+const createUserAndTeam = require("../createUserAndTeam");
 const decodeJWT = requireFunction("JWT/decodeJWT");
 
 describe("Test Handler Tokens/TeamAdminCanCreateToken", () => {
-
   beforeEach(async () => {
-    await knex("users").truncate();
-    await knex("verifications").truncate();
-    await knex("tokens").truncate();
-    await knex("attributes").truncate();
-    await knex("teams").truncate();
-    await knex("team_members").truncate();
-
-    const { user } = await usersRepo.createTestUserWithVerifiedToken({
-      type: "email",
-      value: "rajiv@betalectic.com",
-      password: "GoodPassword",
-      purpose: "register",
-    });
-    contextClassRef.user = user;
-
-    const testTeam = await teamsRepo.createTestTeamForUser(
-      {
-        tenant: "handler-test",
-        name: "Rajiv's Personal Team",
-        slug: "rajiv-personal-team",
-        creator_user_uuid: contextClassRef.user.uuid,
-      },
-      contextClassRef.user.uuid
-    );
-    contextClassRef.testTeam = testTeam;
-
+    await truncateAllTables();
+    await createUserAndTeam();
   });
 
   it("team_admin_can_create_token", async () => {
@@ -46,8 +20,8 @@ describe("Test Handler Tokens/TeamAdminCanCreateToken", () => {
           issuer: "user",
           title: "Personal",
           permissions: {
-            "create_events": true
-          }
+            create_events: true,
+          },
         },
       });
     } catch (error) {
