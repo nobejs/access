@@ -5,24 +5,28 @@ const UsersRepo = requireRepo("users");
 
 describe("API UserCanCreateTeam", () => {
   beforeEach(async () => {
-    const { user, token } = await UsersRepo.createTestUserWithVerifiedToken({
-      type: "email",
-      value: "rajiv@betalectic.com",
-      password: "GoodPassword",
-      purpose: "register",
-    });
-    contextClassRef.token = token;
-    contextClassRef.user = user;
-
-    contextClassRef.headers = {
-      Authorization: `Bearer ${contextClassRef.token}`,
-    };
     await knex("users").truncate();
     await knex("verifications").truncate();
     await knex("tokens").truncate();
     await knex("attributes").truncate();
     await knex("teams").truncate();
     await knex("team_members").truncate();
+
+    const { user, token } = await UsersRepo.createTestUserWithVerifiedToken({
+      type: "email",
+      value: "rajiv@betalectic.com",
+      password: "GoodPassword",
+      purpose: "register",
+    });
+
+    contextClassRef.token = token;
+    contextClassRef.user = user;
+
+    contextClassRef.headers = {
+      Authorization: `Bearer ${contextClassRef.token}`,
+    };
+
+
   });
 
   it("user_can_create_team", async () => {
@@ -36,6 +40,9 @@ describe("API UserCanCreateTeam", () => {
       };
 
       let headers = contextClassRef.headers;
+
+      // console.log("headers", headers)
+
       const app = httpServer();
       result = await app.inject({
         method: "POST",
@@ -48,6 +55,9 @@ describe("API UserCanCreateTeam", () => {
     } catch (error) {
       response = error;
     }
+
+    console.log("response.json()", response.json())
+
     expect(response.statusCode).toBe(200);
     expect(response.json()).toMatchObject({
       uuid: expect.any(String),
