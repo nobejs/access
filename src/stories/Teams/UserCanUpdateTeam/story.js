@@ -11,7 +11,7 @@ const prepare = async ({ req }) => {
 
 const augmentPrepare = async ({ prepareResult }) => {
   try {
-    let team = await TeamRepo.first({
+    let team = await TeamRepo.findByUuid({
       uuid: prepareResult.team_uuid,
     });
     return { team };
@@ -72,7 +72,7 @@ const validateInput = async ({ prepareResult, augmentPrepareResult }) => {
 const handle = async ({ prepareResult, augmentPrepareResult }) => {
   try {
     await validateInput({ prepareResult, augmentPrepareResult });
-    return await TeamRepo.update(prepareResult.team_uuid, {
+    return await TeamRepo.updateTeamByUUID(prepareResult.team_uuid, {
       name: prepareResult.name,
       slug: prepareResult.slug,
     });

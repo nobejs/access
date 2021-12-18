@@ -2,8 +2,8 @@ const contextClassRef = requireUtil("contextHelper");
 const randomUser = requireUtil("randomUser");
 const knex = requireKnex();
 const createUserWithVerifiedToken = testHelper("createUserWithVerifiedToken");
-const createTeamViaAPI = testHelper("createTeamViaAPI");
 const httpServer = requireHttpServer();
+const TeamsRepo = requireRepo("teams");
 
 describe("API UserCanUpdateTeam", () => {
   beforeEach(async () => {
@@ -18,6 +18,17 @@ describe("API UserCanUpdateTeam", () => {
     contextClassRef.token = token;
     contextClassRef.user = user;
 
+    const testTeam = await TeamsRepo.createTestTeamForUser(
+      {
+        tenant: "api-test",
+        name: "Rajiv's Personal Team",
+        slug: "rajiv-personal-team",
+      },
+      contextClassRef.user.uuid
+    );
+
+    contextClassRef.testTeam = testTeam;
+
     contextClassRef.headers = {
       Authorization: `Bearer ${contextClassRef.token}`,
     };
@@ -28,7 +39,7 @@ describe("API UserCanUpdateTeam", () => {
     let createdResponse;
 
     try {
-      createdResponse = await createTeamViaAPI();
+      createdResponse = contextClassRef.testTeam;
       let team_uuid = createdResponse["uuid"];
 
       let updatePayload = {
@@ -61,7 +72,7 @@ describe("API UserCanUpdateTeam", () => {
     let createdResponse;
 
     try {
-      createdResponse = await createTeamViaAPI();
+      createdResponse = contextClassRef.testTeam;
       let team_uuid = createdResponse["uuid"];
 
       let updatePayload = {

@@ -53,6 +53,16 @@ const updateTeamByUUID = async (team_uuid, payload) => {
   }
 };
 
+const createTestTeamForUser = async (payload, userUuid) => {
+  try {
+    payload["creator_user_uuid"] = userUuid;
+    const result = await createTeamForAUser(payload);
+    return result;
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   createTeamForAUser,
   findTeamByUUID,
@@ -61,6 +71,7 @@ module.exports = {
   // fetchTeamsForAUser,
   // fetchTeamsForAUserAndTenant,
   findByUuid,
+  createTestTeamForUser,
   // update,
   // countAll,
   // fetchTeamsFromUuids,
