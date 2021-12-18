@@ -20,7 +20,14 @@ const getRoleForTeam = async (payload) => {
 };
 
 const updateRole = async (where, payload) => {
-  return await baseRepo.update(table, where, payload);
+  try {
+    return await baseRepo.update(table, where, payload);
+  } catch (error) {
+    throw {
+      statusCode: 404,
+      message: "Role not found",
+    };
+  }
 };
 
 const deleteRoleByUUID = async (uuid) => {
