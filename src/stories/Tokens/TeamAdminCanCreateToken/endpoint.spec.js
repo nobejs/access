@@ -37,7 +37,6 @@ describe("Test API Tokens/TeamAdminCanCreateToken", () => {
 
     contextClassRef.headers = {
       Authorization: `Bearer ${contextClassRef.token}`,
-      'x-team-identifier': contextClassRef.testTeam.uuid
     };
 
   });
@@ -58,7 +57,7 @@ describe("Test API Tokens/TeamAdminCanCreateToken", () => {
 
       respondResult = await app.inject({
         method: "POST",
-        url: "/teams/tokens", // This should be in endpoints.js
+        url: `/teams/${contextClassRef.testTeam.uuid}/tokens`, // This should be in endpoints.js
         payload,
         headers,
       });

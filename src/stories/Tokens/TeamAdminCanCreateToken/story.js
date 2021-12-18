@@ -5,7 +5,7 @@ const findKeysFromRequest = requireUtil("findKeysFromRequest");
 const tokensRepo = requireRepo("tokens")
 
 const prepare = ({ req }) => {
-  let payload = findKeysFromRequest(req, ["title", "permissions"]);
+  let payload = findKeysFromRequest(req, ["title", "permissions", "team_uuid"]);
 
   payload = {
     ...payload,
@@ -15,8 +15,6 @@ const prepare = ({ req }) => {
       issuer: req.issuer,
     }
   };
-
-  payload["team_uuid"] = req.headers["x-team-identifier"];
 
   return payload;
 };
@@ -47,6 +45,7 @@ const validateInput = async (payload) => {
 };
 
 const authorize = async ({ prepareResult }) => {
+
   try {
 
     if (prepareResult.issuer !== 'user') {

@@ -23,7 +23,6 @@ describe("Test API Users/ViewLoggedInUser", () => {
     contextClassRef.headers = {
       Authorization: `Bearer ${contextClassRef.token}`,
     };
-
   });
 
   it("logged_in_user_can_fetch_user_object", async () => {
@@ -81,7 +80,12 @@ describe("Test API Users/ViewLoggedInUser", () => {
       const app = httpServer();
 
       let token = await tokensRepo.createTokenForUser(contextClassRef.user);
-      await tokensRepo.remove({ sub: contextClassRef.user.uuid });
+
+      console.log(token);
+
+      await tokensRepo.deleteTokenByConstraints({
+        sub: contextClassRef.user.uuid,
+      });
 
       respondResult = await app.inject({
         method: "GET",

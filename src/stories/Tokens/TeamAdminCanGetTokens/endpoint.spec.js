@@ -7,7 +7,7 @@ const usersRepo = requireRepo("users");
 const tokensRepo = requireRepo("tokens");
 const decodeJWT = requireFunction("JWT/decodeJWT");
 
-describe("Test API Tokens/TeamAdminCanDeleteToken", () => {
+describe("Test API Tokens/TeamAdminCanGetTokens", () => {
   beforeEach(async () => {
     await knex("users").truncate();
     await knex("verifications").truncate();
@@ -39,11 +39,9 @@ describe("Test API Tokens/TeamAdminCanDeleteToken", () => {
     contextClassRef.headers = {
       Authorization: `Bearer ${contextClassRef.token}`,
     };
-
   });
 
-
-  it("team_admin_can_delete_token", async () => {
+  it("admin_can_get_tokens", async () => {
     let respondResult;
     try {
       const app = httpServer();
@@ -52,17 +50,17 @@ describe("Test API Tokens/TeamAdminCanDeleteToken", () => {
         team_uuid: contextClassRef.testTeam.uuid,
         title: "Personal",
         permissions: {
-          "create_events": true
-        }
+          create_events: true,
+        },
       });
-
-      const decoded = await decodeJWT(token);
 
       let headers = contextClassRef.headers;
 
+      const payload = {};
+
       respondResult = await app.inject({
-        method: "DELETE",
-        url: `/teams/${contextClassRef.testTeam.uuid}/tokens/${decoded.jti}`, // This should be in endpoints.js
+        method: "GET",
+        url: `/teams/${contextClassRef.testTeam.uuid}/tokens`, // This should be in endpoints.js
         headers,
       });
     } catch (error) {
@@ -70,8 +68,13 @@ describe("Test API Tokens/TeamAdminCanDeleteToken", () => {
     }
 
     expect(respondResult.statusCode).toBe(200);
-    expect(respondResult.json()).toMatchObject({
-      message: "Token deleted Successfully"
-    });
+    expect(respondResult.json()).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          "tokens*uuid": expect.any(String),
+          "tokens*title": "Personal",
+        }),
+      ])
+    );
   });
 });

@@ -2,10 +2,11 @@ const validator = requireValidator();
 const getTeamMemberPermissions = requireFunction("getTeamMemberPermissions");
 const checkPermission = requireFunction("checkPermission");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
-const tokensRepo = requireRepo("tokens");
+const tokensRepo = requireRepo("tokens")
+const TokenSerializer = requireSerializer("token");
 
 const prepare = ({ req }) => {
-  let payload = findKeysFromRequest(req, ["token_uuid", "team_uuid"]);
+  let payload = findKeysFromRequest(req, ["team_uuid"]);
 
   payload = {
     ...payload,
@@ -13,8 +14,9 @@ const prepare = ({ req }) => {
       jti: req.jti,
       sub: req.sub,
       issuer: req.issuer,
-    },
+    }
   };
+
 
   return payload;
 };
@@ -33,12 +35,14 @@ const validateInput = async (payload) => {
 };
 
 const authorize = async ({ prepareResult }) => {
+
   try {
-    if (prepareResult.issuer !== "user") {
+
+    if (prepareResult.issuer !== 'user') {
       throw {
         statusCode: 403,
-        message: "Forbidden",
-      };
+        message: "Forbidden"
+      }
     }
 
     await validateInput(prepareResult);
@@ -51,24 +55,29 @@ const authorize = async ({ prepareResult }) => {
     });
 
     await checkPermission(permissions, ["admin", "manage_tokens"]);
+
   } catch (error) {
     throw error;
   }
 };
 
-const handle = async ({ prepareResult, storyName }) => {
+const handle = async ({ prepareResult, authorizeResult }) => {
   try {
-    let token = await tokensRepo.deleteTokenByConstraints({
-      uuid: prepareResult.jti,
+    let tokens = await tokensRepo.getTokensForTeam({
+      team_uuid: prepareResult.team_uuid,
     });
-    return token;
+    return tokens;
   } catch (error) {
     throw error;
   }
 };
 
-const respond = ({}) => {
-  return { message: "Token deleted Successfully" };
+const respond = async ({ handleResult }) => {
+  try {
+    return handleResult;
+  } catch (error) {
+    throw error;
+  }
 };
 
 module.exports = {

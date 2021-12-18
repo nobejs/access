@@ -1,6 +1,7 @@
 const baseRepo = requireUtil("baseRepo");
 const generateJWT = requireFunction("JWT/generateJWT");
 const table = "tokens";
+const underscoredColumns = requireUtil("underscoredColumns");
 
 const countAll = async (where = {}, whereNot = {}) => {
   return await baseRepo.countAll(table, where, whereNot);
@@ -18,7 +19,7 @@ const update = async (where, payload) => {
   return await baseRepo.update(table, where, payload);
 };
 
-const deleteTokenByUUID = async (payload) => {
+const deleteTokenByConstraints = async (payload) => {
   return await baseRepo.remove(table, payload, "hard");
 };
 
@@ -42,7 +43,7 @@ const createTokenForTeam = async (payload) => {
       sub: payload.team_uuid,
       issuer: "team",
       permissions: payload.permissions,
-      title: payload.title
+      title: payload.title,
     });
     let jwt = await generateJWT(token.uuid, token.sub, token.issuer);
     return jwt;
@@ -67,13 +68,35 @@ const checkIfValidJti = async (jti) => {
   }
 };
 
+const getTokensForTeam = async (payload) => {
+  try {
+    return await baseRepo.findAll(
+      table,
+      {
+        sub: payload.team_uuid,
+        issuer: "team",
+      },
+      underscoredColumns([
+        "tokens.uuid",
+        "tokens.title",
+        "tokens.permissions",
+        "tokens.created_at",
+        "tokens.updated_at",
+      ])
+    );
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   create,
   first,
   countAll,
   update,
-  deleteTokenByUUID,
+  deleteTokenByConstraints,
   createTokenForUser,
   createTokenForTeam,
   checkIfValidJti,
+  getTokensForTeam,
 };

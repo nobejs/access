@@ -1,13 +1,12 @@
-const contextClassRef = requireUtil("contextHelper");
-const randomUser = requireUtil("randomUser");
-const knex = requireKnex();
-const httpServer = requireHttpServer();
+const debugLogger = requireUtil("debugLogger");
 const teamsRepo = requireRepo("teams");
 const usersRepo = requireRepo("users");
 const tokensRepo = requireRepo("tokens");
+const knex = requireKnex();
+const contextClassRef = requireUtil("contextHelper");
 const decodeJWT = requireFunction("JWT/decodeJWT");
 
-describe("Test API Tokens/TeamAdminCanDeleteToken", () => {
+describe("Test Handler Tokens/TeamAdminCanGetTokens", () => {
   beforeEach(async () => {
     await knex("users").truncate();
     await knex("verifications").truncate();
@@ -35,43 +34,42 @@ describe("Test API Tokens/TeamAdminCanDeleteToken", () => {
       contextClassRef.user.uuid
     );
     contextClassRef.testTeam = testTeam;
-
-    contextClassRef.headers = {
-      Authorization: `Bearer ${contextClassRef.token}`,
-    };
-
   });
 
-
-  it("team_admin_can_delete_token", async () => {
-    let respondResult;
+  it("admin_can_get_tokens", async () => {
+    let result = {};
     try {
-      const app = httpServer();
-
       const token = await tokensRepo.createTokenForTeam({
         team_uuid: contextClassRef.testTeam.uuid,
         title: "Personal",
         permissions: {
-          "create_events": true
-        }
+          create_events: true,
+        },
       });
 
-      const decoded = await decodeJWT(token);
+      // const decoded = await decodeJWT(token);
+      const decodedUserToken = await decodeJWT(contextClassRef.token);
 
-      let headers = contextClassRef.headers;
-
-      respondResult = await app.inject({
-        method: "DELETE",
-        url: `/teams/${contextClassRef.testTeam.uuid}/tokens/${decoded.jti}`, // This should be in endpoints.js
-        headers,
+      result = await testStrategy("Tokens/TeamAdminCanGetTokens", {
+        prepareResult: {
+          jti: decodedUserToken.jti,
+          sub: decodedUserToken.sub,
+          issuer: decodedUserToken.iss,
+          team_uuid: contextClassRef.testTeam.uuid,
+        },
       });
     } catch (error) {
-      respondResult = error;
+      debugLogger(error);
     }
+    const { respondResult } = result;
 
-    expect(respondResult.statusCode).toBe(200);
-    expect(respondResult.json()).toMatchObject({
-      message: "Token deleted Successfully"
-    });
+    expect(respondResult).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          "tokens*uuid": expect.any(String),
+          "tokens*title": "Personal",
+        }),
+      ])
+    );
   });
 });

@@ -43,6 +43,7 @@ describe("Test Handler Tokens/TeamAdminCanCreateToken", () => {
         prepareResult: {
           sub: contextClassRef.user.uuid,
           team_uuid: contextClassRef.testTeam.uuid,
+          issuer: "user",
           title: "Personal",
           permissions: {
             "create_events": true
