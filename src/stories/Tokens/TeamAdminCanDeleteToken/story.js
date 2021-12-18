@@ -5,15 +5,10 @@ const findKeysFromRequest = requireUtil("findKeysFromRequest");
 const tokensRepo = requireRepo("tokens")
 
 const prepare = ({ req }) => {
-  let payload = findKeysFromRequest(req, ["title", "permissions"]);
-
-  payload = {
-    ...payload,
-    ...{
-      jti: req.jti,
-      sub: req.sub,
-      issuer: req.issuer,
-    }
+  let payload = {
+    jti: req.jti,
+    sub: req.sub,
+    issuer: req.issuer,
   };
 
   payload["team_uuid"] = req.headers["x-team-identifier"];
@@ -27,18 +22,6 @@ const validateInput = async (payload) => {
       presence: {
         allowEmpty: false,
         message: "^Please mention team",
-      },
-    },
-    title: {
-      presence: {
-        allowEmpty: false,
-        message: "^Please mention title",
-      },
-    },
-    permissions: {
-      presence: {
-        allowEmpty: false,
-        message: "^Please mention permissions",
       },
     },
   };
@@ -75,10 +58,8 @@ const authorize = async ({ prepareResult }) => {
 const handle = async ({ prepareResult, storyName }) => {
 
   try {
-    let token = await tokensRepo.createTokenForTeam({
-      team_uuid: prepareResult.team_uuid,
-      title: prepareResult.team_uuid,
-      permissions: prepareResult.permissions
+    let token = await tokensRepo.deleteTokenByUUID({
+      uuid: prepareResult.jti,
     });
     return token;
   } catch (error) {
@@ -87,8 +68,8 @@ const handle = async ({ prepareResult, storyName }) => {
 
 };
 
-const respond = ({ handleResult }) => {
-  return { token: handleResult };
+const respond = ({ }) => {
+  return { message: "Token deleted Successfully" };
 };
 
 module.exports = {

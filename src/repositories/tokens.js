@@ -18,7 +18,7 @@ const update = async (where, payload) => {
   return await baseRepo.update(table, where, payload);
 };
 
-const remove = async (payload) => {
+const deleteTokenByUUID = async (payload) => {
   return await baseRepo.remove(table, payload, "hard");
 };
 
@@ -72,7 +72,7 @@ module.exports = {
   first,
   countAll,
   update,
-  remove,
+  deleteTokenByUUID,
   createTokenForUser,
   createTokenForTeam,
   checkIfValidJti,

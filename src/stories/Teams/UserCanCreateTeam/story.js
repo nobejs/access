@@ -12,8 +12,6 @@ const prepare = ({ req }) => {
 
 const authorize = ({ prepareResult }) => {
 
-  console.log("prepareResult", prepareResult)
-
   if (prepareResult.issuer !== 'user') {
     throw {
       statusCode: 403,
