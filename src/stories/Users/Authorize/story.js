@@ -11,7 +11,7 @@
  */
 
 const TeamsRepo = requireRepo("teams");
-const RolesRepo = requireRepo("roles");
+// const RolesRepo = requireRepo("roles");
 const TokensRepo = requireRepo("tokens");
 const TeamMembersRepo = requireRepo("teamMembers");
 
@@ -32,6 +32,8 @@ const authorize = ({ prepareResult }) => {
 };
 
 const handle = async ({ prepareResult }) => {
+  console.log("prepareResult", prepareResult);
+
   let unauthorizedObject = {
     statusCode: 401,
     message: "Unauthorized",

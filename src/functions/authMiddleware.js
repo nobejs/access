@@ -25,6 +25,7 @@ module.exports = async (req, reply) => {
 
   if (needsAuth) {
     if (!req.headers.authorization) {
+      debugLogger("Doesn't have authorization header");
       return reply.code(401).send({ error: "Unauthenticated" });
     }
     const bearer = req.headers.authorization.split(" ");
@@ -34,14 +35,16 @@ module.exports = async (req, reply) => {
     try {
       let decoded = await decodeJWT(req.token);
       await tokensRepo.checkIfValidJti(decoded.jti);
-      if (!decoded.sub || !decoded.jti || !decoded.issuer) {
+      if (!decoded.sub || !decoded.jti || !decoded.iss) {
+        debugLogger("Missing one of sub, hti, issuer", decoded);
         return reply.code(401).send({ message: "Unauthenticated" });
       }
       req.decodedJWT = decoded;
       req.sub = decoded.sub;
       req.jti = decoded.jti;
-      req.issuer = decoded.issuer;
+      req.issuer = decoded.iss;
     } catch (error) {
+      debugLogger("Something went wrong in middleware", error);
       return reply.code(401).send({ message: "Unauthenticated" });
     }
   }

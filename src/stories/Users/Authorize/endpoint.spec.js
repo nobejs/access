@@ -1,35 +1,41 @@
 const contextClassRef = requireUtil("contextHelper");
-const randomUser = requireUtil("randomUser");
 const knex = requireKnex();
 const httpServer = requireHttpServer();
+const createUserWithVerifiedToken = testHelper("createUserWithVerifiedToken");
 
 describe("Test API Users/Authorize", () => {
-  beforeAll(async () => {
-    contextClassRef.user = randomUser();
+  beforeEach(async () => {
+    const { user, token } = await createUserWithVerifiedToken();
+    contextClassRef.token = token;
+    contextClassRef.user = user;
+
     contextClassRef.headers = {
-      Authorization: `Bearer ${contextClassRef.user.token}`, // An authenticated user is making the api call
+      Authorization: `Bearer ${contextClassRef.token}`,
     };
+    await knex("users").truncate();
+    await knex("verifications").truncate();
+    await knex("attributes").truncate();
+    await knex("teams").truncate();
+    await knex("team_members").truncate();
   });
 
-  it("dummy_story_which_will_pass", async () => {
+  it("logged_in_user_can_call_authorize", async () => {
     let respondResult;
     try {
       const app = httpServer();
 
-      const payload = {};
-
-      // respondResult = await app.inject({
-      //   method: "POST",
-      //   url: "/api_endpoint", // This should be in endpoints.js
-      //   payload,
-      //   headers,
-      // });
+      respondResult = await app.inject({
+        method: "GET",
+        url: "/authorize", // This should be in endpoints.js
+        headers: contextClassRef.headers,
+      });
     } catch (error) {
       respondResult = error;
     }
 
-    // expect(respondResult.statusCode).toBe(200);
-    // expect(respondResult.json()).toMatchObject({});
-    expect(1).toBe(1);
+    // console.log("respondResult", respondResult.statusCode);
+    // console.log("respondResult", respondResult.json());
+
+    expect(respondResult.statusCode).toBe(200);
   });
 });
