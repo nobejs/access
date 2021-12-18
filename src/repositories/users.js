@@ -28,8 +28,6 @@ const remove = async (payload) => {
 };
 
 const authenticateWithPassword = async (payload) => {
-  // console.log("authenticateWithPassword", payload);
-
   let attribute = await attributesRepo.first({
     type: payload.type,
     value: payload.value,
@@ -189,6 +187,18 @@ const registerWithPassword = async (payload) => {
   return true;
 };
 
+const createTestUserWithVerifiedToken = async (payload) => {
+  try {
+    let user = await createUserWithPassword(payload.password);
+    await attributesRepo.createAttributeForUUID(user.uuid, payload, true);
+
+    let token = await tokensRepo.createTokenForUser(user);
+    return { user, token };
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   createUserWithPassword,
   registerWithPassword,
@@ -198,4 +208,5 @@ module.exports = {
   countAll,
   create,
   first,
+  createTestUserWithVerifiedToken,
 };

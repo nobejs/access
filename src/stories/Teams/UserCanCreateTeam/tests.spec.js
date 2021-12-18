@@ -5,6 +5,7 @@ describe("Handler UserCanCreateTeam", () => {
   beforeEach(async () => {
     await knex("users").truncate();
     await knex("verifications").truncate();
+    await knex("tokens").truncate();
     await knex("attributes").truncate();
     await knex("teams").truncate();
     await knex("team_members").truncate();

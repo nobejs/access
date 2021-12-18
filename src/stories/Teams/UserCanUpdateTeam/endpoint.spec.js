@@ -1,9 +1,9 @@
 const contextClassRef = requireUtil("contextHelper");
 const randomUser = requireUtil("randomUser");
 const knex = requireKnex();
-const createUserWithVerifiedToken = testHelper("createUserWithVerifiedToken");
 const httpServer = requireHttpServer();
 const TeamsRepo = requireRepo("teams");
+const UsersRepo = requireRepo("users");
 
 describe("API UserCanUpdateTeam", () => {
   beforeEach(async () => {
@@ -14,7 +14,12 @@ describe("API UserCanUpdateTeam", () => {
     await knex("teams").truncate();
     await knex("team_members").truncate();
 
-    const { user, token } = await createUserWithVerifiedToken();
+    const { user, token } = await UsersRepo.createTestUserWithVerifiedToken({
+      type: "email",
+      value: "rajiv@betalectic.com",
+      password: "GoodPassword",
+      purpose: "register",
+    });
     contextClassRef.token = token;
     contextClassRef.user = user;
 
@@ -26,7 +31,6 @@ describe("API UserCanUpdateTeam", () => {
       },
       contextClassRef.user.uuid
     );
-
     contextClassRef.testTeam = testTeam;
 
     contextClassRef.headers = {
