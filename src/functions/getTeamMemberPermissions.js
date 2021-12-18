@@ -16,11 +16,10 @@ module.exports = (payload) => {
         // }
         return resolve(teamMember.permissions);
       } else {
-        return reject({ message: "Not team member" });
+        return reject({ statusCode: 403, message: "Forbidden" });
       }
-
     } catch (error) {
-      reject(error);
+      reject({ statusCode: 404, message: "Not Found" });
     }
   });
 };

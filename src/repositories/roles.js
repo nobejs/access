@@ -3,7 +3,20 @@ const table = "roles";
 const underscoredColumns = requireUtil("underscoredColumns");
 
 const getRoleForTeam = async (payload) => {
-  return await baseRepo.first(table, payload);
+  try {
+    let role = await baseRepo.first(table, payload);
+
+    if (role === undefined) {
+      throw role;
+    }
+
+    return role;
+  } catch (error) {
+    throw {
+      statusCode: 404,
+      message: "Role not found",
+    };
+  }
 };
 
 const updateRole = async (where, payload) => {
