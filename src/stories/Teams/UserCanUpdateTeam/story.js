@@ -11,13 +11,11 @@ const prepare = async ({ req }) => {
 
 const augmentPrepare = async ({ prepareResult }) => {
   try {
-    console.log("called augmentPrepare", prepareResult);
     let team = await TeamRepo.first({
       uuid: prepareResult.team_uuid,
     });
     return { team };
   } catch (error) {
-    console.log("aug-err", augmentPrepare);
     throw error;
   }
 };
@@ -85,7 +83,6 @@ const handle = async ({ prepareResult, augmentPrepareResult }) => {
 
 const respond = async ({ handleResult }) => {
   try {
-    console.log("handleResult", handleResult);
     return await TeamSerializer.single(handleResult);
   } catch (error) {
     throw error;
