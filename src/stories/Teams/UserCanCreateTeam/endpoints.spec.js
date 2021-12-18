@@ -16,7 +16,6 @@ describe("API UserCanCreateTeam", () => {
       type: "email",
       value: "rajiv@betalectic.com",
       password: "GoodPassword",
-      purpose: "register",
     });
 
     contextClassRef.token = token;

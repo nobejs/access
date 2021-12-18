@@ -175,7 +175,6 @@ const createTestUserWithVerifiedToken = async (payload) => {
   try {
     let user = await createUserWithPassword(payload.password);
     await attributesRepo.createAttributeForUUID(user.uuid, payload, true);
-
     let token = await tokensRepo.createTokenForUser(user);
     return { user, token };
   } catch (error) {

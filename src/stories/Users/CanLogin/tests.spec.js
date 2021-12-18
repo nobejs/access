@@ -1,6 +1,6 @@
 const debugLogger = requireUtil("debugLogger");
 const knex = requireKnex();
-const createVerifiedUser = testHelper("createVerifiedUser");
+const usersRepo = requireRepo("users");
 
 // yarn test -i src/stories/Users/CanLogin/tests.spec.js
 
@@ -8,22 +8,23 @@ describe("Test Handler Users/CanLogin", () => {
   beforeEach(async () => {
     await knex("users").truncate();
     await knex("attributes").truncate();
+
+    const { user, token } = await usersRepo.createTestUserWithVerifiedToken({
+      type: "email",
+      value: "rajiv@betalectic.com",
+      password: "GoodPassword",
+    });
   });
 
   it("user_cannot_login_with_wrong_password", async () => {
     let result = {};
     try {
-      await createVerifiedUser({
-        type: "email",
-        value: "rajiv+7@betalectic.com",
-        password: "GoodPassword",
-        purpose: "register",
-      });
+
 
       result = await testStrategy("Users/CanLogin", {
         prepareResult: {
           type: "email",
-          value: "rajiv+7@betalectic.com",
+          value: "rajiv@betalectic.com",
           password: "BadPassword",
         },
       });
@@ -61,12 +62,6 @@ describe("Test Handler Users/CanLogin", () => {
     let result = {};
     let respondResult = {};
     try {
-      await createVerifiedUser({
-        type: "email",
-        value: "rajiv@betalectic.com",
-        password: "GoodPassword",
-        purpose: "register",
-      });
 
       result = await testStrategy("Users/CanLogin", {
         prepareResult: {
