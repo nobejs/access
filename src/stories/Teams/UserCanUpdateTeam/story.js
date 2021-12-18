@@ -5,7 +5,7 @@ const TeamSerializer = requireSerializer("teams");
 
 const prepare = async ({ req }) => {
   const payload = findKeysFromRequest(req, ["name", "slug", "team_uuid"]);
-  payload["invoking_user_uuid"] = req.user;
+  payload["invoking_user_uuid"] = req.sub;
   return payload;
 };
 

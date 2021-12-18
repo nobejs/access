@@ -25,6 +25,7 @@ module.exports = (app) => {
 
         // Teams
         ["post", "/teams", "Teams/UserCanCreateTeam"],
+        ["put", "/teams/:team_uuid", "Teams/UserCanUpdateTeam"],
       ],
     },
   ];
