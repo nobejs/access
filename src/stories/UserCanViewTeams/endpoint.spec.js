@@ -3,7 +3,7 @@ const randomUser = requireUtil("randomUser");
 const knex = requireKnex();
 const httpServer = requireHttpServer();
 
-describe("Test API Teams/UserCanViewTeam", () => {
+describe("Test API Teams/UserCanViewTeams", () => {
   beforeAll(async () => {
     contextClassRef.user = randomUser();
     contextClassRef.headers = {
@@ -17,13 +17,6 @@ describe("Test API Teams/UserCanViewTeam", () => {
       const app = httpServer();
 
       const payload = {};
-
-      // respondResult = await app.inject({
-      //   method: "POST",
-      //   url: "/api_endpoint", // This should be in endpoints.js
-      //   payload,
-      //   headers,
-      // });
     } catch (error) {
       respondResult = error;
     }
