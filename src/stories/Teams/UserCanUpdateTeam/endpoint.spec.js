@@ -4,38 +4,13 @@ const knex = requireKnex();
 const httpServer = requireHttpServer();
 const TeamsRepo = requireRepo("teams");
 const UsersRepo = requireRepo("users");
+const truncateAllTables = requireFunction("truncateAllTables");
+const createUserAndTeam = require("../createUserAndTeam");
 
 describe("API UserCanUpdateTeam", () => {
   beforeEach(async () => {
-    await knex("users").truncate();
-    await knex("tokens").truncate();
-    await knex("verifications").truncate();
-    await knex("attributes").truncate();
-    await knex("teams").truncate();
-    await knex("team_members").truncate();
-
-    const { user, token } = await UsersRepo.createTestUserWithVerifiedToken({
-      type: "email",
-      value: "rajiv@betalectic.com",
-      password: "GoodPassword",
-      purpose: "register",
-    });
-    contextClassRef.token = token;
-    contextClassRef.user = user;
-
-    const testTeam = await TeamsRepo.createTestTeamForUser(
-      {
-        tenant: "api-test",
-        name: "Rajiv's Personal Team",
-        slug: "rajiv-personal-team",
-      },
-      contextClassRef.user.uuid
-    );
-    contextClassRef.testTeam = testTeam;
-
-    contextClassRef.headers = {
-      Authorization: `Bearer ${contextClassRef.token}`,
-    };
+    await truncateAllTables();
+    await createUserAndTeam();
   });
 
   it("user_can_update_team", async () => {

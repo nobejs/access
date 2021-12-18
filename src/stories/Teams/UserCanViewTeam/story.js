@@ -6,8 +6,7 @@ const createCustomerPortal = requireFunction("stripe/createCustomerPortal");
 
 const prepare = async ({ req }) => {
   const payload = findKeysFromRequest(req, ["team_uuid", "stripe_return_url"]);
-
-  payload["invoking_user_uuid"] = req.user;
+  payload["invoking_user_uuid"] = req.sub;
   return payload;
 };
 
@@ -43,15 +42,15 @@ const respond = async ({ prepareResult, handleResult }) => {
       "subscription",
     ]);
 
-    if (
-      teamObject["subscription"] &&
-      teamObject["subscription"]["customer_id"]
-    ) {
-      teamObject["customer_portal"] = await createCustomerPortal(
-        teamObject["subscription"]["customer_id"],
-        prepareResult.stripe_return_url
-      );
-    }
+    // if (
+    //   teamObject["subscription"] &&
+    //   teamObject["subscription"]["customer_id"]
+    // ) {
+    //   teamObject["customer_portal"] = await createCustomerPortal(
+    //     teamObject["subscription"]["customer_id"],
+    //     prepareResult.stripe_return_url
+    //   );
+    // }
 
     return teamObject;
   } catch (error) {

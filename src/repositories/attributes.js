@@ -5,6 +5,10 @@ const countAll = async (where = {}, whereNot = {}) => {
   return await baseRepo.countAll(table, where, whereNot);
 };
 
+const findAll = async (where = {}, columns) => {
+  return await baseRepo.findAll(table, where, columns);
+};
+
 const create = async (payload) => {
   return await baseRepo.create(table, payload);
 };

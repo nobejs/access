@@ -2,13 +2,13 @@ const contextClassRef = requireUtil("contextHelper");
 const randomUser = requireUtil("randomUser");
 const knex = requireKnex();
 const httpServer = requireHttpServer();
+const truncateAllTables = requireFunction("truncateAllTables");
+const createUserAndTeam = require("../createUserAndTeam");
 
 describe("Test API Teams/UserCanViewTeam", () => {
-  beforeAll(async () => {
-    contextClassRef.user = randomUser();
-    contextClassRef.headers = {
-      Authorization: `Bearer ${contextClassRef.user.token}`, // An authenticated user is making the api call
-    };
+  beforeEach(async () => {
+    await truncateAllTables();
+    await createUserAndTeam();
   });
 
   it.skip("dummy_story_which_will_pass", async () => {

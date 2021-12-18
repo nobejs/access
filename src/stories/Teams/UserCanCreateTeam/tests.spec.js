@@ -1,14 +1,10 @@
 const knex = requireKnex();
 const debugLogger = requireUtil("debugLogger");
+const truncateAllTables = requireFunction("truncateAllTables");
 
 describe("Handler UserCanCreateTeam", () => {
   beforeEach(async () => {
-    await knex("users").truncate();
-    await knex("verifications").truncate();
-    await knex("tokens").truncate();
-    await knex("attributes").truncate();
-    await knex("teams").truncate();
-    await knex("team_members").truncate();
+    await truncateAllTables();
   });
 
   it("user_can_create_a_team", async () => {
@@ -47,7 +43,7 @@ describe("Handler UserCanCreateTeam", () => {
         },
       });
       respondResult = result.respondResult;
-    } catch (error) { }
+    } catch (error) {}
     expect(respondResult).toMatchObject({ uuid: expect.any(String) });
   });
 

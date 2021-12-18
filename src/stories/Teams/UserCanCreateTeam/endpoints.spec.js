@@ -2,15 +2,11 @@ const contextClassRef = requireUtil("contextHelper");
 const knex = requireKnex();
 const httpServer = requireHttpServer();
 const usersRepo = requireRepo("users");
+const truncateAllTables = requireFunction("truncateAllTables");
 
 describe("API UserCanCreateTeam", () => {
   beforeEach(async () => {
-    await knex("users").truncate();
-    await knex("verifications").truncate();
-    await knex("tokens").truncate();
-    await knex("attributes").truncate();
-    await knex("teams").truncate();
-    await knex("team_members").truncate();
+    await truncateAllTables();
 
     const { user, token } = await usersRepo.createTestUserWithVerifiedToken({
       type: "email",
@@ -24,8 +20,6 @@ describe("API UserCanCreateTeam", () => {
     contextClassRef.headers = {
       Authorization: `Bearer ${contextClassRef.token}`,
     };
-
-
   });
 
   it("user_can_create_team", async () => {
@@ -55,7 +49,7 @@ describe("API UserCanCreateTeam", () => {
       response = error;
     }
 
-    console.log("response.json()", response.json())
+    console.log("response.json()", response.json());
 
     expect(response.statusCode).toBe(200);
     expect(response.json()).toMatchObject({

@@ -8,9 +8,20 @@ const table = "users";
 
 const getAllowedTypes = () => {
   return ["email"];
-}
+};
+
+// const getAttributesOfAUser = (user_uuid) => {
+//   try {
+//     return await attributesRepo.findAll({
+//       user_uuid: user_uuid,
+//     });
+//   } catch (error) {
+//     throw error;
+//   }
+// };
 
 const findUserByTypeAndValue = async (where = {}) => {
+  console.log("where", where);
   return await baseRepo.countAll("attributes", where);
 };
 
@@ -21,7 +32,6 @@ const create = async (payload) => {
 const first = async (payload) => {
   return await baseRepo.first(table, payload);
 };
-
 
 const authenticateWithPassword = async (payload) => {
   let attribute = await attributesRepo.first({
@@ -70,9 +80,9 @@ const requestAttributeVerificationForRegistration = async (payload) => {
 
     // If verification is present already, we can update it
     if (verification !== undefined) {
-      let verificationObject = await verificationsRepo.updateVerification(
-        { uuid: verification.uuid }
-      );
+      let verificationObject = await verificationsRepo.updateVerification({
+        uuid: verification.uuid,
+      });
 
       await registrationVerificationEvent({
         token: verificationObject.token,
@@ -110,8 +120,7 @@ const verifyAttributeForRegistration = async (payload) => {
 
         return {
           message: "Verification Successful",
-        }
-
+        };
       } else {
         throw "err";
       }
@@ -147,19 +156,18 @@ const registerWithPassword = async (payload) => {
     // If no, create a user and also verification for them
     user = await createUserWithPassword(payload.password);
 
-    verificationObject = await verificationsRepo.createVerificationForRegistration({
-      user_uuid: user.uuid,
-      attribute_type: payload.type,
-      attribute_value: payload.value,
-    });
-
+    verificationObject =
+      await verificationsRepo.createVerificationForRegistration({
+        user_uuid: user.uuid,
+        attribute_type: payload.type,
+        attribute_value: payload.value,
+      });
   } else {
     // If there is a verification, update verification with new token and timestamp
 
-    verificationObject = await verificationsRepo.updateVerification(
-      { uuid: verification.uuid }
-    );
-
+    verificationObject = await verificationsRepo.updateVerification({
+      uuid: verification.uuid,
+    });
   }
 
   await registrationVerificationEvent({
@@ -193,4 +201,5 @@ module.exports = {
   create,
   first,
   createTestUserWithVerifiedToken,
+  // getAttributesOfAUser,
 };

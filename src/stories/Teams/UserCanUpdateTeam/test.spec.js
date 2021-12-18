@@ -3,34 +3,13 @@ const debugLogger = requireUtil("debugLogger");
 const contextClassRef = requireUtil("contextHelper");
 const TeamsRepo = requireRepo("teams");
 const UsersRepo = requireRepo("users");
+const truncateAllTables = requireFunction("truncateAllTables");
+const createUserAndTeam = require("../createUserAndTeam");
 
 describe("Handler UserCanUpdateTeam", () => {
   beforeEach(async () => {
-    await knex("users").truncate();
-    await knex("verifications").truncate();
-    await knex("attributes").truncate();
-    await knex("tokens").truncate();
-    await knex("teams").truncate();
-    await knex("team_members").truncate();
-
-    const { user } = await UsersRepo.createTestUserWithVerifiedToken({
-      type: "email",
-      value: "rajiv@betalectic.com",
-      password: "GoodPassword",
-      purpose: "register",
-    });
-    contextClassRef.user = user;
-
-    const testTeam = await TeamsRepo.createTestTeamForUser(
-      {
-        tenant: "handler-test",
-        name: "Rajiv's Personal Team",
-        slug: "rajiv-personal-team",
-        creator_user_uuid: contextClassRef.user.uuid,
-      },
-      contextClassRef.user.uuid
-    );
-    contextClassRef.testTeam = testTeam;
+    await truncateAllTables();
+    await createUserAndTeam();
   });
 
   it("a_user_can_update_a_team", async () => {

@@ -1,14 +1,13 @@
 const validator = requireValidator();
-const TeamMemberRepo = requireRepo("teamMembers");
+const teamMembersRepo = requireRepo("teamMembers");
+const usersRepo = requireRepo("users");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
 // const getUser = requireFunction("getUser");
 const TeamMemberSerializer = requireSerializer("teamMembers");
 
 const prepare = async ({ req }) => {
   const payload = findKeysFromRequest(req, ["team_member_uuid"]);
-  payload["invoking_user_uuid"] = req.user;
-  payload["token"] = req.token;
-
+  payload["invoking_user_uuid"] = req.sub;
   return payload;
 };
 
@@ -16,65 +15,57 @@ const augmentPrepare = async ({ prepareResult }) => {
   let teamMember = null;
 
   try {
-    teamMember = await TeamMemberRepo.first({
+    teamMember = await teamMembersRepo.first({
       uuid: prepareResult.team_member_uuid,
     });
-  } catch (error) {
-    throw {
-      statusCode: 401,
-      message: "Invalid Member",
-    };
-  }
 
-  let user = {};
+    if (teamMember === undefined) {
+      throw teamMember;
+    }
 
-  try {
-    console.log('prepareResult["sub"]13', prepareResult["sub"]);
-    user = prepareResult["sub"];
-  } catch (error) {
-    throw {
-      statusCode: 401,
-      message: "Unauthorized",
-    };
-  }
-
-  return { teamMember, user };
-};
-
-const authorize = async ({ augmentPrepareResult }) => {
-  if (!augmentPrepareResult.teamMember) {
-    throw {
-      message: "NotAuthorized",
-      statusCode: 403,
-    };
-  }
-
-  if (augmentPrepareResult.teamMember) {
-    if (augmentPrepareResult.teamMember.status !== "invited") {
+    if (teamMember.status !== "invited") {
       throw {
         statusCode: 401,
         message:
           "The membership status is not invited. Either it's already accepted or invalid.",
       };
     }
+  } catch (error) {
+    throw {
+      statusCode: 404,
+      message: "Invalid Member",
+    };
+  }
 
-    if (
-      augmentPrepareResult.teamMember.email !== augmentPrepareResult.user.email
-    ) {
+  return { teamMember };
+};
+
+const authorize = async ({ prepareResult, augmentPrepareResult }) => {
+  if (augmentPrepareResult.teamMember) {
+    let userAttribute = await usersRepo.findUserByTypeAndValue({
+      user_uuid: prepareResult.invoking_user_uuid,
+      type: augmentPrepareResult.teamMember.attribute_type,
+      value: augmentPrepareResult.teamMember.attribute_value,
+    });
+
+    if (userAttribute == undefined) {
       throw {
         statusCode: 422,
         message: "Invalid User",
       };
     }
+  } else {
+    throw {
+      statusCode: 404,
+      message: "Invalid Member",
+    };
   }
-
-  return true;
 };
 
-const handle = async ({ prepareResult, augmentPrepareResult }) => {
-  return await TeamMemberRepo.update(prepareResult.team_member_uuid, {
+const handle = async ({ prepareResult }) => {
+  return await teamMembersRepo.update(prepareResult.team_member_uuid, {
     status: "accepted",
-    user_uuid: augmentPrepareResult.user.id,
+    user_uuid: prepareResult.invoking_user_uuid,
   });
 };
 
