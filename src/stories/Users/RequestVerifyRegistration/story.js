@@ -37,10 +37,10 @@ const validateInput = async (payload) => {
         callback: async (payload) => {
           let count =
             typeof payload.value === "string"
-              ? await verificationsRepo.countAll({
-                  attribute_value: payload.value,
-                  attribute_type: payload.type,
-                })
+              ? await verificationsRepo.findUserByTypeAndValue({
+                attribute_value: payload.value,
+                attribute_type: payload.type,
+              })
               : -1;
           return count > 0 ? true : false;
         },
@@ -54,7 +54,6 @@ const validateInput = async (payload) => {
 const handle = async ({ prepareResult }) => {
   try {
     let inputPayload = prepareResult;
-    console.log("inputPayload", inputPayload);
     await validateInput(inputPayload);
     await usersRepo.requestAttributeVerificationForRegistration(inputPayload);
   } catch (error) {

@@ -19,13 +19,6 @@ const first = async (payload) => {
   return await baseRepo.first(table, payload);
 };
 
-const update = async (where, payload) => {
-  return await baseRepo.update(table, where, payload);
-};
-
-const remove = async (payload) => {
-  return await baseRepo.remove(table, payload, "hard");
-};
 
 const authenticateWithPassword = async (payload) => {
   let attribute = await attributesRepo.first({
@@ -145,10 +138,9 @@ const createUserWithPassword = async (password) => {
 const registerWithPassword = async (payload) => {
   // Find if there is already a registration in process
 
-  let verification = await verificationsRepo.first({
+  let verification = await verificationsRepo.findVerificationForRegistration({
     attribute_type: payload.type,
     attribute_value: payload.value,
-    purpose: "register",
   });
 
   let user = null;
@@ -158,18 +150,17 @@ const registerWithPassword = async (payload) => {
     // If no, create a user and also verification for them
     user = await createUserWithPassword(payload.password);
 
-    await verificationsRepo.create({
+    await verificationsRepo.createVerificationForRegistration({
       user_uuid: user.uuid,
       attribute_type: payload.type,
       attribute_value: payload.value,
       token: token,
-      purpose: "register",
       expires_at: getMinutesFromNow(10),
     });
   } else {
     // If there is a verification, update verification with new token and timestamp
 
-    await verificationsRepo.update(
+    await verificationsRepo.updateVerification(
       { uuid: verification.uuid },
       {
         token: token,

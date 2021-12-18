@@ -9,9 +9,7 @@ describe("Test Handler Users/CanRegister", () => {
   });
 
   it("user_can_register_with_email", async () => {
-    let result = {
-
-    };
+    let result = {};
 
     try {
       result = await testStrategy("Users/CanRegister", {
@@ -22,11 +20,8 @@ describe("Test Handler Users/CanRegister", () => {
         },
       });
     } catch (error) {
-      // console.log("error ----------> ", error);
       debugLogger(error);
     }
-
-    // console.log("result ---------->", result); 
 
     const { respondResult } = result;
 
