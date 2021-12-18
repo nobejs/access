@@ -4,9 +4,10 @@ const knex = requireKnex();
 const httpServer = requireHttpServer();
 const teamsRepo = requireRepo("teams");
 const usersRepo = requireRepo("users");
+const tokensRepo = requireRepo("tokens");
 const decodeJWT = requireFunction("JWT/decodeJWT");
 
-describe("Test API Tokens/TeamAdminCanCreateToken", () => {
+describe("Test API Tokens/TeamAdminCanDeleteToken", () => {
   beforeEach(async () => {
     await knex("users").truncate();
     await knex("verifications").truncate();
@@ -41,44 +42,36 @@ describe("Test API Tokens/TeamAdminCanCreateToken", () => {
 
   });
 
-  it("team_admin_can_create_token", async () => {
+
+  it("team_admin_can_delete_token", async () => {
     let respondResult;
     try {
       const app = httpServer();
 
-      const payload = {
+      const token = await tokensRepo.createTokenForTeam({
+        team_uuid: contextClassRef.testTeam.uuid,
         title: "Personal",
         permissions: {
           "create_events": true
         }
-      };
+      });
+
+      const decoded = await decodeJWT(token);
 
       let headers = contextClassRef.headers;
 
       respondResult = await app.inject({
-        method: "POST",
-        url: `/teams/${contextClassRef.testTeam.uuid}/tokens`, // This should be in endpoints.js
-        payload,
+        method: "DELETE",
+        url: `/teams/${contextClassRef.testTeam.uuid}/tokens/${decoded.jti}`, // This should be in endpoints.js
         headers,
       });
-
     } catch (error) {
       respondResult = error;
-      console.log("error", error)
     }
-
-    console.log(respondResult.statusCode, respondResult.json())
-
-    const decoded = await decodeJWT(respondResult.json().token);
-
 
     expect(respondResult.statusCode).toBe(200);
     expect(respondResult.json()).toMatchObject({
-      token: expect.any(String),
-    });
-
-    expect(decoded).toMatchObject({
-      sub: contextClassRef.testTeam.uuid,
+      message: "Token deleted Successfully"
     });
   });
 });

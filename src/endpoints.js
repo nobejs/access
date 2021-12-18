@@ -30,9 +30,33 @@ module.exports = (app) => {
         ["get", "/teams/:team_uuid", "Teams/UserCanViewTeam"],
         ["delete", "/teams/:team_uuid", "Teams/UserCanDeleteTeam"],
 
-        // Tokens
-        ["post", "/tokens", "Tokens/TeamAdminCanCreateToken"],
-        ["delete", "/tokens/:token_uuid", "Tokens/TeamAdminCanDeleteToken"],
+        // Teams Tokens
+        ["post", "/teams/:team_uuid/tokens", "Tokens/TeamAdminCanCreateToken"],
+        ["get", "/teams/:team_uuid/tokens", "Tokens/TeamAdminCanGetTokens"],
+        [
+          "delete",
+          "/teams/:team_uuid/tokens/:token_uuid",
+          "Tokens/TeamAdminCanDeleteToken",
+        ],
+
+        // Roles
+        ["post", "/teams/:team_uuid/roles", "Roles/TeamAdminCanCreateRole"],
+        ["get", "/teams/:team_uuid/roles", "Roles/TeamAdminCanGetRoles"],
+        [
+          "get",
+          "/teams/:team_uuid/roles/:role_uuid",
+          "Roles/TeamAdminCanGetRole",
+        ],
+        [
+          "put",
+          "/teams/:team_uuid/roles/:role_uuid",
+          "Roles/TeamAdminCanUpdateRole",
+        ],
+        [
+          "delete",
+          "/teams/:team_uuid/roles/:role_uuid",
+          "Roles/TeamAdminCanDeleteRole",
+        ],
       ],
     },
   ];

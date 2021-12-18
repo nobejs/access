@@ -2,15 +2,26 @@ const contextClassRef = requireUtil("contextHelper");
 const randomUser = requireUtil("randomUser");
 const knex = requireKnex();
 const httpServer = requireHttpServer();
-const createVerifiedUser = testHelper("createVerifiedUser");
 const tokensRepo = requireRepo("tokens");
+const usersRepo = requireRepo("users");
 const debugLogger = requireUtil("debugLogger");
 
 describe("Test API Users/ViewLoggedInUser", () => {
   beforeAll(async () => {
-    contextClassRef.user = randomUser();
+    await knex("users").truncate();
+    await knex("attributes").truncate();
+
+    const { user, token } = await usersRepo.createTestUserWithVerifiedToken({
+      type: "email",
+      value: "rajiv@betalectic.com",
+      password: "GoodPassword",
+    });
+
+    contextClassRef.token = token;
+    contextClassRef.user = user;
+
     contextClassRef.headers = {
-      Authorization: `Bearer ${contextClassRef.user.token}`, // An authenticated user is making the api call
+      Authorization: `Bearer ${contextClassRef.token}`,
     };
   });
 
@@ -20,20 +31,13 @@ describe("Test API Users/ViewLoggedInUser", () => {
     try {
       const app = httpServer();
 
-      user = await createVerifiedUser({
-        type: "email",
-        value: "rajiv@betalectic.com",
-        password: "GoodPassword",
-        purpose: "register",
-      });
-
-      let token = await tokensRepo.createTokenForUser(user);
+      let token = await tokensRepo.createTokenForUser(contextClassRef.user);
 
       respondResult = await app.inject({
         method: "GET",
         url: "/user",
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${contextClassRef.token}`,
         },
       });
     } catch (error) {
@@ -43,7 +47,7 @@ describe("Test API Users/ViewLoggedInUser", () => {
 
     expect(respondResult.statusCode).toBe(200);
     expect(respondResult.json()).toMatchObject({
-      uuid: user.uuid,
+      uuid: contextClassRef.user.uuid,
     });
   });
 
@@ -75,15 +79,13 @@ describe("Test API Users/ViewLoggedInUser", () => {
     try {
       const app = httpServer();
 
-      let user = await createVerifiedUser({
-        type: "email",
-        value: "rajiv@betalectic.com",
-        password: "GoodPassword",
-        purpose: "register",
-      });
+      let token = await tokensRepo.createTokenForUser(contextClassRef.user);
 
-      let token = await tokensRepo.createTokenForUser(user);
-      await tokensRepo.remove({ sub: user.uuid });
+      console.log(token);
+
+      await tokensRepo.deleteTokenByConstraints({
+        sub: contextClassRef.user.uuid,
+      });
 
       respondResult = await app.inject({
         method: "GET",

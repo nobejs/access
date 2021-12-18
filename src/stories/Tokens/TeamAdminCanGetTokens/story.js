@@ -3,9 +3,10 @@ const getTeamMemberPermissions = requireFunction("getTeamMemberPermissions");
 const checkPermission = requireFunction("checkPermission");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
 const tokensRepo = requireRepo("tokens")
+const TokenSerializer = requireSerializer("token");
 
 const prepare = ({ req }) => {
-  let payload = findKeysFromRequest(req, ["title", "permissions", "team_uuid"]);
+  let payload = findKeysFromRequest(req, ["team_uuid"]);
 
   payload = {
     ...payload,
@@ -16,6 +17,7 @@ const prepare = ({ req }) => {
     }
   };
 
+
   return payload;
 };
 
@@ -25,18 +27,6 @@ const validateInput = async (payload) => {
       presence: {
         allowEmpty: false,
         message: "^Please mention team",
-      },
-    },
-    title: {
-      presence: {
-        allowEmpty: false,
-        message: "^Please mention title",
-      },
-    },
-    permissions: {
-      presence: {
-        allowEmpty: false,
-        message: "^Please mention permissions",
       },
     },
   };
@@ -71,23 +61,23 @@ const authorize = async ({ prepareResult }) => {
   }
 };
 
-const handle = async ({ prepareResult, storyName }) => {
-
+const handle = async ({ prepareResult, authorizeResult }) => {
   try {
-    let token = await tokensRepo.createTokenForTeam({
+    let tokens = await tokensRepo.getTokensForTeam({
       team_uuid: prepareResult.team_uuid,
-      title: prepareResult.team_uuid,
-      permissions: prepareResult.permissions
     });
-    return token;
+    return tokens;
   } catch (error) {
     throw error;
   }
-
 };
 
-const respond = ({ handleResult }) => {
-  return { token: handleResult };
+const respond = async ({ handleResult }) => {
+  try {
+    return handleResult;
+  } catch (error) {
+    throw error;
+  }
 };
 
 module.exports = {

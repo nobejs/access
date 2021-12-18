@@ -10,16 +10,16 @@ module.exports = (payload) => {
       });
 
       if (teamMember !== undefined) {
-        if (teamMember.role !== null) {
-          let role = await RolesRepo.first({ uuid: teamMember.role });
-          return resolve(role.permissions);
-        }
+        // if (teamMember.role !== null) {
+        //   let role = await RolesRepo.first({ uuid: teamMember.role });
+        //   return resolve(role.permissions);
+        // }
         return resolve(teamMember.permissions);
+      } else {
+        return reject({ statusCode: 403, message: "Forbidden" });
       }
-
-      return reject({ message: "Not team member" });
     } catch (error) {
-      reject(error);
+      reject({ statusCode: 404, message: "Not Found" });
     }
   });
 };

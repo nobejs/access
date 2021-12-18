@@ -1,11 +1,12 @@
 const debugLogger = requireUtil("debugLogger");
 const teamsRepo = requireRepo("teams");
 const usersRepo = requireRepo("users");
+const tokensRepo = requireRepo("tokens");
 const knex = requireKnex();
 const contextClassRef = requireUtil("contextHelper");
 const decodeJWT = requireFunction("JWT/decodeJWT");
 
-describe("Test Handler Tokens/TeamAdminCanCreateToken", () => {
+describe("Test Handler Tokens/TeamAdminCanDeleteToken", () => {
 
   beforeEach(async () => {
     await knex("users").truncate();
@@ -15,13 +16,14 @@ describe("Test Handler Tokens/TeamAdminCanCreateToken", () => {
     await knex("teams").truncate();
     await knex("team_members").truncate();
 
-    const { user } = await usersRepo.createTestUserWithVerifiedToken({
+    const { user, token } = await usersRepo.createTestUserWithVerifiedToken({
       type: "email",
       value: "rajiv@betalectic.com",
       password: "GoodPassword",
       purpose: "register",
     });
     contextClassRef.user = user;
+    contextClassRef.token = token;
 
     const testTeam = await teamsRepo.createTestTeamForUser(
       {
@@ -36,33 +38,36 @@ describe("Test Handler Tokens/TeamAdminCanCreateToken", () => {
 
   });
 
-  it("team_admin_can_create_token", async () => {
+  it("team_admin_can_delete_token", async () => {
     let result = {};
     try {
-      result = await testStrategy("Tokens/TeamAdminCanCreateToken", {
+
+      const token = await tokensRepo.createTokenForTeam({
+        team_uuid: contextClassRef.testTeam.uuid,
+        title: "Personal",
+        permissions: {
+          "create_events": true
+        }
+      });
+
+      const decoded = await decodeJWT(token);
+      const decodedUserToken = await decodeJWT(contextClassRef.token);
+
+      result = await testStrategy("Tokens/TeamAdminCanDeleteToken", {
         prepareResult: {
-          sub: contextClassRef.user.uuid,
+          jti: decodedUserToken.jti,
+          sub: decodedUserToken.sub,
+          issuer: decodedUserToken.iss,
           team_uuid: contextClassRef.testTeam.uuid,
-          issuer: "user",
-          title: "Personal",
-          permissions: {
-            "create_events": true
-          }
+          token_uuid: decoded.jti
         },
       });
     } catch (error) {
       debugLogger(error);
     }
-
     const { respondResult } = result;
-    const decoded = await decodeJWT(respondResult.token);
-
     expect(respondResult).toMatchObject({
-      token: expect.any(String),
-    });
-
-    expect(decoded).toMatchObject({
-      sub: contextClassRef.testTeam.uuid,
+      message: "Token deleted Successfully"
     });
   });
 });

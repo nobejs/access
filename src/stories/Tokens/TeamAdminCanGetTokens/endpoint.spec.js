@@ -4,9 +4,10 @@ const knex = requireKnex();
 const httpServer = requireHttpServer();
 const teamsRepo = requireRepo("teams");
 const usersRepo = requireRepo("users");
+const tokensRepo = requireRepo("tokens");
 const decodeJWT = requireFunction("JWT/decodeJWT");
 
-describe("Test API Tokens/TeamAdminCanCreateToken", () => {
+describe("Test API Tokens/TeamAdminCanGetTokens", () => {
   beforeEach(async () => {
     await knex("users").truncate();
     await knex("verifications").truncate();
@@ -38,47 +39,42 @@ describe("Test API Tokens/TeamAdminCanCreateToken", () => {
     contextClassRef.headers = {
       Authorization: `Bearer ${contextClassRef.token}`,
     };
-
   });
 
-  it("team_admin_can_create_token", async () => {
+  it("admin_can_get_tokens", async () => {
     let respondResult;
     try {
       const app = httpServer();
 
-      const payload = {
+      const token = await tokensRepo.createTokenForTeam({
+        team_uuid: contextClassRef.testTeam.uuid,
         title: "Personal",
         permissions: {
-          "create_events": true
-        }
-      };
+          create_events: true,
+        },
+      });
 
       let headers = contextClassRef.headers;
 
+      const payload = {};
+
       respondResult = await app.inject({
-        method: "POST",
+        method: "GET",
         url: `/teams/${contextClassRef.testTeam.uuid}/tokens`, // This should be in endpoints.js
-        payload,
         headers,
       });
-
     } catch (error) {
       respondResult = error;
-      console.log("error", error)
     }
 
-    console.log(respondResult.statusCode, respondResult.json())
-
-    const decoded = await decodeJWT(respondResult.json().token);
-
-
     expect(respondResult.statusCode).toBe(200);
-    expect(respondResult.json()).toMatchObject({
-      token: expect.any(String),
-    });
-
-    expect(decoded).toMatchObject({
-      sub: contextClassRef.testTeam.uuid,
-    });
+    expect(respondResult.json()).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          "tokens*uuid": expect.any(String),
+          "tokens*title": "Personal",
+        }),
+      ])
+    );
   });
 });

@@ -1,13 +1,13 @@
 const debugLogger = requireUtil("debugLogger");
 const knex = requireKnex();
-const createVerifiedUser = testHelper("createVerifiedUser");
 const generateJWT = requireFunction("JWT/generateJWT");
 const decodeJWT = requireFunction("JWT/decodeJWT");
+const usersRepo = requireRepo("users");
 
 // yarn test -i src/stories/Users/CanLogin/token_gen.spec.js
 
 describe("Test Handler for Token Generation", () => {
-  beforeEach(async () => {});
+  beforeEach(async () => { });
 
   it("can_generate_jwt", async () => {
     let encoded = {};

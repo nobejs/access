@@ -2,10 +2,10 @@ const validator = requireValidator();
 const getTeamMemberPermissions = requireFunction("getTeamMemberPermissions");
 const checkPermission = requireFunction("checkPermission");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
-const tokensRepo = requireRepo("tokens")
+const tokensRepo = requireRepo("tokens");
 
 const prepare = ({ req }) => {
-  let payload = findKeysFromRequest(req, ["title", "permissions", "team_uuid"]);
+  let payload = findKeysFromRequest(req, ["token_uuid", "team_uuid"]);
 
   payload = {
     ...payload,
@@ -13,7 +13,7 @@ const prepare = ({ req }) => {
       jti: req.jti,
       sub: req.sub,
       issuer: req.issuer,
-    }
+    },
   };
 
   return payload;
@@ -27,32 +27,18 @@ const validateInput = async (payload) => {
         message: "^Please mention team",
       },
     },
-    title: {
-      presence: {
-        allowEmpty: false,
-        message: "^Please mention title",
-      },
-    },
-    permissions: {
-      presence: {
-        allowEmpty: false,
-        message: "^Please mention permissions",
-      },
-    },
   };
 
   return validator(payload, constraints);
 };
 
 const authorize = async ({ prepareResult }) => {
-
   try {
-
-    if (prepareResult.issuer !== 'user') {
+    if (prepareResult.issuer !== "user") {
       throw {
         statusCode: 403,
-        message: "Forbidden"
-      }
+        message: "Forbidden",
+      };
     }
 
     await validateInput(prepareResult);
@@ -65,29 +51,24 @@ const authorize = async ({ prepareResult }) => {
     });
 
     await checkPermission(permissions, ["admin", "manage_tokens"]);
-
   } catch (error) {
     throw error;
   }
 };
 
 const handle = async ({ prepareResult, storyName }) => {
-
   try {
-    let token = await tokensRepo.createTokenForTeam({
-      team_uuid: prepareResult.team_uuid,
-      title: prepareResult.team_uuid,
-      permissions: prepareResult.permissions
+    let token = await tokensRepo.deleteTokenByConstraints({
+      uuid: prepareResult.jti,
     });
     return token;
   } catch (error) {
     throw error;
   }
-
 };
 
-const respond = ({ handleResult }) => {
-  return { token: handleResult };
+const respond = ({}) => {
+  return { message: "Token deleted Successfully" };
 };
 
 module.exports = {

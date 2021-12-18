@@ -2,7 +2,8 @@ const validator = requireValidator();
 const getTeamMemberPermissions = requireFunction("getTeamMemberPermissions");
 const checkPermission = requireFunction("checkPermission");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
-const tokensRepo = requireRepo("tokens")
+const rolesRepo = requireRepo("roles");
+const roleSerializer = requireSerializer("role");
 
 const prepare = ({ req }) => {
   let payload = findKeysFromRequest(req, ["title", "permissions", "team_uuid"]);
@@ -10,10 +11,9 @@ const prepare = ({ req }) => {
   payload = {
     ...payload,
     ...{
-      jti: req.jti,
       sub: req.sub,
       issuer: req.issuer,
-    }
+    },
   };
 
   return payload;
@@ -45,49 +45,46 @@ const validateInput = async (payload) => {
 };
 
 const authorize = async ({ prepareResult }) => {
-
   try {
-
-    if (prepareResult.issuer !== 'user') {
+    if (prepareResult.issuer !== "user") {
       throw {
         statusCode: 403,
-        message: "Forbidden"
-      }
+        message: "Forbidden",
+      };
     }
 
     await validateInput(prepareResult);
-
-    // Get Team member permissions
 
     let permissions = await getTeamMemberPermissions({
       team_uuid: prepareResult.team_uuid,
       user_uuid: prepareResult.sub,
     });
 
-    await checkPermission(permissions, ["admin", "manage_tokens"]);
-
+    await checkPermission(permissions, ["admin", "manage_roles"]);
   } catch (error) {
     throw error;
   }
 };
 
-const handle = async ({ prepareResult, storyName }) => {
-
+const handle = async ({ prepareResult, authorizeResult }) => {
   try {
-    let token = await tokensRepo.createTokenForTeam({
+    let role = await rolesRepo.createRoleForTeam({
       team_uuid: prepareResult.team_uuid,
-      title: prepareResult.team_uuid,
-      permissions: prepareResult.permissions
+      title: prepareResult.title,
+      permissions: prepareResult.permissions,
     });
-    return token;
+    return role;
   } catch (error) {
     throw error;
   }
-
 };
 
-const respond = ({ handleResult }) => {
-  return { token: handleResult };
+const respond = async ({ handleResult }) => {
+  try {
+    return await roleSerializer.single(handleResult);
+  } catch (error) {
+    throw error;
+  }
 };
 
 module.exports = {

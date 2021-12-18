@@ -15,7 +15,6 @@ describe("Test API Users/Authorize", () => {
       type: "email",
       value: "rajiv@betalectic.com",
       password: "GoodPassword",
-      purpose: "register",
     });
 
     contextClassRef.token = token;
