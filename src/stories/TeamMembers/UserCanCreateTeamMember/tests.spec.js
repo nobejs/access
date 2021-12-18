@@ -3,34 +3,13 @@ const teamsRepo = requireRepo("teams");
 const usersRepo = requireRepo("users");
 const knex = requireKnex();
 const contextClassRef = requireUtil("contextHelper");
+const truncateAllTables = requireFunction("truncateAllTables");
+const createUserAndTeam = require("../createUserAndTeam");
 
 describe("Test Handler TeamMembers/UserCanCreateTeamMember", () => {
   beforeEach(async () => {
-    await knex("users").truncate();
-    await knex("verifications").truncate();
-    await knex("tokens").truncate();
-    await knex("attributes").truncate();
-    await knex("teams").truncate();
-    await knex("team_members").truncate();
-
-    const { user } = await usersRepo.createTestUserWithVerifiedToken({
-      type: "email",
-      value: "rajiv@betalectic.com",
-      password: "GoodPassword",
-      purpose: "register",
-    });
-    contextClassRef.user = user;
-
-    const testTeam = await teamsRepo.createTestTeamForUser(
-      {
-        tenant: "handler-test",
-        name: "Rajiv's Personal Team",
-        slug: "rajiv-personal-team",
-        creator_user_uuid: contextClassRef.user.uuid,
-      },
-      contextClassRef.user.uuid
-    );
-    contextClassRef.testTeam = testTeam;
+    await truncateAllTables();
+    await createUserAndTeam();
   });
 
   it("user_can_add_a_team_member_to_a_team_he_has_access_to", async () => {
@@ -40,10 +19,10 @@ describe("Test Handler TeamMembers/UserCanCreateTeamMember", () => {
       result = await testStrategy("TeamMembers/UserCanCreateTeamMember", {
         prepareResult: {
           team_uuid: contextClassRef.testTeam.uuid,
-          type: "email",
-          value: "shubham@betalectic.com",
+          attribute_type: "email",
+          attribute_value: "shubham@betalectic.com",
           invoking_user_uuid: contextClassRef.user.uuid,
-          permissions: { admin: true },
+          permissions: { member: true },
         },
       });
       respondResult = result.respondResult;
@@ -53,10 +32,10 @@ describe("Test Handler TeamMembers/UserCanCreateTeamMember", () => {
     }
     expect(respondResult).toMatchObject({
       uuid: expect.any(String),
-      user_uuid: contextClassRef.user.uuid,
+      status: "invited",
       attribute_value: "shubham@betalectic.com",
       attribute_type: "email",
-      permissions: { admin: true },
+      permissions: { member: true },
     });
   });
 

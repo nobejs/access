@@ -4,22 +4,40 @@ const teamRepo = requireRepo("teams");
 const userRepo = requireRepo("users");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
 const TeamMemberSerializer = requireSerializer("teamMembers");
+const getTeamMemberPermissions = requireFunction("getTeamMemberPermissions");
+const checkPermission = requireFunction("checkPermission");
 
 const prepare = async ({ req }) => {
   const payload = findKeysFromRequest(req, [
     "team_uuid",
     "attribute_type",
     "attribute_value",
+    "role_uuid",
+    "permissions",
   ]);
-  payload["invoking_user_uuid"] = req.user;
+  payload["invoking_user_uuid"] = req.sub;
   return payload;
 };
 
 const augmentPrepare = async ({ prepareResult }) => {
   try {
+    await validator(prepareResult, {
+      team_uuid: {
+        presence: {
+          allowEmpty: false,
+          message: "^Please enter team_uuid",
+        },
+      },
+    });
+
     let team = await teamRepo.findByUuid({
       uuid: prepareResult.team_uuid,
     });
+
+    if (team === undefined) {
+      throw team;
+    }
+
     return { team };
   } catch (error) {
     console.log("userCanCreateTeamMember-augmentPrepare-error", error);
@@ -31,31 +49,30 @@ const augmentPrepare = async ({ prepareResult }) => {
 };
 
 const authorize = async ({ prepareResult, augmentPrepareResult }) => {
-  if (
-    augmentPrepareResult.team.creator_user_uuid ===
-    prepareResult.invoking_user_uuid
-  ) {
-    return true;
-  }
+  // if (
+  //   augmentPrepareResult.team.creator_user_uuid ===
+  //   prepareResult.invoking_user_uuid
+  // ) {
+  //   return true;
+  // }
 
-  throw {
-    message: "NotAuthorized",
-    statusCode: 403,
-  };
+  try {
+    let permissions = await getTeamMemberPermissions({
+      team_uuid: prepareResult.team_uuid,
+      user_uuid: prepareResult.invoking_user_uuid,
+    });
+
+    await checkPermission(permissions, ["admin"]);
+  } catch (error) {
+    throw error;
+  }
 };
 
-const validateInput = async ({ prepareResult }) => {
-  const constraints = {
-    team_uuid: {
-      presence: {
-        allowEmpty: false,
-        message: "^Please enter team_uuid",
-      },
-    },
-  };
+const validateInput = async (payload) => {
+  console.log("payload", payload);
 
   const constraints2 = {
-    type: {
+    attribute_type: {
       presence: {
         allowEmpty: false,
         message: "^Please choose type",
@@ -65,16 +82,16 @@ const validateInput = async ({ prepareResult }) => {
         message: "^Please choose valid type",
       },
     },
-    value: {
+    attribute_value: {
       type: "string",
       custom_callback: {
-        message: `${prepareResult.value} is already part of team`,
+        message: `${payload.attribute_value} is already part of team`,
         callback: async (payload) => {
           let count =
-            typeof payload.value === "string"
+            typeof payload.attribute_value === "string"
               ? await teamMemberRepo.countWithConstraints({
-                  attribute_value: prepareResult.value,
-                  team_uuid: prepareResult.team_uuid,
+                  attribute_value: payload.attribute_value,
+                  team_uuid: payload.team_uuid,
                 })
               : -1;
 
@@ -84,22 +101,21 @@ const validateInput = async ({ prepareResult }) => {
     },
   };
 
-  await validator(prepareResult, constraints);
-  await validator(prepareResult, constraints2);
+  await validator(payload, constraints2);
 };
 
 const handle = async ({ prepareResult, augmentPrepareResult, storyName }) => {
   try {
-    await validateInput({ prepareResult, augmentPrepareResult });
+    await validateInput(prepareResult);
 
     let payload = {
       team_uuid: prepareResult.team_uuid,
-      attribute_type: prepareResult.type,
-      attribute_value: prepareResult.value,
+      attribute_type: prepareResult.attribute_type,
+      attribute_value: prepareResult.attribute_value,
       status: "invited",
       role_uuid: prepareResult.role_uuid,
       permissions: prepareResult.permissions,
-      user_uuid: prepareResult.invoking_user_uuid,
+      // user_uuid: prepareResult.invoking_user_uuid,
     };
 
     return await teamMemberRepo.createTeamMember(payload);
