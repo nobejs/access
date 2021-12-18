@@ -6,7 +6,7 @@ describe("Handler AnUserShouldBeAbleToGetTheirTeamMembers", () => {
     await knex("team_members").truncate();
   });
 
-  it("Outsider shouldnt be able access a team members", async () => {
+  it.skip("Outsider shouldnt be able access a team members", async () => {
     let team1;
     let team2;
     let result;
@@ -36,7 +36,7 @@ describe("Handler AnUserShouldBeAbleToGetTheirTeamMembers", () => {
     expect(result.statusCode).toBe(403);
   });
 
-  it("Member can get team members", async () => {
+  it.skip("Member can get team members", async () => {
     let team1;
     let team2;
     let result;

@@ -1,5 +1,5 @@
 const validator = requireValidator();
-const TeamMemberRepo = requireRepo("teamMember");
+const TeamMemberRepo = requireRepo("teamMembers");
 const TeamRepo = requireRepo("team");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
 

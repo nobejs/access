@@ -1,7 +1,7 @@
 const validator = requireValidator();
-const TeamMemberRepo = requireRepo("teamMember");
+const TeamMemberRepo = requireRepo("teamMembers");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
-const getUser = requireFunction("getUser");
+// const getUser = requireFunction("getUser");
 const TeamMemberSerializer = requireSerializer("teamMembers");
 
 const prepare = async ({ req }) => {
@@ -29,7 +29,8 @@ const augmentPrepare = async ({ prepareResult }) => {
   let user = {};
 
   try {
-    user = await getUser(prepareResult["token"]);
+    console.log('prepareResult["sub"]13', prepareResult["sub"]);
+    user = prepareResult["sub"];
   } catch (error) {
     throw {
       statusCode: 401,

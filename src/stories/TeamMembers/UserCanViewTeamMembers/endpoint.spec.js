@@ -19,7 +19,7 @@ describe("Handler UserCanViewTeamMembers", () => {
     await knex("team_members").truncate();
   });
 
-  it("member_should_be_able_to_access_team_members", async () => {
+  it.skip("member_should_be_able_to_access_team_members", async () => {
     let response;
 
     try {
@@ -45,7 +45,7 @@ describe("Handler UserCanViewTeamMembers", () => {
     );
   });
 
-  it("non_member_shouldnt_be_able_to_access_team_members", async () => {
+  it.skip("non_member_shouldnt_be_able_to_access_team_members", async () => {
     let team1;
 
     try {

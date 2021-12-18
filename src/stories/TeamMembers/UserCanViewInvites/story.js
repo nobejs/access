@@ -1,5 +1,5 @@
-const getUser = requireFunction("getUser");
-const TeamMemberRepo = requireRepo("teamMember");
+// const getUser = requireFunction("getUser");
+const TeamMemberRepo = requireRepo("teamMembers");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
 
 const prepare = ({ req }) => {
@@ -18,7 +18,7 @@ const augmentPrepare = async ({ prepareResult }) => {
   let user = {};
 
   try {
-    user = await getUser(prepareResult["token"]);
+    user = prepareResult["sub"];
   } catch (error) {
     throw {
       statusCode: 401,
@@ -30,11 +30,12 @@ const augmentPrepare = async ({ prepareResult }) => {
 };
 
 const handle = async ({ prepareResult, augmentPrepareResult }) => {
-  return await TeamMemberRepo.getTeamsAndMembers({
-    "teams.tenant": prepareResult["tenant"],
-    "team_members.email": augmentPrepareResult.user.email,
-    "team_members.status": "invited",
-  });
+  // return await TeamMemberRepo.getTeamsAndMembers({
+  //   "teams.tenant": prepareResult["tenant"],
+  //   "team_members.email": augmentPrepareResult.user.email,
+  //   "team_members.status": "invited",
+  // });
+  return {};
 };
 
 const respond = ({ handleResult }) => {
