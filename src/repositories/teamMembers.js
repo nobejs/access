@@ -1,7 +1,7 @@
 const knex = requireKnex();
 const underscoredColumns = requireUtil("underscoredColumns");
 
-const countAll = async (where = {}, whereNot = {}) => {
+const countWithConstraints = async (where = {}, whereNot = {}) => {
   try {
     let team_members = await knex("team_members")
       .where(where)
@@ -66,7 +66,7 @@ const first = async (where = {}) => {
   }
 };
 
-const create = async (payload) => {
+const createTeamMember = async (payload) => {
   try {
     payload["created_at"] = new Date().toISOString();
     payload["updated_at"] = new Date().toISOString();
@@ -105,10 +105,10 @@ const del = async (where) => {
 };
 
 module.exports = {
-  create,
+  createTeamMember,
   update,
   first,
-  countAll,
+  countWithConstraints,
   findAll,
   del,
   getTeamsAndMembers,

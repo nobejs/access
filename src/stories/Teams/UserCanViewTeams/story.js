@@ -1,4 +1,4 @@
-const TeamMemberRepo = requireRepo("teamMember");
+const TeamMemberRepo = requireRepo("teamMembers");
 const knex = requireKnex();
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
 const underscoredColumns = requireUtil("underscoredColumns");

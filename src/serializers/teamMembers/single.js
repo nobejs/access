@@ -7,7 +7,10 @@ module.exports = async (instance) => {
     "user_uuid",
     "role",
     "status",
-    "email",
+    "attribute_type",
+    "attribute_value",
+    "permissions",
+    "role_uuid",
   ];
   const memberObject = pickKeysFromObject(instance, attributes);
 
