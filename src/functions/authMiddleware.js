@@ -34,12 +34,13 @@ module.exports = async (req, reply) => {
     try {
       let decoded = await decodeJWT(req.token);
       await tokensRepo.checkIfValidJti(decoded.jti);
-      if (!decoded.sub || !decoded.jti) {
+      if (!decoded.sub || !decoded.jti || !decoded.issuer) {
         return reply.code(401).send({ message: "Unauthenticated" });
       }
       req.decodedJWT = decoded;
       req.sub = decoded.sub;
       req.jti = decoded.jti;
+      req.issuer = decoded.issuer;
     } catch (error) {
       return reply.code(401).send({ message: "Unauthenticated" });
     }
