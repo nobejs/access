@@ -13,7 +13,7 @@ describe("Test Handler for Token Generation", () => {
     let encoded = {};
     let decoded = {};
     try {
-      encoded = await generateJWT("5345345344534", "fixme", {
+      encoded = await generateJWT("5345345344534", "fixme", "user", {
         team: "r",
         x: "y",
       });
