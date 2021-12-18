@@ -5,22 +5,33 @@ if (process.env.ENVFILE) {
 
 const executeStrategy = require("./core/executeStrategy");
 
-global.queueJobStrategy = executeStrategy(["prepare", "authorize", "handle"]);
+global.queueJobStrategy = executeStrategy([
+  "prepare",
+  "*augmentPrepare",
+  "authorize",
+  "handle",
+]);
 
 global.endpointStrategy = executeStrategy([
   "prepare",
+  "*augmentPrepare",
   "authorize",
   "handle",
   "respond",
 ]);
 
-global.testStrategy = executeStrategy(["authorize", "handle", "respond"]);
+global.testStrategy = executeStrategy([
+  "*augmentPrepare",
+  "authorize",
+  "handle",
+  "respond",
+]);
 
 global.requireStory = (name) => require(`./src/stories/${name}/story.js`);
 global.requireUtil = (name) => require(`./core/utils/${name}`);
-global.requireRepo = (name) => require(`./database/repositories/${name}`);
+global.requireRepo = (name) => require(`./src/repositories/${name}`);
 global.requireHelper = (name) => require(`./src/helpers/${name}`);
-global.requireSerializer = (name) => require(`./database/serializers/${name}`);
+global.requireSerializer = (name) => require(`./src/serializers/${name}`);
 global.requireValidator = () => require(`./core/validator`);
 global.requireHttpServer = () => require(`./core/httpServer`);
 global.requireGlobal = () => require(`./global.js`);

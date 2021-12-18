@@ -29,7 +29,7 @@ const createTokenForUser = async (user) => {
       sub: user.uuid,
       issuer: "user",
     });
-    let jwt = await generateJWT(token.uuid, token.sub);
+    let jwt = await generateJWT(token.uuid, token.sub, token.issuer);
     return jwt;
   } catch (error) {
     throw error;

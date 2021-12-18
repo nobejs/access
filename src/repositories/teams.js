@@ -1,13 +1,12 @@
-const knex = require("../knex");
-const { addCreatedTimestamps } = require("./helper");
+const knex = requireKnex();
 const baseRepo = requireUtil("baseRepo");
 const table = "teams";
 
-const countAll = async (where = {}, whereNot = {}) => {
+const countWithConstraints = async (where = {}, whereNot = {}) => {
   return await baseRepo.countAll(table, where, whereNot);
 };
 
-const create = async (payload) => {
+const createTeamForAUser = async (payload) => {
   try {
     payload = baseRepo.addCreatedTimestamps(payload);
 
@@ -28,7 +27,7 @@ const create = async (payload) => {
   }
 };
 
-const fetchTeamsFromUuids = async (teamUuids) => {
+const findTeamByUUID = async (teamUuids) => {
   try {
     let teams = await knex("teams").whereIn("uuid", teamUuids).returning("*");
     return teams;
@@ -37,11 +36,11 @@ const fetchTeamsFromUuids = async (teamUuids) => {
   }
 };
 
-const first = async (where = {}) => {
+const findByUuid = async (where = {}) => {
   return await baseRepo.first(table, where);
 };
 
-const update = async (team_uuid, payload) => {
+const updateTeamByUUID = async (team_uuid, payload) => {
   try {
     payload["updated_at"] = new Date().toISOString();
     let team = await knex("teams")
@@ -54,10 +53,26 @@ const update = async (team_uuid, payload) => {
   }
 };
 
+const createTestTeamForUser = async (payload, userUuid) => {
+  try {
+    payload["creator_user_uuid"] = userUuid;
+    const result = await createTeamForAUser(payload);
+    return result;
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
-  create,
-  first,
-  update,
-  countAll,
-  fetchTeamsFromUuids,
+  createTeamForAUser,
+  findTeamByUUID,
+  updateTeamByUUID,
+  countWithConstraints,
+  // fetchTeamsForAUser,
+  // fetchTeamsForAUserAndTenant,
+  findByUuid,
+  createTestTeamForUser,
+  // update,
+  // countAll,
+  // fetchTeamsFromUuids,
 };
