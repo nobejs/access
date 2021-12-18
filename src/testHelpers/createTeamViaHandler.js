@@ -1,23 +1,20 @@
 const contextClassRef = requireUtil("contextHelper");
 const httpServer = requireHttpServer();
-const TeamRepo = requireRepo("teams");
 
 module.exports = async (
   payload = {
-    tenant: "api-test",
+    tenant: "handler-test",
     name: "Rajiv's Personal Team",
     slug: "rajiv-personal-team",
-  },
-  userUuid
+    creator_user_uuid: "1098c53c-4a86-416b-b5e4-4677b70f5dfa",
+  }
 ) => {
   try {
-    let result = await TeamRepo.create(payload);
+    createTeamResult = await testStrategy("Teams/UserCanCreateTeam", {
+      prepareResult: payload,
+    });
 
-    payload["creator_user_uuid"] = userUuid;
-
-    console.log("result221", result);
-
-    return result.json();
+    return result.respondResult;
   } catch (error) {
     throw error;
   }

@@ -22,4 +22,5 @@ So, some decisions like using JWT etc., are keeping what [Sanctum](https://larav
 
 ### Help Commands
 
-- Prerelease: `gh release create v1.1.2-alpha.4 --notes "v1.1.2-alpha.4" -p`
+- Prerelease: 
+gh release create v1.1.2-alpha.8 --notes "v1.1.2-alpha.8" -p

@@ -7,6 +7,13 @@ const httpServer = requireHttpServer();
 
 describe("API UserCanUpdateTeam", () => {
   beforeEach(async () => {
+    await knex("users").truncate();
+    await knex("tokens").truncate();
+    await knex("verifications").truncate();
+    await knex("attributes").truncate();
+    await knex("teams").truncate();
+    await knex("team_members").truncate();
+
     const { user, token } = await createUserWithVerifiedToken();
     contextClassRef.token = token;
     contextClassRef.user = user;
@@ -14,12 +21,6 @@ describe("API UserCanUpdateTeam", () => {
     contextClassRef.headers = {
       Authorization: `Bearer ${contextClassRef.token}`,
     };
-
-    await knex("users").truncate();
-    await knex("verifications").truncate();
-    await knex("attributes").truncate();
-    await knex("teams").truncate();
-    await knex("team_members").truncate();
   });
 
   it("user_can_update_team", async () => {

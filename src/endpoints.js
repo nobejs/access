@@ -22,10 +22,15 @@ module.exports = (app) => {
         // Login
         ["post", "/login", "Users/CanLogin"],
         ["get", "/user", "Users/ViewLoggedInUser"],
+        ["get", "/authorize", "Users/Authorize"],
 
         // Teams
         ["post", "/teams", "Teams/UserCanCreateTeam"],
         ["put", "/teams/:team_uuid", "Teams/UserCanUpdateTeam"],
+
+        // Tokens
+        ["post", "/tokens", "Tokens/TeamAdminCanCreateToken"],
+        ["delete", "/tokens/:token_uuid", "Tokens/TeamAdminCanDeleteToken"],
       ],
     },
   ];

@@ -1,5 +1,7 @@
 const knex = requireKnex();
 const debugLogger = requireUtil("debugLogger");
+const createUserWithVerifiedToken = testHelper("createUserWithVerifiedToken");
+const contextClassRef = requireUtil("contextHelper");
 
 describe("Handler UserCanUpdateTeam", () => {
   beforeEach(async () => {
@@ -8,6 +10,9 @@ describe("Handler UserCanUpdateTeam", () => {
     await knex("attributes").truncate();
     await knex("teams").truncate();
     await knex("team_members").truncate();
+
+    const { user } = await createUserWithVerifiedToken();
+    contextClassRef.user = user;
   });
 
   it("a_user_can_update_a_team", async () => {
@@ -19,7 +24,7 @@ describe("Handler UserCanUpdateTeam", () => {
           tenant: "handler-test",
           name: "Rajiv's Personal Team",
           slug: "rajiv-personal-team",
-          creator_user_uuid: "1098c53c-4a86-416b-b5e4-4677b70f5dfa",
+          creator_user_uuid: contextClassRef.user.uuid,
         },
       });
 
@@ -55,7 +60,7 @@ describe("Handler UserCanUpdateTeam", () => {
           tenant: "handler-test",
           name: "Rajiv's Company Team",
           slug: "rajiv-company-team",
-          creator_user_uuid: "1098c53c-4a86-416b-b5e4-4677b70f5dfa",
+          creator_user_uuid: contextClassRef.user.uuid,
         },
       });
 
@@ -91,7 +96,7 @@ describe("Handler UserCanUpdateTeam", () => {
           tenant: "handler-test",
           name: "Rajiv's Unique Slug Team",
           slug: "rajiv-unique-slug-team",
-          creator_user_uuid: "1098c53c-4a86-416b-b5e4-4677b70f5dfa",
+          creator_user_uuid: contextClassRef.user.uuid,
         },
       });
 
@@ -102,7 +107,7 @@ describe("Handler UserCanUpdateTeam", () => {
           tenant: "handler-test",
           name: "Rajiv's Unique Slug Team 2",
           slug: "rajiv-unique-slug-team-2",
-          creator_user_uuid: "1098c53c-4a86-416b-b5e4-4677b70f5dfa",
+          creator_user_uuid: contextClassRef.user.uuid,
         },
       });
 

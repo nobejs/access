@@ -1,8 +1,15 @@
 const debugLogger = requireUtil("debugLogger");
 const verificationsRepo = requireRepo("verifications");
 const attributesRepo = requireRepo("attributes");
+const knex = requireKnex();
 
 describe("Test Handler Users/Verify", () => {
+  beforeEach(async () => {
+    await knex("users").truncate();
+    await knex("verifications").truncate();
+    await knex("attributes").truncate();
+  });
+
   it("user_can_verify_registration", async () => {
     let result = {};
     let attributeCount = 0;
