@@ -38,4 +38,6 @@ describe("Test API Users/Authorize", () => {
 
     expect(respondResult.statusCode).toBe(200);
   });
+  it.skip("logged_in_user_and_member_of_team_can_authorize", async () => {});
+  it.skip("valid_token_can_authorize", async () => {});
 });
