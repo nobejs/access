@@ -4,8 +4,11 @@ const attributesRepo = requireRepo("attributes");
 const verificationsRepo = requireRepo("verifications");
 const tokensRepo = requireRepo("tokens");
 const { registrationVerificationEvent } = require("../events");
-const { getMinutesFromNow, generateOTP } = require("../utils");
 const table = "users";
+
+const getAllowedTypes = () => {
+  return ["email"];
+}
 
 const findUserByTypeAndValue = async (where = {}) => {
   return await baseRepo.countAll("attributes", where);
@@ -60,26 +63,21 @@ const authenticateWithPassword = async (payload) => {
 const requestAttributeVerificationForRegistration = async (payload) => {
   try {
     // Find if there is already an existing verification for this
-    let verification = await verificationsRepo.first({
+    let verification = await verificationsRepo.findVerificationForRegistration({
       attribute_type: payload.type,
       attribute_value: payload.value,
     });
 
     // If verification is present already, we can update it
-    if (verification !== undefined && verification.purpose === "register") {
-      let token = generateOTP();
-      await verificationsRepo.update(
-        { uuid: verification.uuid },
-        {
-          token: token,
-          expires_at: getMinutesFromNow(10),
-        }
+    if (verification !== undefined) {
+      let verificationObject = await verificationsRepo.updateVerification(
+        { uuid: verification.uuid }
       );
 
       await registrationVerificationEvent({
-        token,
-        type: payload.type,
-        value: payload.value,
+        token: verificationObject.token,
+        type: verificationObject.attribute_type,
+        value: verificationObject.attribute_value,
       });
     } else {
       throw {
@@ -94,32 +92,31 @@ const requestAttributeVerificationForRegistration = async (payload) => {
 
 const verifyAttributeForRegistration = async (payload) => {
   try {
-    let verification = await verificationsRepo.first({
+    let verification = await verificationsRepo.findVerificationForRegistration({
       attribute_type: payload.type,
       attribute_value: payload.value,
     });
 
-    if (verification !== undefined && verification.purpose === "register") {
+    if (verification !== undefined) {
       if (payload.token === verification.token) {
         await attributesRepo.createAttributeForUUID(
           verification.user_uuid,
           payload,
           true
         );
-        await verificationsRepo.remove({
+        await verificationsRepo.removeVerification({
           uuid: verification.uuid,
         });
+
+        return {
+          message: "Verification Successful",
+        }
+
       } else {
-        throw {
-          statusCode: 401,
-          message: "Invalid Token",
-        };
+        throw "err";
       }
     } else {
-      throw {
-        statusCode: 401,
-        message: "Invalid Token",
-      };
+      throw "err";
     }
   } catch (error) {
     throw {
@@ -144,35 +141,31 @@ const registerWithPassword = async (payload) => {
   });
 
   let user = null;
-  let token = generateOTP();
+  let verificationObject = null;
 
   if (verification === undefined) {
     // If no, create a user and also verification for them
     user = await createUserWithPassword(payload.password);
 
-    await verificationsRepo.createVerificationForRegistration({
+    verificationObject = await verificationsRepo.createVerificationForRegistration({
       user_uuid: user.uuid,
       attribute_type: payload.type,
       attribute_value: payload.value,
-      token: token,
-      expires_at: getMinutesFromNow(10),
     });
+
   } else {
     // If there is a verification, update verification with new token and timestamp
 
-    await verificationsRepo.updateVerification(
-      { uuid: verification.uuid },
-      {
-        token: token,
-        expires_at: getMinutesFromNow(10),
-      }
+    verificationObject = await verificationsRepo.updateVerification(
+      { uuid: verification.uuid }
     );
+
   }
 
   await registrationVerificationEvent({
-    token,
-    type: payload.type,
-    value: payload.value,
+    token: verificationObject.token,
+    type: verificationObject.attribute_type,
+    value: verificationObject.attribute_value,
   });
 
   return true;
@@ -191,6 +184,7 @@ const createTestUserWithVerifiedToken = async (payload) => {
 };
 
 module.exports = {
+  getAllowedTypes,
   createUserWithPassword,
   registerWithPassword,
   authenticateWithPassword,

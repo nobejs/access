@@ -13,7 +13,7 @@ const authorize = ({ prepareResult }) => {
   return true;
 };
 
-const handle = async ({ prepareResult, storyName }) => {
+const handle = async ({ prepareResult }) => {
   try {
     return await usersRepo.verifyAttributeForRegistration(prepareResult);
   } catch (error) {
@@ -22,9 +22,8 @@ const handle = async ({ prepareResult, storyName }) => {
 };
 
 const respond = ({ handleResult }) => {
-  return {
-    message: "Verification Successful",
-  };
+  // console.log("handleResult", handleResult)
+  return handleResult;
 };
 
 module.exports = {

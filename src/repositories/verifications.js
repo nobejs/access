@@ -1,5 +1,8 @@
 const baseRepo = requireUtil("baseRepo");
 const table = "verifications";
+const generateOTP = requireFunction("generateOTP")
+const getMinutesFromNow = requireFunction("getMinutesFromNow")
+const { registrationVerificationEvent } = require("../events");
 
 const findVerificationForType = async (where = {}, purpose) => {
   let payload = { ...where, ...{ purpose } };
@@ -12,15 +15,19 @@ const findVerificationForRegistration = async (where = {}) => {
 
 const createVerificationForType = async (data, purpose) => {
   let payload = { ...data, ...{ purpose } };
+  payload['token'] = generateOTP();
+  payload['expires_at'] = getMinutesFromNow(10);
   return await baseRepo.create(table, payload);
 };
 
 const createVerificationForRegistration = async (data) => {
-  return await createVerificationForType(data, "register");
+  let response = await createVerificationForType(data, "register");
+  return response;
 };
 
-const updateVerification = async (where, payload) => {
-  console.log("where, payload", where, payload)
+const updateVerification = async (where, payload = {}) => {
+  payload['token'] = generateOTP();
+  payload['expires_at'] = getMinutesFromNow(10);
   return await baseRepo.update(table, where, payload);
 };
 

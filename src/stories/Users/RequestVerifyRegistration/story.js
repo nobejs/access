@@ -1,6 +1,5 @@
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
 const validator = requireValidator();
-const getAllowedTypes = requireFunction("getAllowedTypes");
 const verificationsRepo = requireRepo("verifications");
 const usersRepo = requireRepo("users");
 
@@ -22,7 +21,7 @@ const validateInput = async (payload) => {
         message: "^Please choose type",
       },
       inclusion: {
-        within: getAllowedTypes(),
+        within: usersRepo.getAllowedTypes(),
         message: "^Please choose valid type",
       },
     },
@@ -35,14 +34,14 @@ const validateInput = async (payload) => {
       custom_callback: {
         message: "Value should be unique",
         callback: async (payload) => {
-          let count =
+          let verification =
             typeof payload.value === "string"
-              ? await verificationsRepo.findUserByTypeAndValue({
+              ? await verificationsRepo.findVerificationForRegistration({
                 attribute_value: payload.value,
                 attribute_type: payload.type,
               })
               : -1;
-          return count > 0 ? true : false;
+          return verification !== undefined ? true : false;
         },
       },
     },

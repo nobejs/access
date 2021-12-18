@@ -23,8 +23,9 @@ describe("Test Handler Users/RequestVerify", () => {
       });
     } catch (error) {
       respondResult = error;
-      debugLogger(error);
+      // debugLogger(error);
     }
+
     expect(respondResult).toEqual(
       expect.objectContaining({
         statusCode: 422,
@@ -33,7 +34,7 @@ describe("Test Handler Users/RequestVerify", () => {
     );
   });
 
-  it.skip("user_can_request_code_if_registered", async () => {
+  it("user_can_request_code_if_registered", async () => {
     let result = {};
     try {
       await usersRepo.registerWithPassword({
