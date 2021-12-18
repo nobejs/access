@@ -58,7 +58,7 @@ describe("Test API Tokens/TeamAdminCanCreateToken", () => {
 
       respondResult = await app.inject({
         method: "POST",
-        url: "/tokens", // This should be in endpoints.js
+        url: "/teams/tokens", // This should be in endpoints.js
         payload,
         headers,
       });
