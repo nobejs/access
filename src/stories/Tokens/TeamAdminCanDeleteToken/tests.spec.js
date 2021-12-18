@@ -50,16 +50,16 @@ describe("Test Handler Tokens/TeamAdminCanDeleteToken", () => {
         }
       });
 
+      const decoded = await decodeJWT(token);
       const decodedUserToken = await decodeJWT(contextClassRef.token);
-
-      // console.log("token", decodedUserT oken)
 
       result = await testStrategy("Tokens/TeamAdminCanDeleteToken", {
         prepareResult: {
           jti: decodedUserToken.jti,
           sub: decodedUserToken.sub,
           issuer: decodedUserToken.iss,
-          team_uuid: contextClassRef.testTeam.uuid
+          team_uuid: contextClassRef.testTeam.uuid,
+          token_uuid: decoded.jti
         },
       });
     } catch (error) {

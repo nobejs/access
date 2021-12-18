@@ -5,11 +5,17 @@ const findKeysFromRequest = requireUtil("findKeysFromRequest");
 const tokensRepo = requireRepo("tokens")
 
 const prepare = ({ req }) => {
-  let payload = {
-    jti: req.jti,
-    sub: req.sub,
-    issuer: req.issuer,
+  let payload = findKeysFromRequest(req, ["token_uuid"]);
+
+  payload = {
+    ...payload,
+    ...{
+      jti: req.jti,
+      sub: req.sub,
+      issuer: req.issuer,
+    }
   };
+
 
   payload["team_uuid"] = req.headers["x-team-identifier"];
 
@@ -30,6 +36,9 @@ const validateInput = async (payload) => {
 };
 
 const authorize = async ({ prepareResult }) => {
+
+  console.log("prepareResult", prepareResult)
+
   try {
 
     if (prepareResult.issuer !== 'user') {

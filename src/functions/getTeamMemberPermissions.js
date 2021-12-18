@@ -15,9 +15,10 @@ module.exports = (payload) => {
         //   return resolve(role.permissions);
         // }
         return resolve(teamMember.permissions);
+      } else {
+        return reject({ message: "Not team member" });
       }
 
-      return reject({ message: "Not team member" });
     } catch (error) {
       reject(error);
     }
