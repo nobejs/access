@@ -14,6 +14,8 @@ const TeamsRepo = requireRepo("teams");
 // const RolesRepo = requireRepo("roles");
 const TokensRepo = requireRepo("tokens");
 const TeamMembersRepo = requireRepo("teamMembers");
+const getTeamMemberPermissions = requireFunction("getTeamMemberPermissions");
+const getTokenPermissions = requireFunction("getTokenPermissions");
 
 const prepare = ({ req }) => {
   let payload = {
@@ -40,25 +42,6 @@ const handle = async ({ prepareResult }) => {
   };
 
   try {
-    // If issuer is user and there is  `X-Team-Identifier`
-    if (
-      prepareResult["team_uuid"] !== undefined &&
-      prepareResult.issuer === "user"
-    ) {
-      let teamMember = await TeamMembersRepo.first({
-        team_uuid: prepareResult.team_uuid,
-        user_uuid: prepareResult.sub,
-      });
-
-      if (teamMember !== undefined) {
-        if (teamMember.role !== null) {
-          let role = await RolesRepo.first({ uuid: teamMember.role });
-          return role.permissions;
-        }
-        return teamMember.permissions;
-      }
-    }
-
     // If issuer is user and there is no  `X-Team-Identifier`
     if (
       prepareResult.issuer === "user" &&
@@ -67,12 +50,22 @@ const handle = async ({ prepareResult }) => {
       return {};
     }
 
-    if (prepareResult.issuer === "team") {
-      let team = await TeamsRepo.first({ uuid: prepareResult.sub });
+    // If issuer is user and there is  `X-Team-Identifier`
+    if (
+      prepareResult["team_uuid"] !== undefined &&
+      prepareResult.issuer === "user"
+    ) {
+      let permissions = await getTeamMemberPermissions({
+        team_uuid: prepareResult.team_uuid,
+        user_uuid: prepareResult.sub,
+      });
 
-      if (team !== undefined) {
-        return await TokensRepo.first({ uuid: prepareResult.jti }).permissions;
-      }
+      return permissions;
+    }
+
+    if (prepareResult.issuer === "team") {
+      let permissions = await getTokenPermissions(prepareResult);
+      return permissions;
     }
 
     throw unauthorizedObject;
