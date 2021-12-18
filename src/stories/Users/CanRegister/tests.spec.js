@@ -9,7 +9,10 @@ describe("Test Handler Users/CanRegister", () => {
   });
 
   it("user_can_register_with_email", async () => {
-    let result = {};
+    let result = {
+
+    };
+
     try {
       result = await testStrategy("Users/CanRegister", {
         prepareResult: {
@@ -19,11 +22,11 @@ describe("Test Handler Users/CanRegister", () => {
         },
       });
     } catch (error) {
-      console.log("error ----------> ", error);
+      // console.log("error ----------> ", error);
       debugLogger(error);
     }
 
-    console.log("result ---------->", result);
+    // console.log("result ---------->", result); 
 
     const { respondResult } = result;
 
@@ -32,5 +35,5 @@ describe("Test Handler Users/CanRegister", () => {
     });
   });
 
-  it.skip("user_cannot_register_with_existing_email", async () => {});
+  it.skip("user_cannot_register_with_existing_email", async () => { });
 });

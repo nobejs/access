@@ -44,10 +44,10 @@ const validateInput = async (payload) => {
         callback: async (payload) => {
           let count =
             typeof payload.value === "string"
-              ? await usersRepo.findWithValueAndType({
-                  value: payload.value,
-                  type: payload.type,
-                })
+              ? await usersRepo.findUserByTypeAndValue({
+                value: payload.value,
+                type: payload.type,
+              })
               : -1;
           return count === 0 ? true : false;
         },

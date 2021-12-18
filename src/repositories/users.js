@@ -7,8 +7,8 @@ const { registrationVerificationEvent } = require("../events");
 const { getMinutesFromNow, generateOTP } = require("../utils");
 const table = "users";
 
-const countAll = async (where = {}, whereNot = {}) => {
-  return await baseRepo.countAll(table, where, whereNot);
+const findUserByTypeAndValue = async (where = {}) => {
+  return await baseRepo.countAll("attributes", where);
 };
 
 const create = async (payload) => {
@@ -205,7 +205,7 @@ module.exports = {
   authenticateWithPassword,
   verifyAttributeForRegistration,
   requestAttributeVerificationForRegistration,
-  countAll,
+  findUserByTypeAndValue,
   create,
   first,
   createTestUserWithVerifiedToken,
