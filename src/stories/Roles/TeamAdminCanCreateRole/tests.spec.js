@@ -1,5 +1,4 @@
 const debugLogger = requireUtil("debugLogger");
-const knex = requireKnex();
 const truncateAllTables = requireFunction("truncateAllTables");
 const contextClassRef = requireUtil("contextHelper");
 const createUserAndTeam = require("../createUserAndTeam");

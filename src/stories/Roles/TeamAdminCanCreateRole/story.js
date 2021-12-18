@@ -68,12 +68,12 @@ const authorize = async ({ prepareResult }) => {
 
 const handle = async ({ prepareResult, authorizeResult }) => {
   try {
-    let token = await rolesRepo.createRoleForTeam({
+    let role = await rolesRepo.createRoleForTeam({
       team_uuid: prepareResult.team_uuid,
       title: prepareResult.title,
       permissions: prepareResult.permissions,
     });
-    return token;
+    return role;
   } catch (error) {
     throw error;
   }
