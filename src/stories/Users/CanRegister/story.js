@@ -44,7 +44,7 @@ const validateInput = async (payload) => {
         callback: async (payload) => {
           let count =
             typeof payload.value === "string"
-              ? await attributesRepo.countAll({
+              ? await usersRepo.findWithValueAndType({
                   value: payload.value,
                   type: payload.type,
                 })

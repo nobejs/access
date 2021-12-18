@@ -1,4 +1,4 @@
-const knex = require("../knex");
+const knex = requireKnex();
 const { addCreatedTimestamps } = require("./helper");
 const baseRepo = requireUtil("baseRepo");
 const table = "teams";
@@ -55,7 +55,12 @@ const update = async (team_uuid, payload) => {
 };
 
 module.exports = {
-  create,
+  createTeamForAUser,
+  findTeamByUUID,
+  updateTeamByUUID,
+  countTeamsWithSlugAndTenant,
+  fetchTeamsForAUser,
+  fetchTeamsForAUserAndTenant,
   first,
   update,
   countAll,

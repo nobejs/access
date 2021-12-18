@@ -1,4 +1,4 @@
-const knex = require("../knex");
+const knex = requireKnex();
 const underscoredColumns = requireUtil("underscoredColumns");
 
 const countAll = async (where = {}, whereNot = {}) => {
