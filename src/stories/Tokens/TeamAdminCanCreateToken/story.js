@@ -2,18 +2,19 @@ const validator = requireValidator();
 const getTeamMemberPermissions = requireFunction("getTeamMemberPermissions");
 const checkPermission = requireFunction("checkPermission");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
+const tokensRepo = requireRepo("tokens")
 
 const prepare = ({ req }) => {
-  const payload = findKeysFromRequest(req, ["title", "permissions"]);
+  let payload = findKeysFromRequest(req, ["title", "permissions"]);
 
-  payload = Object.assign(
-    payload,
+  payload = {
+    ...payload,
     ...{
       jti: req.jti,
       sub: req.sub,
       issuer: req.issuer,
     }
-  );
+  };
 
   payload["team_uuid"] = req.headers["x-team-identifier"];
 
@@ -47,6 +48,7 @@ const validateInput = async (payload) => {
 
 const authorize = async ({ prepareResult }) => {
   try {
+
     await validateInput(prepareResult);
 
     // Get Team member permissions
@@ -57,29 +59,29 @@ const authorize = async ({ prepareResult }) => {
     });
 
     await checkPermission(permissions, ["admin", "create_token"]);
+
   } catch (error) {
     throw error;
   }
-  return true;
 };
 
 const handle = async ({ prepareResult, storyName }) => {
+
   try {
-    let token = await tokensRepo.createTokenForTeam(
-      team_uuid,
-      title,
-      permissions
-    );
+    let token = await tokensRepo.createTokenForTeam({
+      team_uuid: prepareResult.team_uuid,
+      title: prepareResult.team_uuid,
+      permissions: prepareResult.permissions
+    });
     return token;
   } catch (error) {
     throw error;
   }
 
-  return {};
 };
 
 const respond = ({ handleResult }) => {
-  return { token: token };
+  return { token: handleResult };
 };
 
 module.exports = {

@@ -6,10 +6,21 @@ const TeamSerializer = requireSerializer("teams");
 const prepare = ({ req }) => {
   const payload = findKeysFromRequest(req, ["tenant", "name", "slug"]);
   payload["creator_user_uuid"] = req.sub;
+  payload["issuer"] = req.issuer;
   return payload;
 };
 
-const authorize = () => {
+const authorize = ({ prepareResult }) => {
+
+  console.log("prepareResult", prepareResult)
+
+  if (prepareResult.issuer !== 'user') {
+    throw {
+      statusCode: 403,
+      message: "Forbidden"
+    }
+  }
+
   return true;
 };
 
@@ -45,9 +56,9 @@ const validateInput = async (prepareResult) => {
           let count =
             typeof payload.slug === "string"
               ? await TeamRepo.countWithConstraints({
-                  slug: prepareResult.slug,
-                  tenant: prepareResult.tenant,
-                })
+                slug: prepareResult.slug,
+                tenant: prepareResult.tenant,
+              })
               : -1;
 
           return count === 0 ? true : false;
@@ -62,6 +73,7 @@ const validateInput = async (prepareResult) => {
 const handle = async ({ prepareResult }) => {
   try {
     await validateInput(prepareResult);
+    delete prepareResult.issuer;
     return await TeamRepo.createTeamForAUser(prepareResult);
   } catch (error) {
     throw error;

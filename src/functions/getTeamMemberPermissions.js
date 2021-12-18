@@ -10,10 +10,10 @@ module.exports = (payload) => {
       });
 
       if (teamMember !== undefined) {
-        if (teamMember.role !== null) {
-          let role = await RolesRepo.first({ uuid: teamMember.role });
-          return resolve(role.permissions);
-        }
+        // if (teamMember.role !== null) {
+        //   let role = await RolesRepo.first({ uuid: teamMember.role });
+        //   return resolve(role.permissions);
+        // }
         return resolve(teamMember.permissions);
       }
 

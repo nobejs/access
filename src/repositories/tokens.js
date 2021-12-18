@@ -36,6 +36,21 @@ const createTokenForUser = async (user) => {
   }
 };
 
+const createTokenForTeam = async (payload) => {
+  try {
+    let token = await baseRepo.create(table, {
+      sub: payload.team_uuid,
+      issuer: "team",
+      permissions: payload.permissions,
+      title: payload.title
+    });
+    let jwt = await generateJWT(token.uuid, token.sub, token.issuer);
+    return jwt;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const checkIfValidJti = async (jti) => {
   try {
     let token = await baseRepo.first(table, {
@@ -59,5 +74,6 @@ module.exports = {
   update,
   remove,
   createTokenForUser,
+  createTokenForTeam,
   checkIfValidJti,
 };

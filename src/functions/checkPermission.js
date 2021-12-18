@@ -3,13 +3,18 @@ module.exports = (permissions, checks) => {
     try {
       let keys = Object.keys(permissions);
 
-      for (let check in checks) {
+      console.log("keys", keys, checks)
+
+      for (let check of checks) {
         if (keys.includes(check)) {
           return resolve({});
         }
       }
 
-      return reject({});
+      return reject({
+        statusCode: 403,
+        message: "Forbidden"
+      });
     } catch (error) {
       reject(error);
     }

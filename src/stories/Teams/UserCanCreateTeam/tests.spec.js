@@ -20,6 +20,7 @@ describe("Handler UserCanCreateTeam", () => {
           name: "Rajiv's Personal Team",
           slug: "rajiv-personal-team",
           creator_user_uuid: "1098c53c-4a86-416b-b5e4-4677b70f5dfa",
+          issuer: "user",
         },
       });
       respondResult = result.respondResult;
@@ -42,10 +43,11 @@ describe("Handler UserCanCreateTeam", () => {
           name: "Rajiv's Personal Team",
           slug: "rajiv-personal-team",
           creator_user_uuid: "1098c53c-4a86-416b-b5e4-4677b70f5dfa",
+          issuer: "user",
         },
       });
       respondResult = result.respondResult;
-    } catch (error) {}
+    } catch (error) { }
     expect(respondResult).toMatchObject({ uuid: expect.any(String) });
   });
 
@@ -58,6 +60,7 @@ describe("Handler UserCanCreateTeam", () => {
           name: "Rajiv's Personal Team",
           slug: "rajiv-personal-team",
           creator_user_uuid: "1098c53c-4a86-416b-b5e4-4677b70f5dfa",
+          issuer: "user",
         },
       });
       respondResult = result.respondResult;
@@ -68,6 +71,7 @@ describe("Handler UserCanCreateTeam", () => {
           name: "Rajiv's Personal Team",
           slug: "rajiv-personal-team",
           creator_user_uuid: "1098c53c-4a86-416b-b5e4-4677b70f5dfa",
+          issuer: "user",
         },
       });
       respondResult = result.respondResult;
@@ -91,6 +95,7 @@ describe("Handler UserCanCreateTeam", () => {
           name: "Rajiv's Personal Team-2",
           slug: "rajiv-personal-team-2",
           creator_user_uuid: "1098c53c-4a86-416b-b5e4-4677b70f5dfa",
+          issuer: "user",
         },
       });
       respondResult = result.respondResult;
@@ -101,6 +106,7 @@ describe("Handler UserCanCreateTeam", () => {
           name: "Rajiv's Personal Team",
           slug: "rajiv-personal-team",
           creator_user_uuid: "1098c53c-4a86-416b-b5e4-4677b70f5dfa",
+          issuer: "user",
         },
       });
       respondResult = result.respondResult;

@@ -28,9 +28,9 @@ module.exports = (app) => {
         ["post", "/teams", "Teams/UserCanCreateTeam"],
         ["put", "/teams/:team_uuid", "Teams/UserCanUpdateTeam"],
 
-        // Tokens
-        ["post", "/tokens", "Tokens/TeamAdminCanCreateToken"],
-        ["delete", "/tokens/:token_uuid", "Tokens/TeamAdminCanDeleteToken"],
+        // Teams Tokens
+        ["post", "/teams/tokens", "Tokens/TeamAdminCanCreateToken"],
+        ["delete", "/teams/tokens/:token_uuid", "Tokens/TeamAdminCanDeleteToken"],
       ],
     },
   ];
