@@ -17,8 +17,8 @@ const createTeamForAUser = async (payload) => {
         team_uuid: teams[0]["uuid"],
         status: "accepted",
         permissions: {
-          "admin": true
-        }
+          admin: true,
+        },
       });
       await trx("team_members").insert(teamMemberPayload);
       return teams[0];

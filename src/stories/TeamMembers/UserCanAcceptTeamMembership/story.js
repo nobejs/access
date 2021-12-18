@@ -2,7 +2,7 @@ const validator = requireValidator();
 const TeamMemberRepo = requireRepo("teamMember");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
 const getUser = requireFunction("getUser");
-const TeamMemberSerializer = requireSerializer("team_member");
+const TeamMemberSerializer = requireSerializer("teamMembers");
 
 const prepare = async ({ req }) => {
   const payload = findKeysFromRequest(req, ["team_member_uuid"]);

@@ -1,22 +1,28 @@
 const validator = requireValidator();
 const teamMemberRepo = requireRepo("teamMembers");
 const teamRepo = requireRepo("teams");
+const userRepo = requireRepo("users");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
-const TeamMemberSerializer = requireSerializer("team_member");
+const TeamMemberSerializer = requireSerializer("teamMembers");
 
 const prepare = async ({ req }) => {
-  const payload = findKeysFromRequest(req, ["team_uuid", "email"]);
+  const payload = findKeysFromRequest(req, [
+    "team_uuid",
+    "attribute_type",
+    "attribute_value",
+  ]);
   payload["invoking_user_uuid"] = req.user;
   return payload;
 };
 
 const augmentPrepare = async ({ prepareResult }) => {
   try {
-    let team = await teamRepo.findTeamByUUID({
+    let team = await teamRepo.findByUuid({
       uuid: prepareResult.team_uuid,
     });
     return { team };
   } catch (error) {
+    console.log("userCanCreateTeamMember-augmentPrepare-error", error);
     throw {
       message: "Team not found",
       statusCode: 404,
@@ -46,24 +52,28 @@ const validateInput = async ({ prepareResult }) => {
         message: "^Please enter team_uuid",
       },
     },
-    email: {
-      presence: {
-        allowEmpty: false,
-        message: "^Please enter email",
-      },
-    },
   };
 
   const constraints2 = {
-    email: {
+    type: {
+      presence: {
+        allowEmpty: false,
+        message: "^Please choose type",
+      },
+      inclusion: {
+        within: userRepo.getAllowedTypes(),
+        message: "^Please choose valid type",
+      },
+    },
+    value: {
       type: "string",
       custom_callback: {
-        message: "email is already part of team",
+        message: `${prepareResult.value} is already part of team`,
         callback: async (payload) => {
           let count =
-            typeof payload.email === "string"
+            typeof payload.value === "string"
               ? await teamMemberRepo.countWithConstraints({
-                  email: prepareResult.email,
+                  attribute_value: prepareResult.value,
                   team_uuid: prepareResult.team_uuid,
                 })
               : -1;
@@ -79,20 +89,33 @@ const validateInput = async ({ prepareResult }) => {
 };
 
 const handle = async ({ prepareResult, augmentPrepareResult, storyName }) => {
-  await validateInput({ prepareResult, augmentPrepareResult });
+  try {
+    await validateInput({ prepareResult, augmentPrepareResult });
 
-  let payload = {
-    team_uuid: prepareResult.team_uuid,
-    email: prepareResult.email,
-    status: "invited",
-    role: "member",
-  };
+    let payload = {
+      team_uuid: prepareResult.team_uuid,
+      attribute_type: prepareResult.type,
+      attribute_value: prepareResult.value,
+      status: "invited",
+      role_uuid: prepareResult.role_uuid,
+      permissions: prepareResult.permissions,
+      user_uuid: prepareResult.invoking_user_uuid,
+    };
 
-  return await teamMemberRepo.createTeamMember(payload);
+    return await teamMemberRepo.createTeamMember(payload);
+  } catch (error) {
+    console.log("userCanCreateTeamMember-handler-error", error);
+    throw error;
+  }
 };
 
 const respond = async ({ handleResult }) => {
-  return await TeamMemberSerializer.single(handleResult);
+  try {
+    return await TeamMemberSerializer.single(handleResult);
+  } catch (error) {
+    console.log("userCanCreateTeamMember-respondResult-Error", error);
+    throw error;
+  }
 };
 
 module.exports = {
