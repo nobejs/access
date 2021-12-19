@@ -7,6 +7,7 @@ module.exports = (payload) => {
       let teamMember = await TeamMembersRepo.first({
         team_uuid: payload.team_uuid,
         user_uuid: payload.user_uuid,
+        status: "accepted",
       });
 
       if (teamMember !== undefined) {

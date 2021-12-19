@@ -32,7 +32,6 @@ describe("Test Handler Roles/TeamAdminCanGetRoles", () => {
       debugLogger(error);
     }
     const { respondResult } = result;
-    console.log("respondResult222", respondResult);
     expect(respondResult).toEqual(
       expect.arrayContaining([
         expect.objectContaining({

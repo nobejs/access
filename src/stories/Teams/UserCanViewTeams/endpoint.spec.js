@@ -32,8 +32,6 @@ describe("Test API Teams/UserCanViewTeams", () => {
       respondResult = error;
     }
 
-    console.log("respondResult123", respondResult.json());
-
     expect(respondResult.statusCode).toBe(200);
     expect(respondResult.json()).toEqual(
       expect.arrayContaining([

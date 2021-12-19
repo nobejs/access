@@ -21,7 +21,6 @@ const getAllowedTypes = () => {
 // };
 
 const findUserByTypeAndValue = async (where = {}) => {
-  console.log("where", where);
   return await baseRepo.countAll("attributes", where);
 };
 

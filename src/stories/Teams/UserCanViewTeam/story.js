@@ -1,8 +1,8 @@
-const TeamsRepo = requireRepo("teams");
-const TeamMembersRepo = requireRepo("teamMembers");
+const teamsRepo = requireRepo("teams");
+const teamMembersRepo = requireRepo("teamMembers");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
-const TeamSerializer = requireSerializer("teams");
-const createCustomerPortal = requireFunction("stripe/createCustomerPortal");
+const teamSerializer = requireSerializer("teams");
+const usersRepo = requireRepo("users");
 
 const prepare = async ({ req }) => {
   const payload = findKeysFromRequest(req, ["team_uuid", "stripe_return_url"]);
@@ -11,34 +11,66 @@ const prepare = async ({ req }) => {
 };
 
 const augmentPrepare = async ({ prepareResult }) => {
-  let teamMember = await TeamMembersRepo.first({
-    team_uuid: prepareResult.team_uuid,
-    user_uuid: prepareResult.invoking_user_uuid,
-  });
+  try {
+    let teamMember = await teamMembersRepo.first({
+      team_uuid: prepareResult.team_uuid,
+      user_uuid: prepareResult.invoking_user_uuid,
+    });
 
-  return { teamMember };
+    if (teamMember === undefined) {
+      throw teamMember;
+    }
+
+    return { teamMember, prepareResult };
+  } catch (error) {
+    throw {
+      statusCode: 404,
+      message: "Invalid Member",
+    };
+  }
 };
 
-const authorize = ({ augmentPrepareResult }) => {
-  if (augmentPrepareResult.teamMember) {
-    return true;
-  }
+const authorize = async ({ augmentPrepareResult, prepareResult }) => {
+  try {
+    if (augmentPrepareResult.teamMember) {
+      let userAttribute = await usersRepo.findUserByTypeAndValue({
+        user_uuid: prepareResult.invoking_user_uuid,
+        type: augmentPrepareResult.teamMember.attribute_type,
+        value: augmentPrepareResult.teamMember.attribute_value,
+      });
 
-  throw {
-    message: "NotAuthorized",
-    statusCode: 403,
-  };
+      if (userAttribute == undefined) {
+        throw {
+          statusCode: 422,
+          message: "Invalid User",
+        };
+      }
+    } else {
+      throw {
+        statusCode: 404,
+        message: "Invalid Member",
+      };
+    }
+  } catch (error) {
+    console.log("userCanViewTeam-authorize-error", error);
+    throw error;
+  }
 };
 
 const handle = async ({ prepareResult, storyName }) => {
-  return await TeamsRepo.first({
-    uuid: prepareResult.team_uuid,
-  });
+  try {
+    return await teamsRepo.findByUuid({
+      uuid: prepareResult.team_uuid,
+    });
+  } catch (error) {
+    console.log("UserCanViewTeam-handler-error", error);
+    throw error;
+  }
 };
 
 const respond = async ({ prepareResult, handleResult }) => {
   try {
-    const teamObject = await TeamSerializer.single(handleResult, [
+    const teamObject = await teamSerializer.single(handleResult, [
       "subscription",
     ]);
 
@@ -54,6 +86,7 @@ const respond = async ({ prepareResult, handleResult }) => {
 
     return teamObject;
   } catch (error) {
+    console.log("UserCanViewTeam-respondResult-error", error);
     throw error;
   }
 };
