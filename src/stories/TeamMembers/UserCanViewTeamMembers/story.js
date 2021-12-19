@@ -1,4 +1,5 @@
 const teamMembersRepo = requireRepo("teamMembers");
+const teamsRepo = requireRepo("teams");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
 
 const prepare = async ({ req }) => {
@@ -8,29 +9,44 @@ const prepare = async ({ req }) => {
 };
 
 const augmentPrepare = async ({ prepareResult }) => {
-  let teamMember = await teamMembersRepo.findWithConstraints({
-    team_uuid: prepareResult.team_uuid,
-    user_uuid: prepareResult.invoking_user_uuid,
-  });
+  try {
+    let teamMember = await teamMembersRepo.findWithConstraints({
+      team_uuid: prepareResult.team_uuid,
+      user_uuid: prepareResult.invoking_user_uuid,
+    });
 
-  return { teamMember };
+    return { teamMember };
+  } catch (error) {
+    console.log("userCanViewTeamMembers-augment-prepare-error", error);
+    throw error;
+  }
 };
 
 const authorize = ({ augmentPrepareResult }) => {
-  if (augmentPrepareResult.teamMember) {
-    return true;
-  }
+  try {
+    if (augmentPrepareResult.teamMember) {
+      return true;
+    }
 
-  throw {
-    message: "NotAuthorized",
-    statusCode: 403,
-  };
+    throw {
+      message: "NotAuthorized",
+      statusCode: 403,
+    };
+  } catch (error) {
+    console.log("userCanViewTeamMembers-authorize-error", error);
+    throw error;
+  }
 };
 
 const handle = async ({ prepareResult }) => {
-  return await teamMembersRepo.getTeamsAndMembers({
-    "team_members.team_uuid": prepareResult.team_uuid,
-  });
+  try {
+    return await teamMembersRepo.getTeamsAndMembers({
+      "team_members.team_uuid": prepareResult.team_uuid,
+    });
+  } catch (error) {
+    console.log("userCanViewTeamMembers-handle-error", error);
+    throw error;
+  }
 };
 
 const respond = ({ handleResult }) => {

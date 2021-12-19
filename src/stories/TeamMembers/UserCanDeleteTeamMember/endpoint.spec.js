@@ -57,7 +57,7 @@ describe("Test API TeamMembers/UserCanDeleteTeamMember", () => {
     });
   });
 
-  it.skip("user_who_is_not_admin_cannot_delete_existing_team_member", async () => {
+  it("user_who_is_not_admin_cannot_delete_existing_team_member", async () => {
     let respondResult;
     try {
       const app = httpServer();
@@ -71,28 +71,20 @@ describe("Test API TeamMembers/UserCanDeleteTeamMember", () => {
 
       let anotherTeamMember = teamMember;
 
-      console.log(
-        "passed1",
-        contextClassRef.testTeam.uuid,
-        anotherTeamMember.uuid
-      );
-
       respondResult = await app.inject({
         method: "DELETE",
         url: `/teams/${contextClassRef.testTeam.uuid}/members/${anotherTeamMember.uuid}`,
         headers,
       });
     } catch (error) {
-      console.log("error123", error);
       respondResult = error;
       throw error;
     }
 
-    // expect(respondResult.statusCode).toBe(403);
-    // expect(respondResult.json()).toMatchObject({
-    //   message: "Forbidden",
-    // });
-    expect(1).toBe(1);
+    expect(respondResult.statusCode).toBe(403);
+    expect(respondResult.json()).toMatchObject({
+      message: "Forbidden",
+    });
   });
 
   it.skip("admin_user_cannot_delete_himself", async () => {

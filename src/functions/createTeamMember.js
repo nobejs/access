@@ -23,7 +23,6 @@ module.exports = async (teamId) => {
     contextClassRef.teamMember = teamMember;
     contextClassRef.memberToken = token;
 
-    console.log("check 221", teamMember.uuid, teamId);
     return { teamMember, token };
   } catch (error) {
     console.log("error", error);
