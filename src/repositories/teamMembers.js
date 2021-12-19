@@ -40,11 +40,12 @@ const getTeamsAndMembers = async (where = {}) => {
           "teams.slug",
           "teams.tenant",
           "team_members.uuid",
-          "team_members.uuid",
           "team_members.user_uuid",
-          "team_members.email",
+          "team_members.attribute_type",
+          "team_members.attribute_value",
           "team_members.status",
-          "team_members.role",
+          "team_members.role_uuid",
+          "team_members.permissions",
         ])
       );
 

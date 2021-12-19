@@ -1,7 +1,5 @@
-const TeamMemberRepo = requireRepo("teamMembers");
-const knex = requireKnex();
+const teamMemberRepo = requireRepo("teamMembers");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
-const underscoredColumns = requireUtil("underscoredColumns");
 
 const prepare = async ({ req }) => {
   const payload = findKeysFromRequest(req, ["tenant"]);
@@ -14,15 +12,20 @@ const authorize = ({}) => {
 };
 
 const handle = async ({ prepareResult }) => {
-  let payload = {
-    "team_members.user_uuid": prepareResult.invoking_user_uuid,
-  };
+  try {
+    let payload = {
+      "team_members.user_uuid": prepareResult.invoking_user_uuid,
+    };
 
-  if (prepareResult.tenant) {
-    payload["teams.tenant"] = prepareResult.tenant;
+    if (prepareResult.tenant) {
+      payload["teams.tenant"] = prepareResult.tenant;
+    }
+
+    return await teamMemberRepo.getTeamsAndMembers(payload);
+  } catch (error) {
+    console.log("userCanViewTeam-handleResult-error", error);
+    throw error;
   }
-
-  return await TeamMemberRepo.getTeamsAndMembers(payload);
 };
 
 const respond = ({ handleResult }) => {
