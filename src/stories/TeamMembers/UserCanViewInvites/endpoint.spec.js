@@ -2,34 +2,42 @@ const contextClassRef = requireUtil("contextHelper");
 const randomUser = requireUtil("randomUser");
 const knex = requireKnex();
 const httpServer = requireHttpServer();
+const truncateAllTables = requireFunction("truncateAllTables");
+const createUserAndTeam = requireFunction("createUserAndTeam");
+const createTeamMember = requireFunction("createTeamMember");
 
 describe("Test API TeamMembers/UserCanViewInvites", () => {
-  beforeAll(async () => {
-    contextClassRef.user = randomUser();
-    contextClassRef.headers = {
-      Authorization: `Bearer ${contextClassRef.user.token}`, // An authenticated user is making the api call
-    };
+  beforeEach(async () => {
+    await truncateAllTables();
+    await createUserAndTeam();
+    await createTeamMember(contextClassRef.testTeam.uuid);
   });
 
-  it("dummy_story_which_will_pass", async () => {
+  it("user_should_be_able_to_see_team_invites", async () => {
     let respondResult;
     try {
       const app = httpServer();
+      let headers = {
+        Authorization: `Bearer ${contextClassRef.memberToken}`,
+      };
 
-      const payload = {};
-
-      // respondResult = await app.inject({
-      //   method: "POST",
-      //   url: "/api_endpoint", // This should be in endpoints.js
-      //   payload,
-      //   headers,
-      // });
+      respondResult = await app.inject({
+        method: "GET",
+        url: `/teams/invites?tenant=${contextClassRef.testTeam.tenant}`,
+        headers,
+      });
     } catch (error) {
       respondResult = error;
     }
 
-    // expect(respondResult.statusCode).toBe(200);
-    // expect(respondResult.json()).toMatchObject({});
-    expect(1).toBe(1);
+    expect(respondResult.statusCode).toBe(200);
+    expect(respondResult.json()).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          "team_members*user_uuid": contextClassRef.teamMember.user_uuid,
+          "team_members*status": "invited",
+        }),
+      ])
+    );
   });
 });

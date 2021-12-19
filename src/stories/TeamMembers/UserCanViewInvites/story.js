@@ -1,13 +1,17 @@
 // const getUser = requireFunction("getUser");
-const TeamMemberRepo = requireRepo("teamMembers");
+const teamMemberRepo = requireRepo("teamMembers");
+const usersRepo = requireRepo("users");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
 
 const prepare = ({ req }) => {
-  const payload = findKeysFromRequest(req, ["tenant"]);
-  payload["invoking_user_uuid"] = req.sub;
-  payload["token"] = req.token;
+  try {
+    const payload = findKeysFromRequest(req, ["tenant"]);
+    payload["invoking_user_uuid"] = req.sub;
 
-  return payload;
+    return payload;
+  } catch (error) {
+    throw error;
+  }
 };
 
 const authorize = () => {
@@ -18,28 +22,37 @@ const augmentPrepare = async ({ prepareResult }) => {
   let user = {};
 
   try {
-    user = prepareResult["sub"];
+    user = await usersRepo.first({ uuid: prepareResult["invoking_user_uuid"] });
+    if (user === undefined) {
+      throw user;
+    }
+    return { user };
   } catch (error) {
     throw {
       statusCode: 401,
       message: "Unauthorized",
     };
   }
-
-  return { user };
 };
 
 const handle = async ({ prepareResult, augmentPrepareResult }) => {
-  // return await TeamMemberRepo.getTeamsAndMembers({
-  //   "teams.tenant": prepareResult["tenant"],
-  //   "team_members.email": augmentPrepareResult.user.email,
-  //   "team_members.status": "invited",
-  // });
-  return {};
+  try {
+    return await teamMemberRepo.getTeamsAndMembers({
+      "teams.tenant": prepareResult["tenant"],
+      "team_members.user_uuid": augmentPrepareResult.user.uuid,
+      "team_members.status": "invited",
+    });
+  } catch (error) {
+    throw error;
+  }
 };
 
 const respond = ({ handleResult }) => {
-  return handleResult;
+  try {
+    return handleResult;
+  } catch (error) {
+    throw error;
+  }
 };
 
 module.exports = {
