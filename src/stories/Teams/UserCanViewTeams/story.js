@@ -2,9 +2,13 @@ const teamMemberRepo = requireRepo("teamMembers");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
 
 const prepare = async ({ req }) => {
-  const payload = findKeysFromRequest(req, ["tenant"]);
-  payload["invoking_user_uuid"] = req.user;
-  return payload;
+  try {
+    const payload = findKeysFromRequest(req, ["tenant"]);
+    payload["invoking_user_uuid"] = req.sub;
+    return payload;
+  } catch (error) {
+    console.log("userCanViewTeam-prepareResult-error", error);
+  }
 };
 
 const authorize = ({}) => {
@@ -29,7 +33,12 @@ const handle = async ({ prepareResult }) => {
 };
 
 const respond = ({ handleResult }) => {
-  return handleResult;
+  try {
+    return handleResult;
+  } catch (error) {
+    console.log("UserCanViewTeams-respondResult-error", error);
+    throw error;
+  }
 };
 
 module.exports = {

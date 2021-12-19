@@ -1,7 +1,7 @@
 const validator = requireValidator();
-const TeamRepo = requireRepo("teams");
+const teamRepo = requireRepo("teams");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
-const TeamSerializer = requireSerializer("teams");
+const teamSerializer = requireSerializer("teams");
 
 const prepare = ({ req }) => {
   const payload = findKeysFromRequest(req, ["tenant", "name", "slug"]);
@@ -11,12 +11,11 @@ const prepare = ({ req }) => {
 };
 
 const authorize = ({ prepareResult }) => {
-
-  if (prepareResult.issuer !== 'user') {
+  if (prepareResult.issuer !== "user") {
     throw {
       statusCode: 403,
-      message: "Forbidden"
-    }
+      message: "Forbidden",
+    };
   }
 
   return true;
@@ -53,10 +52,10 @@ const validateInput = async (prepareResult) => {
         callback: async (payload) => {
           let count =
             typeof payload.slug === "string"
-              ? await TeamRepo.countWithConstraints({
-                slug: prepareResult.slug,
-                tenant: prepareResult.tenant,
-              })
+              ? await teamRepo.countWithConstraints({
+                  slug: prepareResult.slug,
+                  tenant: prepareResult.tenant,
+                })
               : -1;
 
           return count === 0 ? true : false;
@@ -72,7 +71,7 @@ const handle = async ({ prepareResult }) => {
   try {
     await validateInput(prepareResult);
     delete prepareResult.issuer;
-    return await TeamRepo.createTeamForAUser(prepareResult);
+    return await teamRepo.createTeamForAUser(prepareResult);
   } catch (error) {
     throw error;
   }
@@ -80,7 +79,7 @@ const handle = async ({ prepareResult }) => {
 
 const respond = async ({ handleResult }) => {
   try {
-    return await TeamSerializer.single(handleResult);
+    return await teamSerializer.single(handleResult);
   } catch (error) {
     throw error;
   }

@@ -1,7 +1,7 @@
 const validator = requireValidator();
-const TeamRepo = requireRepo("teams");
+const teamRepo = requireRepo("teams");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
-const TeamSerializer = requireSerializer("teams");
+const teamSerializer = requireSerializer("teams");
 
 const prepare = async ({ req }) => {
   const payload = findKeysFromRequest(req, ["name", "slug", "team_uuid"]);
@@ -11,7 +11,7 @@ const prepare = async ({ req }) => {
 
 const augmentPrepare = async ({ prepareResult }) => {
   try {
-    let team = await TeamRepo.findByUuid({
+    let team = await teamRepo.findByUuid({
       uuid: prepareResult.team_uuid,
     });
     return { team };
@@ -50,7 +50,7 @@ const validateInput = async ({ prepareResult, augmentPrepareResult }) => {
         callback: async (payload) => {
           let count =
             typeof payload.slug === "string"
-              ? await TeamRepo.countWithConstraints(
+              ? await teamRepo.countWithConstraints(
                   {
                     slug: prepareResult.slug,
                     tenant: augmentPrepareResult.team.tenant,
@@ -72,7 +72,7 @@ const validateInput = async ({ prepareResult, augmentPrepareResult }) => {
 const handle = async ({ prepareResult, augmentPrepareResult }) => {
   try {
     await validateInput({ prepareResult, augmentPrepareResult });
-    return await TeamRepo.updateTeamByUUID(prepareResult.team_uuid, {
+    return await teamRepo.updateTeamByUUID(prepareResult.team_uuid, {
       name: prepareResult.name,
       slug: prepareResult.slug,
     });
@@ -83,7 +83,7 @@ const handle = async ({ prepareResult, augmentPrepareResult }) => {
 
 const respond = async ({ handleResult }) => {
   try {
-    return await TeamSerializer.single(handleResult);
+    return await teamSerializer.single(handleResult);
   } catch (error) {
     throw error;
   }
