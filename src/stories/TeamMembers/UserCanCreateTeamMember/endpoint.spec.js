@@ -2,34 +2,43 @@ const contextClassRef = requireUtil("contextHelper");
 const randomUser = requireUtil("randomUser");
 const knex = requireKnex();
 const httpServer = requireHttpServer();
+const truncateAllTables = requireFunction("truncateAllTables");
+const createUserAndTeam = requireFunction("createUserAndTeam");
 
 describe("Test API TeamMembers/UserCanCreateTeamMember", () => {
   beforeEach(async () => {
-    contextClassRef.user = randomUser();
-    contextClassRef.headers = {
-      Authorization: `Bearer ${contextClassRef.user.token}`, // An authenticated user is making the api call
-    };
+    await truncateAllTables();
+    await createUserAndTeam();
   });
 
-  it.skip("dummy_story_which_will_pass", async () => {
+  it("user_can_add_a_team_member_to_a_team_he_has_access_to", async () => {
     let respondResult;
     try {
       const app = httpServer();
+      const headers = contextClassRef.headers;
 
-      const payload = {};
+      const payload = {
+        team_uuid: contextClassRef.testTeam.uuid,
+        attribute_type: "email",
+        attribute_value: "shubham@betalectic.com",
+        invoking_user_uuid: contextClassRef.user.uuid,
+        permissions: { member: true },
+      };
 
-      // respondResult = await app.inject({
-      //   method: "POST",
-      //   url: "/api_endpoint", // This should be in endpoints.js
-      //   payload,
-      //   headers,
-      // });
+      respondResult = await app.inject({
+        method: "POST",
+        url: `/teams/${contextClassRef.testTeam.uuid}/members`,
+        payload,
+        headers,
+      });
     } catch (error) {
       respondResult = error;
     }
 
-    // expect(respondResult.statusCode).toBe(200);
-    // expect(respondResult.json()).toMatchObject({});
-    expect(1).toBe(1);
+    expect(respondResult.statusCode).toBe(200);
+    expect(respondResult.json()).toMatchObject({
+      team_uuid: contextClassRef.testTeam.uuid,
+      status: "invited",
+    });
   });
 });

@@ -17,6 +17,7 @@ module.exports = async (teamId) => {
       attribute_value: "jon@betalectic.com",
       status: "invited",
       user_uuid: user.uuid,
+      permissions: { member: true },
     };
 
     const teamMember = await teamMembersRepo.createTeamMember(payload);

@@ -87,28 +87,28 @@ describe("Test API TeamMembers/UserCanDeleteTeamMember", () => {
     });
   });
 
-  it.skip("admin_user_cannot_delete_himself", async () => {
-    // let respondResult;
-    // try {
-    //   const app = httpServer();
-    //   let headers = {
-    //     Authorization: `Bearer ${contextClassRef.memberToken}`,
-    //   };
-    //   console.log("passed1", contextClassRef.teamMember.uuid);
-    //   respondResult = await app.inject({
-    //     method: "DELETE",
-    //     url: `/teams/${contextClassRef.testTeam.uuid}/members/${contextClassRef.teamMember.uuid}`,
-    //     headers,
-    //   });
-    // } catch (error) {
-    //   console.log("error123", error);
-    //   respondResult = error;
-    //   throw error;
-    // }
-    // expect(respondResult.statusCode).toBe(403);
-    // expect(respondResult.json()).toMatchObject({
-    //   message: "Forbidden",
-    // });
-    // expect(1).toBe(1);
-  });
+  // it.skip("admin_user_cannot_delete_himself", async () => {
+  // let respondResult;
+  // try {
+  //   const app = httpServer();
+  //   let headers = {
+  //     Authorization: `Bearer ${contextClassRef.memberToken}`,
+  //   };
+  //   console.log("passed1", contextClassRef.teamMember.uuid);
+  //   respondResult = await app.inject({
+  //     method: "DELETE",
+  //     url: `/teams/${contextClassRef.testTeam.uuid}/members/${contextClassRef.teamMember.uuid}`,
+  //     headers,
+  //   });
+  // } catch (error) {
+  //   console.log("error123", error);
+  //   respondResult = error;
+  //   throw error;
+  // }
+  // expect(respondResult.statusCode).toBe(403);
+  // expect(respondResult.json()).toMatchObject({
+  //   message: "Forbidden",
+  // });
+  // expect(1).toBe(1);
+  // });
 });
