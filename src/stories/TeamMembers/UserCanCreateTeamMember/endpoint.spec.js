@@ -4,7 +4,7 @@ const knex = requireKnex();
 const httpServer = requireHttpServer();
 
 describe("Test API TeamMembers/UserCanCreateTeamMember", () => {
-  beforeAll(async () => {
+  beforeEach(async () => {
     contextClassRef.user = randomUser();
     contextClassRef.headers = {
       Authorization: `Bearer ${contextClassRef.user.token}`, // An authenticated user is making the api call

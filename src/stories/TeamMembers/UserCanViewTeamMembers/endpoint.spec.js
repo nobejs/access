@@ -2,68 +2,71 @@ const contextClassRef = requireUtil("contextHelper");
 const randomUser = requireUtil("randomUser");
 const knex = requireKnex();
 const debugLogger = requireUtil("debugLogger");
+const truncateAllTables = requireFunction("truncateAllTables");
+const createUserAndTeam = requireFunction("createUserAndTeam");
+const createTeamMember = requireFunction("createTeamMember");
+const httpServer = requireHttpServer();
+const usersRepo = requireRepo("users");
 
 describe("Handler UserCanViewTeamMembers", () => {
-  beforeAll(async () => {
-    contextClassRef.user = randomUser();
-    contextClassRef.headers = {
-      Authorization: `Bearer ${contextClassRef.user.token}`,
-    };
-
-    contextClassRef.user2 = randomUser();
-    contextClassRef.headers2 = {
-      Authorization: `Bearer ${contextClassRef.user2.token}`,
-    };
-
-    await knex("teams").truncate();
-    await knex("team_members").truncate();
+  beforeEach(async () => {
+    await truncateAllTables();
+    await createUserAndTeam();
+    await createTeamMember(contextClassRef.testTeam.uuid);
   });
 
-  it.skip("member_should_be_able_to_access_team_members", async () => {
+  it("member_should_be_able_to_access_team_members", async () => {
     let response;
-
     try {
-      response = await requireTestFunction("createTeamViaAPI")();
-      response = await requireTestFunction("getTeamMembersViaAPI")(
-        response.json()["uuid"]
-      );
+      const app = httpServer();
+      let headers = {
+        Authorization: `Bearer ${contextClassRef.memberToken}`,
+      };
+
+      response = await app.inject({
+        method: "GET",
+        url: `teams/${contextClassRef.testTeam.uuid}/members`,
+        headers,
+      });
     } catch (error) {
       response = error;
       debugLogger(response.json());
     }
 
     expect(response.statusCode).toBe(200);
-
     expect(response.json()).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          "team_members*user_uuid": contextClassRef.user.user_uuid,
-          "team_members*role": "owner",
-          "team_members*status": "accepted",
+          "team_members*user_uuid": contextClassRef.user.uuid,
         }),
       ])
     );
   });
 
-  it.skip("non_member_shouldnt_be_able_to_access_team_members", async () => {
-    let team1;
-
+  it("outsider_shouldnt_be_able_access_a_team_members", async () => {
+    let response;
     try {
-      team1 = await requireTestFunction("createTeamViaAPI")(
-        {
-          tenant: "api-test",
-          name: "Rajiv's Personal Team",
-          slug: "rajiv-personal-team-2",
-        },
-        contextClassRef.headers2
-      );
+      const { user, token } = await usersRepo.createTestUserWithVerifiedToken({
+        type: "email",
+        value: "jonty@betalectic.com",
+        password: "GoodPassword",
+        purpose: "register",
+      });
+      let teamTwoUserToken = token;
 
-      response = await requireTestFunction("getTeamMembersViaAPI")(
-        team1.json()["uuid"]
-      );
+      const app = httpServer();
+      let headers = {
+        Authorization: `Bearer ${teamTwoUserToken}`,
+      };
+
+      response = await app.inject({
+        method: "GET",
+        url: `teams/${contextClassRef.testTeam.uuid}/members`,
+        headers,
+      });
     } catch (error) {
       response = error;
-      debugLogger(response.json());
+      debugLogger(response);
     }
 
     expect(response.statusCode).toBe(403);
