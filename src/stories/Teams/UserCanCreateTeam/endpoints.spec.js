@@ -34,8 +34,6 @@ describe("API UserCanCreateTeam", () => {
 
       let headers = contextClassRef.headers;
 
-      // console.log("headers", headers)
-
       const app = httpServer();
       result = await app.inject({
         method: "POST",
@@ -48,8 +46,6 @@ describe("API UserCanCreateTeam", () => {
     } catch (error) {
       response = error;
     }
-
-    console.log("response.json()", response.json());
 
     expect(response.statusCode).toBe(200);
     expect(response.json()).toMatchObject({

@@ -12,7 +12,7 @@ const prepare = async ({ req }) => {
 
 const augmentPrepare = async ({ prepareResult }) => {
   try {
-    let teamMember = await teamMembersRepo.first({
+    let teamMember = await teamMembersRepo.findWithConstraints({
       team_uuid: prepareResult.team_uuid,
       user_uuid: prepareResult.invoking_user_uuid,
     });

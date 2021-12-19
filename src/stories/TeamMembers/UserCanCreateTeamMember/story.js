@@ -1,5 +1,5 @@
 const validator = requireValidator();
-const teamMemberRepo = requireRepo("teamMembers");
+const teamMembersRepo = requireRepo("teamMembers");
 const teamRepo = requireRepo("teams");
 const userRepo = requireRepo("users");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
@@ -69,8 +69,6 @@ const authorize = async ({ prepareResult, augmentPrepareResult }) => {
 };
 
 const validateInput = async (payload) => {
-  console.log("payload", payload);
-
   const constraints2 = {
     attribute_type: {
       presence: {
@@ -89,7 +87,7 @@ const validateInput = async (payload) => {
         callback: async (payload) => {
           let count =
             typeof payload.attribute_value === "string"
-              ? await teamMemberRepo.countWithConstraints({
+              ? await teamMembersRepo.countWithConstraints({
                   attribute_value: payload.attribute_value,
                   team_uuid: payload.team_uuid,
                 })
@@ -118,7 +116,7 @@ const handle = async ({ prepareResult, augmentPrepareResult, storyName }) => {
       // user_uuid: prepareResult.invoking_user_uuid,
     };
 
-    return await teamMemberRepo.createTeamMember(payload);
+    return await teamMembersRepo.createTeamMember(payload);
   } catch (error) {
     console.log("userCanCreateTeamMember-handler-error", error);
     throw error;

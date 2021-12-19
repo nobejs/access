@@ -39,8 +39,6 @@ describe("Test API Tokens/TeamAdminCanCreateToken", () => {
       console.log("error", error);
     }
 
-    console.log(respondResult.statusCode, respondResult.json());
-
     const decoded = await decodeJWT(respondResult.json().token);
 
     expect(respondResult.statusCode).toBe(200);

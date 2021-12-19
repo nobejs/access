@@ -34,8 +34,6 @@ const authorize = ({ prepareResult }) => {
 };
 
 const handle = async ({ prepareResult }) => {
-  console.log("prepareResult", prepareResult);
-
   let unauthorizedObject = {
     statusCode: 401,
     message: "Unauthorized",

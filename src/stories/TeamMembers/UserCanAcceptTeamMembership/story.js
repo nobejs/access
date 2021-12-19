@@ -15,7 +15,7 @@ const augmentPrepare = async ({ prepareResult }) => {
   let teamMember = null;
 
   try {
-    teamMember = await teamMembersRepo.first({
+    teamMember = await teamMembersRepo.findWithConstraints({
       uuid: prepareResult.team_member_uuid,
     });
 

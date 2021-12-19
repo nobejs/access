@@ -1,69 +1,86 @@
-const validator = requireValidator();
-const TeamMemberRepo = requireRepo("teamMembers");
-const TeamRepo = requireRepo("team");
+const teamMembersRepo = requireRepo("teamMembers");
+const teamRepo = requireRepo("teams");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
+const getTeamMemberPermissions = requireFunction("getTeamMemberPermissions");
+const checkPermission = requireFunction("checkPermission");
 
 const prepare = async ({ req }) => {
   const payload = findKeysFromRequest(req, ["team_member_uuid", "team_uuid"]);
   payload["invoking_user_uuid"] = req.user;
-  payload["token"] = req.token;
 
   return payload;
 };
 
 const augmentPrepare = async ({ prepareResult }) => {
   try {
-    let team = await TeamRepo.first({
+    let team = await teamRepo.findByUuid({
       uuid: prepareResult.team_uuid,
     });
 
-    let teamMember = await TeamMemberRepo.first({
+    if (team === undefined) {
+      throw {
+        message: "Team not found",
+        statusCode: 404,
+      };
+    }
+
+    let teamMember = await teamMembersRepo.findWithConstraints({
       team_uuid: prepareResult.team_uuid,
       uuid: prepareResult.team_member_uuid,
     });
 
+    if (teamMember === undefined) {
+      throw {
+        message: "Team Member not found",
+        statusCode: 404,
+      };
+    }
+
     return { team, teamMember };
   } catch (error) {
-    throw {
-      message: "Team not found",
-      statusCode: 404,
-    };
+    throw error;
   }
 };
 
 const authorize = async ({ prepareResult, augmentPrepareResult }) => {
   // Check if this team atleast one owner before
+  try {
+    try {
+      let permissions = await getTeamMemberPermissions({
+        team_uuid: prepareResult.team_uuid,
+        user_uuid: prepareResult.invoking_user_uuid,
+      });
 
-  if (augmentPrepareResult.teamMember.role === "owner") {
-    throw {
-      message: "Owner cannot be deleted. Downgrade them to Member to delete.",
-      statusCode: 422,
-    };
+      await checkPermission(permissions, ["admin"]);
+    } catch (error) {
+      throw error;
+    }
+  } catch (error) {
+    console.log("userCanDeleteTeamMember-authorize-error", error);
+    throw error;
   }
-
-  if (
-    augmentPrepareResult.team.creator_user_uuid ===
-    prepareResult.invoking_user_uuid
-  ) {
-    return true;
-  }
-
-  throw {
-    message: "NotAuthorized",
-    statusCode: 403,
-  };
 };
 
 const handle = async ({ prepareResult, storyName }) => {
-  return await TeamMemberRepo.del({
-    uuid: prepareResult.team_member_uuid,
-  });
+  try {
+    return await teamMembersRepo.del({
+      uuid: prepareResult.team_member_uuid,
+    });
+  } catch (error) {
+    console.log("userCanDeleteTeamMember-handler-error", error);
+    throw error;
+  }
 };
 
 const respond = ({ handleResult }) => {
-  return {
-    message: "Deleted successfully",
-  };
+  try {
+    return {
+      message: "Deleted successfully",
+    };
+  } catch (error) {
+    console.log("userCanDeleteTeamMember-respondResult-error", error);
+    throw error;
+  }
 };
 
 module.exports = {

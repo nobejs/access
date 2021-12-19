@@ -7,7 +7,6 @@ const contextClassRef = requireUtil("contextHelper");
 const decodeJWT = requireFunction("JWT/decodeJWT");
 
 describe("Test Handler Tokens/TeamAdminCanDeleteToken", () => {
-
   beforeEach(async () => {
     await knex("users").truncate();
     await knex("verifications").truncate();
@@ -35,19 +34,17 @@ describe("Test Handler Tokens/TeamAdminCanDeleteToken", () => {
       contextClassRef.user.uuid
     );
     contextClassRef.testTeam = testTeam;
-
   });
 
   it("team_admin_can_delete_token", async () => {
     let result = {};
     try {
-
       const token = await tokensRepo.createTokenForTeam({
         team_uuid: contextClassRef.testTeam.uuid,
         title: "Personal",
         permissions: {
-          "create_events": true
-        }
+          create_events: true,
+        },
       });
 
       const decoded = await decodeJWT(token);
@@ -59,7 +56,7 @@ describe("Test Handler Tokens/TeamAdminCanDeleteToken", () => {
           sub: decodedUserToken.sub,
           issuer: decodedUserToken.iss,
           team_uuid: contextClassRef.testTeam.uuid,
-          token_uuid: decoded.jti
+          token_uuid: decoded.jti,
         },
       });
     } catch (error) {
@@ -67,7 +64,7 @@ describe("Test Handler Tokens/TeamAdminCanDeleteToken", () => {
     }
     const { respondResult } = result;
     expect(respondResult).toMatchObject({
-      message: "Token deleted Successfully"
+      message: "Token deleted Successfully",
     });
   });
 });

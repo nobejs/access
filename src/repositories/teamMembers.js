@@ -55,7 +55,7 @@ const getTeamsAndMembers = async (where = {}) => {
   }
 };
 
-const first = async (where = {}) => {
+const findWithConstraints = async (where = {}) => {
   try {
     let team_members = await knex("team_members")
       .where(where)
@@ -108,7 +108,7 @@ const del = async (where) => {
 module.exports = {
   createTeamMember,
   update,
-  first,
+  findWithConstraints,
   countWithConstraints,
   findAll,
   del,

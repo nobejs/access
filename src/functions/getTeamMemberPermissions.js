@@ -1,10 +1,10 @@
 // const RolesRepo = requireRepo("roles");
-const TeamMembersRepo = requireRepo("teamMembers");
+const teamMembersRepo = requireRepo("teamMembers");
 
 module.exports = (payload) => {
   return new Promise(async (resolve, reject) => {
     try {
-      let teamMember = await TeamMembersRepo.first({
+      let teamMember = await teamMembersRepo.findWithConstraints({
         team_uuid: payload.team_uuid,
         user_uuid: payload.user_uuid,
         status: "accepted",

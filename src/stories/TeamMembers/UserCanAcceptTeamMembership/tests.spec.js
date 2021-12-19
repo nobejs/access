@@ -35,8 +35,6 @@ describe("Test Handler TeamMembers/UserCanAcceptTeamMembership", () => {
 
       const teamMember = await teamMembersRepo.createTeamMember(payload);
 
-      console.log("teamMember", teamMember);
-
       result = await testStrategy("TeamMembers/UserCanAcceptTeamMembership", {
         prepareResult: {
           team_member_uuid: teamMember.uuid,

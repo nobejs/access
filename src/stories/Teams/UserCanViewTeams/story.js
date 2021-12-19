@@ -1,4 +1,4 @@
-const teamMemberRepo = requireRepo("teamMembers");
+const teamMembersRepo = requireRepo("teamMembers");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
 
 const prepare = async ({ req }) => {
@@ -25,7 +25,7 @@ const handle = async ({ prepareResult }) => {
       payload["teams.tenant"] = prepareResult.tenant;
     }
 
-    return await teamMemberRepo.getTeamsAndMembers(payload);
+    return await teamMembersRepo.getTeamsAndMembers(payload);
   } catch (error) {
     console.log("userCanViewTeam-handleResult-error", error);
     throw error;

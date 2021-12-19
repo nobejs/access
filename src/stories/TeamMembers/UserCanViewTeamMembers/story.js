@@ -1,4 +1,4 @@
-const teamMemberRepo = requireRepo("teamMembers");
+const teamMembersRepo = requireRepo("teamMembers");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
 
 const prepare = async ({ req }) => {
@@ -8,7 +8,7 @@ const prepare = async ({ req }) => {
 };
 
 const augmentPrepare = async ({ prepareResult }) => {
-  let teamMember = await teamMemberRepo.first({
+  let teamMember = await teamMembersRepo.findWithConstraints({
     team_uuid: prepareResult.team_uuid,
     user_uuid: prepareResult.invoking_user_uuid,
   });
@@ -28,7 +28,7 @@ const authorize = ({ augmentPrepareResult }) => {
 };
 
 const handle = async ({ prepareResult }) => {
-  return await teamMemberRepo.getTeamsAndMembers({
+  return await teamMembersRepo.getTeamsAndMembers({
     "team_members.team_uuid": prepareResult.team_uuid,
   });
 };
