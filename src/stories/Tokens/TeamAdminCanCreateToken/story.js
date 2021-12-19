@@ -68,7 +68,7 @@ const authorize = async ({ prepareResult }) => {
   }
 };
 
-const handle = async ({ prepareResult, storyName }) => {
+const handle = async ({ prepareResult }) => {
   try {
     let token = await tokensRepo.createTokenForTeam({
       team_uuid: prepareResult.team_uuid,

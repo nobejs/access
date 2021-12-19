@@ -34,8 +34,6 @@ const authorize = ({ prepareResult }) => {
 };
 
 const handle = async ({ prepareResult }) => {
-  console.log("prepareResult", prepareResult);
-
   let unauthorizedObject = {
     statusCode: 401,
     message: "Unauthorized",
@@ -64,6 +62,7 @@ const handle = async ({ prepareResult }) => {
     }
 
     if (prepareResult.issuer === "team") {
+      prepareResult["team_uuid"] = prepareResult["sub"];
       let permissions = await getTokenPermissions(prepareResult);
       return permissions;
     }
