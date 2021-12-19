@@ -62,6 +62,7 @@ const handle = async ({ prepareResult }) => {
     }
 
     if (prepareResult.issuer === "team") {
+      prepareResult["team_uuid"] = prepareResult["sub"];
       let permissions = await getTokenPermissions(prepareResult);
       return permissions;
     }
