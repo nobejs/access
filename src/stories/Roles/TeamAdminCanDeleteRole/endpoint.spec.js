@@ -3,7 +3,7 @@ const randomUser = requireUtil("randomUser");
 const httpServer = requireHttpServer();
 const debugLogger = requireUtil("debugLogger");
 const truncateAllTables = requireFunction("truncateAllTables");
-const createUserAndTeam = require("../createUserAndTeam");
+const createUserAndTeam = requireFunction("createUserAndTeam");
 const rolesRepo = requireRepo("roles");
 
 describe("Test API Roles/TeamAdminCanDeleteRole", () => {

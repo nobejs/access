@@ -4,7 +4,7 @@ const contextClassRef = requireUtil("contextHelper");
 const TeamsRepo = requireRepo("teams");
 const UsersRepo = requireRepo("users");
 const truncateAllTables = requireFunction("truncateAllTables");
-const createUserAndTeam = require("../createUserAndTeam");
+const createUserAndTeam = requireFunction("createUserAndTeam");
 
 describe("Handler UserCanUpdateTeam", () => {
   beforeEach(async () => {

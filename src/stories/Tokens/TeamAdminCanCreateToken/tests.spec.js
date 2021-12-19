@@ -1,7 +1,7 @@
 const debugLogger = requireUtil("debugLogger");
 const truncateAllTables = requireFunction("truncateAllTables");
 const contextClassRef = requireUtil("contextHelper");
-const createUserAndTeam = require("../createUserAndTeam");
+const createUserAndTeam = requireFunction("createUserAndTeam");
 const decodeJWT = requireFunction("JWT/decodeJWT");
 
 describe("Test Handler Tokens/TeamAdminCanCreateToken", () => {

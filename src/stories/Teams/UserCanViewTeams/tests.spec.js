@@ -1,6 +1,6 @@
 const debugLogger = requireUtil("debugLogger");
 const truncateAllTables = requireFunction("truncateAllTables");
-const createUserAndTeam = require("../createUserAndTeam");
+const createUserAndTeam = requireFunction("createUserAndTeam");
 
 describe("Test Handler Teams/UserCanViewTeams", () => {
   beforeEach(async () => {

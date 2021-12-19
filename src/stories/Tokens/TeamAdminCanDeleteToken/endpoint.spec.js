@@ -5,7 +5,7 @@ const httpServer = requireHttpServer();
 const teamsRepo = requireRepo("teams");
 const tokensRepo = requireRepo("tokens");
 const decodeJWT = requireFunction("JWT/decodeJWT");
-const createUserAndTeam = require("../createUserAndTeam");
+const createUserAndTeam = requireFunction("createUserAndTeam");
 const truncateAllTables = requireFunction("truncateAllTables");
 
 describe("Test API Tokens/TeamAdminCanDeleteToken", () => {

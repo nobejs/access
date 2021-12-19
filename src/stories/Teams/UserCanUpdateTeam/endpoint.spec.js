@@ -5,7 +5,7 @@ const httpServer = requireHttpServer();
 const TeamsRepo = requireRepo("teams");
 const UsersRepo = requireRepo("users");
 const truncateAllTables = requireFunction("truncateAllTables");
-const createUserAndTeam = require("../createUserAndTeam");
+const createUserAndTeam = requireFunction("createUserAndTeam");
 
 describe("API UserCanUpdateTeam", () => {
   beforeEach(async () => {

@@ -3,7 +3,7 @@ const randomUser = requireUtil("randomUser");
 const knex = requireKnex();
 const httpServer = requireHttpServer();
 const truncateAllTables = requireFunction("truncateAllTables");
-const createUserAndTeam = require("../createUserAndTeam");
+const createUserAndTeam = requireFunction("createUserAndTeam");
 
 describe("Test API Teams/UserCanViewTeams", () => {
   beforeEach(async () => {

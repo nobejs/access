@@ -3,7 +3,7 @@ const knex = requireKnex();
 const httpServer = requireHttpServer();
 const truncateAllTables = requireFunction("truncateAllTables");
 const contextClassRef = requireUtil("contextHelper");
-const createUserAndTeam = require("../createUserAndTeam");
+const createUserAndTeam = requireFunction("createUserAndTeam");
 
 describe("Test API Roles/TeamAdminCanCreateRole", () => {
   beforeEach(async () => {
