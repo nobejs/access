@@ -6,7 +6,7 @@ const checkPermission = requireFunction("checkPermission");
 
 const prepare = async ({ req }) => {
   const payload = findKeysFromRequest(req, ["team_member_uuid", "team_uuid"]);
-  payload["invoking_user_uuid"] = req.user;
+  payload["invoking_user_uuid"] = req.sub;
 
   return payload;
 };
@@ -38,6 +38,7 @@ const augmentPrepare = async ({ prepareResult }) => {
 
     return { team, teamMember };
   } catch (error) {
+    // console.error("userCanDeleteTeamMember-augumentResult-error", error);
     throw error;
   }
 };
@@ -45,16 +46,12 @@ const augmentPrepare = async ({ prepareResult }) => {
 const authorize = async ({ prepareResult, augmentPrepareResult }) => {
   // Check if this team atleast one owner before
   try {
-    try {
-      let permissions = await getTeamMemberPermissions({
-        team_uuid: prepareResult.team_uuid,
-        user_uuid: prepareResult.invoking_user_uuid,
-      });
+    let permissions = await getTeamMemberPermissions({
+      team_uuid: prepareResult.team_uuid,
+      user_uuid: prepareResult.invoking_user_uuid,
+    });
 
-      await checkPermission(permissions, ["admin"]);
-    } catch (error) {
-      throw error;
-    }
+    await checkPermission(permissions, ["admin"]);
   } catch (error) {
     console.log("userCanDeleteTeamMember-authorize-error", error);
     throw error;

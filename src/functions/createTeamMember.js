@@ -4,9 +4,9 @@ const teamMembersRepo = requireRepo("teamMembers");
 
 module.exports = async (teamId) => {
   try {
-    const { user } = await usersRepo.createTestUserWithVerifiedToken({
+    const { user, token } = await usersRepo.createTestUserWithVerifiedToken({
       type: "email",
-      value: "rajiv@betalectic.com",
+      value: "jon@betalectic.com",
       password: "GoodPassword",
       purpose: "register",
     });
@@ -21,6 +21,10 @@ module.exports = async (teamId) => {
 
     const teamMember = await teamMembersRepo.createTeamMember(payload);
     contextClassRef.teamMember = teamMember;
+    contextClassRef.memberToken = token;
+
+    console.log("check 221", teamMember.uuid, teamId);
+    return { teamMember, token };
   } catch (error) {
     console.log("error", error);
     throw error;

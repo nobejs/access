@@ -3,7 +3,7 @@ const findKeysFromRequest = requireUtil("findKeysFromRequest");
 
 const prepare = async ({ req }) => {
   const payload = findKeysFromRequest(req, ["team_uuid"]);
-  payload["invoking_user_uuid"] = req.user;
+  payload["invoking_user_uuid"] = req.sub;
   return payload;
 };
 

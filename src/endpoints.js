@@ -63,6 +63,29 @@ module.exports = (app) => {
             "/teams/:team_uuid/roles/:role_uuid",
             "Roles/TeamAdminCanDeleteRole",
           ],
+
+          // Team Members
+          ["get", "/teams/invites", "TeamMembers/UserCanViewInvites"],
+          [
+            "post",
+            "/teams/:team_uuid/members",
+            "TeamMembers/UserCanCreateTeamMember",
+          ],
+          [
+            "post",
+            "/teams/:team_uuid/members/:team_member_uuid/accept",
+            "TeamMembers/UserCanAcceptTeamMembership",
+          ],
+          [
+            "delete",
+            "/teams/:team_uuid/members/:team_member_uuid",
+            "TeamMembers/UserCanDeleteTeamMember",
+          ],
+          [
+            "get",
+            "/teams/:team_uuid/members",
+            "TeamMembers/UserCanViewTeamMembers",
+          ],
         ],
       },
     ];

@@ -4,7 +4,7 @@ const findKeysFromRequest = requireUtil("findKeysFromRequest");
 
 const prepare = ({ req }) => {
   const payload = findKeysFromRequest(req, ["tenant"]);
-  payload["invoking_user_uuid"] = req.user;
+  payload["invoking_user_uuid"] = req.sub;
   payload["token"] = req.token;
 
   return payload;
