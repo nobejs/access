@@ -1,5 +1,5 @@
 const teamMembersRepo = requireRepo("teamMembers");
-const teamRepo = requireRepo("teams");
+const teamsRepo = requireRepo("teams");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
 const getTeamMemberPermissions = requireFunction("getTeamMemberPermissions");
 const checkPermission = requireFunction("checkPermission");
@@ -13,7 +13,7 @@ const prepare = async ({ req }) => {
 
 const augmentPrepare = async ({ prepareResult }) => {
   try {
-    let team = await teamRepo.findByUuid({
+    let team = await teamsRepo.findByUuid({
       uuid: prepareResult.team_uuid,
     });
 

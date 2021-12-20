@@ -92,6 +92,11 @@ module.exports = (app) => {
             "/teams/:team_uuid/members",
             "TeamMembers/UserCanViewTeamMembers",
           ],
+          [
+            "put",
+            "/teams/:team_uuid/members/:team_member_uuid/assign-role-permission",
+            "TeamMembers/UserCanUpdateRolesAndPermissionsOfTeamMember",
+          ],
         ],
       },
     ];

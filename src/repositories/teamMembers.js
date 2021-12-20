@@ -2,6 +2,8 @@ const knex = requireKnex();
 const underscoredColumns = requireUtil("underscoredColumns");
 const attributesRepo = requireRepo("attributes");
 
+let table = "team_members";
+
 const countWithConstraints = async (where = {}, whereNot = {}) => {
   try {
     let team_members = await knex("team_members")
@@ -156,6 +158,29 @@ const getUserTeamInvites = async (userUuid) => {
   }
 };
 
+const updateRolesAndPermissions = async (payload) => {
+  try {
+    let dataToUpdate = {};
+    // dataToUpdate["role_uuid"] = payload["role_uuid"];
+    dataToUpdate["permissions"] = payload["permissions"];
+
+    return await knex("team_members")
+      .where({ uuid: payload["team_member_uuid"] })
+      .update(dataToUpdate, [
+        "uuid",
+        "team_uuid",
+        "user_uuid",
+        "attribute_type",
+        "attribute_value",
+        "status",
+        "role_uuid",
+        "permissions",
+      ]);
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   createTeamMember,
   update,
@@ -165,4 +190,5 @@ module.exports = {
   del,
   getTeamsAndMembers,
   getUserTeamInvites,
+  updateRolesAndPermissions,
 };

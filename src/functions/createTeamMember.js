@@ -2,7 +2,7 @@ const contextClassRef = requireUtil("contextHelper");
 const usersRepo = requireRepo("users");
 const teamMembersRepo = requireRepo("teamMembers");
 
-module.exports = async (teamId) => {
+module.exports = async (teamId, status = "invited") => {
   try {
     const { user, token } = await usersRepo.createTestUserWithVerifiedToken({
       type: "email",
@@ -15,8 +15,9 @@ module.exports = async (teamId) => {
       team_uuid: teamId,
       attribute_type: "email",
       attribute_value: "jon@betalectic.com",
-      status: "invited",
-      user_uuid: null,
+      status: status,
+      user_uuid:
+        status === "invited" ? null : "515d0ed8-a00d-413a-ac5e-ab729a069ce6",
       permissions: { member: true },
     };
 
