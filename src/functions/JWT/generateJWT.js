@@ -22,7 +22,7 @@ module.exports = async (jti, sub, issuer, payload = {}, expiry = "1y") => {
 
     return jwt;
   } catch (error) {
-    console.log("Failed generating JWT", error);
+    // console.log("Failed generating JWT", error);
     throw error;
   }
 };

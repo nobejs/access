@@ -6,7 +6,6 @@ const knex = requireKnex();
 const contextClassRef = requireUtil("contextHelper");
 
 describe("Test Handler Users/ViewLoggedInUser", () => {
-
   beforeEach(async () => {
     await knex("users").truncate();
     await knex("attributes").truncate();
@@ -18,14 +17,12 @@ describe("Test Handler Users/ViewLoggedInUser", () => {
     });
 
     contextClassRef.user = user;
-
   });
 
   it("logged_in_user_can_fetch_user_object", async () => {
     let result = {};
     let decoded = {};
     try {
-
       let token = await tokensRepo.createTokenForUser(contextClassRef.user);
 
       decoded = await decodeJWT(token);
@@ -35,7 +32,6 @@ describe("Test Handler Users/ViewLoggedInUser", () => {
           jti: decoded.jti,
         },
       });
-
     } catch (error) {
       throw error;
     }
@@ -44,6 +40,7 @@ describe("Test Handler Users/ViewLoggedInUser", () => {
 
     expect(respondResult).toMatchObject({
       uuid: decoded.sub,
+      attributes: expect.any(Object),
     });
   });
 });

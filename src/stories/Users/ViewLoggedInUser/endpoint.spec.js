@@ -41,13 +41,14 @@ describe("Test API Users/ViewLoggedInUser", () => {
         },
       });
     } catch (error) {
-      debugLogger(error);
+      // debugLogger(error);
       respondResult = error;
     }
 
     expect(respondResult.statusCode).toBe(200);
     expect(respondResult.json()).toMatchObject({
       uuid: contextClassRef.user.uuid,
+      attributes: expect.any(Object),
     });
   });
 
@@ -66,7 +67,7 @@ describe("Test API Users/ViewLoggedInUser", () => {
         },
       });
     } catch (error) {
-      debugLogger(error);
+      // debugLogger(error);
       respondResult = error;
     }
 
@@ -81,7 +82,7 @@ describe("Test API Users/ViewLoggedInUser", () => {
 
       let token = await tokensRepo.createTokenForUser(contextClassRef.user);
 
-      console.log(token);
+      // console.log(token);
 
       await tokensRepo.deleteTokenByConstraints({
         sub: contextClassRef.user.uuid,
@@ -95,7 +96,7 @@ describe("Test API Users/ViewLoggedInUser", () => {
         },
       });
     } catch (error) {
-      debugLogger(error);
+      // debugLogger(error);
       respondResult = error;
     }
 
