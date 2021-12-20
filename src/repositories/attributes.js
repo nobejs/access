@@ -27,6 +27,10 @@ const createAttributeForUUID = async (uuid, payload, verify = false) => {
   });
 };
 
+const getAttributesForUUID = async (uuid) => {
+  return await baseRepo.findAll(table, { user_uuid: uuid });
+};
+
 module.exports = {
   create,
   first,

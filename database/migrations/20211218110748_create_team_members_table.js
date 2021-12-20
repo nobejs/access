@@ -12,9 +12,9 @@ exports.up = async function (knex) {
     table.string("status", 255).notNullable().defaultTo("invited");
     table.string("role_uuid", 255).nullable().defaultTo(null);
     table.jsonb("permissions", 255).nullable().defaultTo(null);
-    table.datetime("created_at", { useTz: false });
-    table.datetime("updated_at", { useTz: false });
-    table.datetime("deleted_at", { useTz: false });
+    table.datetime("created_at");
+    table.datetime("updated_at");
+    table.datetime("deleted_at");
   });
 };
 

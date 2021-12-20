@@ -11,9 +11,9 @@ exports.up = async function (knex) {
     table.string("title", 255);
     table.json("permissions");
     table.json("other_info");
-    table.datetime("created_at", { useTz: false });
-    table.datetime("updated_at", { useTz: false });
-    table.datetime("deleted_at", { useTz: false });
+    table.datetime("created_at");
+    table.datetime("updated_at");
+    table.datetime("deleted_at");
   });
 };
 

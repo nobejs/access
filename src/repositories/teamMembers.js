@@ -105,6 +105,13 @@ const del = async (where) => {
   }
 };
 
+const findInvites = async (loggedInUserUUID, attributes) => {
+  // SELECT * FROM attributes WHERE
+  // ((attribute_type == 'email' AND attribute_value = "rajiv@betalectic.com")
+  // OR (attribute_type == 'email' AND attribute_value = "rajivs.iitkgp@gmail.com"))
+  // AND status == 'invited';
+};
+
 module.exports = {
   createTeamMember,
   update,
@@ -113,4 +120,5 @@ module.exports = {
   findAll,
   del,
   getTeamsAndMembers,
+  findInvites,
 };

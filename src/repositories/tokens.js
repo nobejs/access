@@ -11,6 +11,22 @@ const create = async (payload) => {
   return await baseRepo.create(table, payload);
 };
 
+const findAllUserTokens = async (uuid) => {
+  return await baseRepo.findAll(
+    table,
+    { sub: uuid, issuer: "user" },
+    underscoredColumns([
+      "tokens.uuid",
+      "tokens.title",
+      "tokens.issuer",
+      "tokens.permissions",
+      "tokens.created_at",
+      "tokens.updated_at",
+      "tokens.other_info",
+    ])
+  );
+};
+
 const first = async (payload) => {
   return await baseRepo.first(table, payload);
 };
@@ -25,7 +41,6 @@ const deleteTokenByConstraints = async (payload) => {
 
 const createTokenForUser = async (user) => {
   try {
-    // console.log("createTokenForUser", user.uuid);
     let token = await baseRepo.create(table, {
       sub: user.uuid,
       issuer: "user",
@@ -99,4 +114,5 @@ module.exports = {
   createTokenForTeam,
   checkIfValidJti,
   getTokensForTeam,
+  findAllUserTokens,
 };

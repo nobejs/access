@@ -3,7 +3,11 @@ const baseRepo = requireUtil("baseRepo");
 const attributesRepo = requireRepo("attributes");
 const verificationsRepo = requireRepo("verifications");
 const tokensRepo = requireRepo("tokens");
-const { registrationVerificationEvent } = require("../events");
+const {
+  registrationVerificationEvent,
+  resetPasswordVerificationEvent,
+} = require("../events");
+const isDateInPast = requireFunction("isDateInPast");
 const table = "users";
 
 const getAllowedTypes = () => {
@@ -106,7 +110,7 @@ const verifyAttributeForRegistration = async (payload) => {
       attribute_value: payload.value,
     });
 
-    if (verification !== undefined) {
+    if (verification !== undefined && !isDateInPast(verification.expires_at)) {
       if (payload.token === verification.token) {
         await attributesRepo.createAttributeForUUID(
           verification.user_uuid,
@@ -132,6 +136,95 @@ const verifyAttributeForRegistration = async (payload) => {
       message: "Invalid Token",
     };
   }
+};
+
+const requestAttributeVerificationForResetPassword = async (payload) => {
+  try {
+    // Find if there is already an existing verification for this
+    let verification = await verificationsRepo.findVerificationForResetPassword(
+      {
+        attribute_type: payload.type,
+        attribute_value: payload.value,
+      }
+    );
+
+    // If verification is present already, we can update it
+    if (verification !== undefined) {
+      let verificationObject = await verificationsRepo.updateVerification({
+        uuid: verification.uuid,
+      });
+
+      await resetPasswordVerificationEvent({
+        token: verificationObject.token,
+        type: verificationObject.attribute_type,
+        value: verificationObject.attribute_value,
+      });
+    } else {
+      let attribute = await attributesRepo.first({
+        type: payload.type,
+        value: payload.value,
+      });
+
+      let verificationObject =
+        await verificationsRepo.createVerificationForResetPassword({
+          user_uuid: attribute.user_uuid,
+          attribute_type: payload.type,
+          attribute_value: payload.value,
+        });
+
+      await resetPasswordVerificationEvent({
+        token: verificationObject.token,
+        type: verificationObject.attribute_type,
+        value: verificationObject.attribute_value,
+      });
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+const verifyAttributeForResetPassword = async (payload) => {
+  try {
+    let verification = await verificationsRepo.findVerificationForResetPassword(
+      {
+        attribute_type: payload.type,
+        attribute_value: payload.value,
+      }
+    );
+
+    if (verification !== undefined && !isDateInPast(verification.expires_at)) {
+      if (payload.token === verification.token) {
+        await updateUserPassword(verification.user_uuid, payload.password);
+
+        await verificationsRepo.removeVerification({
+          uuid: verification.uuid,
+        });
+
+        return {
+          message: "Verification Successful",
+        };
+      } else {
+        throw "err";
+      }
+    } else {
+      throw "err";
+    }
+  } catch (error) {
+    throw {
+      statusCode: 401,
+      message: "Invalid Token",
+    };
+  }
+};
+
+const updateUserPassword = async (uuid, password) => {
+  return await baseRepo.update(
+    table,
+    { uuid: uuid },
+    {
+      password: bcrypt.hashSync(password, 5),
+    }
+  );
 };
 
 const createUserWithPassword = async (password) => {
@@ -189,16 +282,22 @@ const createTestUserWithVerifiedToken = async (payload) => {
   }
 };
 
+const updateProfileOfUser = async (uuid, payload) => {
+  return await baseRepo.update(table, { uuid: uuid }, { profile: payload });
+};
+
 module.exports = {
   getAllowedTypes,
   createUserWithPassword,
   registerWithPassword,
   authenticateWithPassword,
-  verifyAttributeForRegistration,
   requestAttributeVerificationForRegistration,
+  verifyAttributeForRegistration,
+  requestAttributeVerificationForResetPassword,
+  verifyAttributeForResetPassword,
   findUserByTypeAndValue,
   create,
   first,
   createTestUserWithVerifiedToken,
-  // getAttributesOfAUser,
+  updateProfileOfUser,
 };

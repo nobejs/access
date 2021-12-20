@@ -14,11 +14,12 @@ describe("Test Handler TeamMembers/UserCanViewInvites", () => {
 
   it("user_should_be_able_to_see_team_invites", async () => {
     let result = {};
+    console.log("contextClassRef.noTeamUser123", contextClassRef.noTeamUser);
     try {
       result = await testStrategy("TeamMembers/UserCanViewInvites", {
         prepareResult: {
           tenant: contextClassRef.testTeam.tenant,
-          invoking_user_uuid: contextClassRef.noTeamUser.user_uuid,
+          invoking_user_uuid: contextClassRef.noTeamUser.uuid,
         },
       });
     } catch (error) {
@@ -29,8 +30,10 @@ describe("Test Handler TeamMembers/UserCanViewInvites", () => {
     expect(respondResult).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          "team_members*user_uuid": contextClassRef.teamMember.user_uuid,
-          "team_members*status": "invited",
+          user_uuid: null,
+          status: "invited",
+          // "team_members*user_uuid": null,
+          // "team_members*status": "invited",
         }),
       ])
     );

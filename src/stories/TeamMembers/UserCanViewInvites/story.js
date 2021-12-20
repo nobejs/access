@@ -21,6 +21,7 @@ const augmentPrepare = async ({ prepareResult }) => {
 
   try {
     user = await usersRepo.first({ uuid: prepareResult["invoking_user_uuid"] });
+
     if (user === undefined) {
       throw user;
     }
@@ -35,8 +36,6 @@ const augmentPrepare = async ({ prepareResult }) => {
     if (!userAllAttributes || userAllAttributes.length === 0) {
       throw userAllAttributes;
     }
-
-    console.log("userAllAttributes12312", userAllAttributes);
 
     return { user, userAllAttributes };
   } catch (error) {
@@ -56,16 +55,14 @@ const handle = async ({ prepareResult, augmentPrepareResult }) => {
   try {
     let attributes = augmentPrepareResult.userAllAttributes;
 
-    console.log("attributes1122", attributes);
-
     let joinValue = "VALUES ";
 
     for (let i = 0; i < attributes.length; i++) {
       let attributeValue = `('${attributes[i].type}', '${attributes[i].value}')`;
       let endingComma = ", ";
 
-      let columnDef =
-        " AS t (p,o) ON p = attribute_type AND o = attribute_value";
+      // let columnDef =
+      //   " AS t (p,o) ON p = attribute_type AND o = attribute_value";
 
       if (i !== attributes.length - 1) {
         joinValue = joinValue + attributeValue + endingComma;
@@ -73,8 +70,6 @@ const handle = async ({ prepareResult, augmentPrepareResult }) => {
         joinValue = joinValue + attributeValue;
       }
     }
-
-    console.log("test123", joinValue);
 
     const data = await knex.schema.raw(`SELECT * FROM team_members
     JOIN (${joinValue}) AS t (p,o) ON p = attribute_type AND o = attribute_value`);

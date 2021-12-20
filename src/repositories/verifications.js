@@ -1,8 +1,11 @@
 const baseRepo = requireUtil("baseRepo");
 const table = "verifications";
-const generateOTP = requireFunction("generateOTP")
-const getMinutesFromNow = requireFunction("getMinutesFromNow")
-const { registrationVerificationEvent } = require("../events");
+const generateOTP = requireFunction("generateOTP");
+const getMinutesFromNow = requireFunction("getMinutesFromNow");
+
+const countAll = async (where = {}, whereNot = {}) => {
+  return await baseRepo.countAll(table, where, whereNot);
+};
 
 const findVerificationForType = async (where = {}, purpose) => {
   let payload = { ...where, ...{ purpose } };
@@ -13,10 +16,14 @@ const findVerificationForRegistration = async (where = {}) => {
   return await findVerificationForType(where, "register");
 };
 
+const findVerificationForResetPassword = async (where = {}) => {
+  return await findVerificationForType(where, "reset-password");
+};
+
 const createVerificationForType = async (data, purpose) => {
   let payload = { ...data, ...{ purpose } };
-  payload['token'] = generateOTP();
-  payload['expires_at'] = getMinutesFromNow(10);
+  payload["token"] = generateOTP();
+  payload["expires_at"] = getMinutesFromNow(10);
   return await baseRepo.create(table, payload);
 };
 
@@ -25,9 +32,14 @@ const createVerificationForRegistration = async (data) => {
   return response;
 };
 
+const createVerificationForResetPassword = async (data) => {
+  let response = await createVerificationForType(data, "reset-password");
+  return response;
+};
+
 const updateVerification = async (where, payload = {}) => {
-  payload['token'] = generateOTP();
-  payload['expires_at'] = getMinutesFromNow(10);
+  payload["token"] = generateOTP();
+  payload["expires_at"] = getMinutesFromNow(10);
   return await baseRepo.update(table, where, payload);
 };
 
@@ -38,6 +50,9 @@ const removeVerification = async (payload) => {
 module.exports = {
   findVerificationForRegistration,
   createVerificationForRegistration,
+  findVerificationForResetPassword,
+  createVerificationForResetPassword,
   updateVerification,
   removeVerification,
+  countAll,
 };

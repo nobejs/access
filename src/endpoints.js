@@ -20,10 +20,16 @@ module.exports = (app) => {
           ],
           ["post", "/verify-registration", "Users/VerifyRegistration"],
 
+          ["post", "/request-reset-password", "Users/RequestResetPassword"],
+          ["post", "/reset-password", "Users/ResetPassword"],
+
           // Login
           ["post", "/login", "Users/CanLogin"],
           ["get", "/user", "Users/ViewLoggedInUser"],
+          ["post", "/user", "Users/UpdateUserProfile"],
           ["get", "/authorize", "Users/Authorize"],
+          ["get", "/sessions", "Users/GetSessions"],
+          ["delete", "/sessions/:session_uuid", "Users/DestroySession"],
 
           // Teams
           ["get", "/teams", "Teams/UserCanViewTeams"],
