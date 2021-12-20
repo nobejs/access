@@ -4,6 +4,7 @@ const usersRepo = requireRepo("users");
 const attributesRepo = requireRepo("attributes");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
 const knex = requireKnex();
+const underscoredColumns = requireUtil("underscoredColumns");
 
 const prepare = ({ req }) => {
   try {
@@ -32,6 +33,8 @@ const augmentPrepare = async ({ prepareResult }) => {
       },
       ["user_uuid", "type", "value"]
     );
+
+    console.log("userAllAttributes", userAllAttributes);
 
     if (!userAllAttributes || userAllAttributes.length === 0) {
       throw userAllAttributes;
@@ -71,16 +74,36 @@ const handle = async ({ prepareResult, augmentPrepareResult }) => {
       }
     }
 
-    const data = await knex.schema.raw(`SELECT * FROM team_members
-    JOIN (${joinValue}) AS t (p,o) ON p = attribute_type AND o = attribute_value`);
+    console.log(joinValue);
+
+    // const data = await knex.schema.raw(`SELECT * FROM team_members
+    // JOIN (${joinValue}) AS t (p,o) ON p = attribute_type AND o = attribute_value JOIN teams ON team_members.team_uuid = teams.uuid`);
 
     // console.log("data", data.rows);
-    return data.rows;
-    // const d = await knex
-    //   .select("*")
-    //   .from("team_members")
-    //   .joinRaw(`${joinValue}`);
-    // console.log("d1121", d);
+    // return data.rows;
+    const d = await knex
+      .from("team_members")
+      .joinRaw(
+        `JOIN (${joinValue}) AS t (p,o) ON p = attribute_type AND o = attribute_value`
+      )
+      .join("teams", "teams.uuid", "=", "team_members.team_uuid")
+      .select(
+        underscoredColumns([
+          "teams.uuid",
+          "teams.name",
+          "teams.slug",
+          "teams.tenant",
+          "team_members.uuid",
+          "team_members.user_uuid",
+          "team_members.attribute_type",
+          "team_members.attribute_value",
+          "team_members.status",
+          "team_members.role_uuid",
+          "team_members.permissions",
+        ])
+      );
+
+    console.log("d1121", d);
 
     // return await teamMemberRepo.getTeamsAndMembers({
     //   "teams.tenant": prepareResult["tenant"],

@@ -18,9 +18,10 @@ const first = async (payload) => {
 };
 
 const createAttributeForUUID = async (uuid, payload, verify = false) => {
+  console.log(payload.value);
   await baseRepo.create(table, {
     user_uuid: uuid,
-    verified_at: verify ? new Date().toISOString() : NULL,
+    verified_at: verify ? new Date().toISOString() : NULL, //Todo
     type: payload.type,
     value: payload.value,
     purpose: payload.purpose,
@@ -37,4 +38,5 @@ module.exports = {
   countAll,
   createAttributeForUUID,
   findWithConstraints,
+  getAttributesForUUID,
 };

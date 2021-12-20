@@ -25,9 +25,11 @@ describe("Test API Users/ViewLoggedInUser", () => {
         headers: contextClassRef.headers,
       });
     } catch (error) {
-      // debugLogger(error);
+      debugLogger(error);
       respondResult = error;
     }
+
+    debugLogger(respondResult.json());
 
     expect(respondResult.statusCode).toBe(200);
     expect(respondResult.json()).toMatchObject({
