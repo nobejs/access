@@ -5,7 +5,7 @@ const countAll = async (where = {}, whereNot = {}) => {
   return await baseRepo.countAll(table, where, whereNot);
 };
 
-const findAll = async (where = {}, columns) => {
+const findWithConstraints = async (where = {}, columns) => {
   return await baseRepo.findAll(table, where, columns);
 };
 
@@ -32,4 +32,5 @@ module.exports = {
   first,
   countAll,
   createAttributeForUUID,
+  findWithConstraints,
 };

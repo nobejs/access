@@ -48,6 +48,7 @@ const handle = async ({ prepareResult }) => {
     await validateInput(inputPayload);
     return await usersRepo.authenticateWithPassword(prepareResult);
   } catch (error) {
+    console.log("error123", error);
     throw error;
   }
 };

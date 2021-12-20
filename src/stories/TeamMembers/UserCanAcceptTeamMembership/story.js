@@ -7,7 +7,6 @@ const TeamMemberSerializer = requireSerializer("teamMembers");
 
 const prepare = async ({ req }) => {
   try {
-    console.log("called123");
     const payload = findKeysFromRequest(req, ["team_member_uuid"]);
     payload["invoking_user_uuid"] = req.sub;
     return payload;

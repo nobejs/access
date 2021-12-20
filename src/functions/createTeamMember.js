@@ -16,12 +16,13 @@ module.exports = async (teamId) => {
       attribute_type: "email",
       attribute_value: "jon@betalectic.com",
       status: "invited",
-      user_uuid: user.uuid,
+      user_uuid: null,
       permissions: { member: true },
     };
 
     const teamMember = await teamMembersRepo.createTeamMember(payload);
     contextClassRef.teamMember = teamMember;
+    contextClassRef.noTeamUser = user;
     contextClassRef.memberToken = token;
 
     return { teamMember, token };

@@ -18,7 +18,7 @@ describe("Test Handler TeamMembers/UserCanViewInvites", () => {
       result = await testStrategy("TeamMembers/UserCanViewInvites", {
         prepareResult: {
           tenant: contextClassRef.testTeam.tenant,
-          invoking_user_uuid: contextClassRef.teamMember.user_uuid,
+          invoking_user_uuid: contextClassRef.noTeamUser.user_uuid,
         },
       });
     } catch (error) {
