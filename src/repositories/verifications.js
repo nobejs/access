@@ -7,6 +7,10 @@ const countAll = async (where = {}, whereNot = {}) => {
   return await baseRepo.countAll(table, where, whereNot);
 };
 
+const findAll = async (where = {}, columns = ["*"]) => {
+  return await baseRepo.findAll(table, where, columns);
+};
+
 const findVerificationForType = async (where = {}, purpose) => {
   let payload = { ...where, ...{ purpose } };
   return await baseRepo.first(table, payload);
@@ -55,4 +59,5 @@ module.exports = {
   updateVerification,
   removeVerification,
   countAll,
+  findAll,
 };
