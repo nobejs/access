@@ -31,19 +31,19 @@ const validateInput = async (payload) => {
         message: "^Please enter value",
       },
       type: "string",
-      custom_callback: {
-        message: "Value should be unique",
-        callback: async (payload) => {
-          let verification =
-            typeof payload.value === "string"
-              ? await verificationsRepo.findVerificationForRegistration({
-                attribute_value: payload.value,
-                attribute_type: payload.type,
-              })
-              : -1;
-          return verification !== undefined ? true : false;
-        },
-      },
+      // custom_callback: {
+      //   message: "Value should be unique",
+      //   callback: async (payload) => {
+      //     let verification =
+      //       typeof payload.value === "string"
+      //         ? await verificationsRepo.findVerificationForRegistration({
+      //           attribute_value: payload.value,
+      //           attribute_type: payload.type,
+      //         })
+      //         : -1;
+      //     return verification !== undefined ? true : false;
+      //   },
+      // },
     },
   };
 
