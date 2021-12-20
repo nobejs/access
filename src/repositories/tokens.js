@@ -12,8 +12,6 @@ const create = async (payload) => {
 };
 
 const findAllUserTokens = async (uuid) => {
-  console.log("uuid", uuid);
-
   return await baseRepo.findAll(
     table,
     { sub: uuid, issuer: "user" },
