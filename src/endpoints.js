@@ -28,6 +28,8 @@ module.exports = (app) => {
           ["get", "/user", "Users/ViewLoggedInUser"],
           ["post", "/user", "Users/UpdateUserProfile"],
           ["get", "/authorize", "Users/Authorize"],
+          ["get", "/sessions", "Users/GetSessions"],
+          ["delete", "/sessions/:session_uuid", "Users/DestroySession"],
 
           // Teams
           ["get", "/teams", "Teams/UserCanViewTeams"],
