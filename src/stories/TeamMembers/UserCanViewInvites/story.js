@@ -34,15 +34,12 @@ const augmentPrepare = async ({ prepareResult }) => {
       ["user_uuid", "type", "value"]
     );
 
-    console.log("userAllAttributes", userAllAttributes);
-
     if (!userAllAttributes || userAllAttributes.length === 0) {
       throw userAllAttributes;
     }
 
     return { user, userAllAttributes };
   } catch (error) {
-    console.log("error123", error);
     throw {
       statusCode: 401,
       message: "Unauthorized",
@@ -88,7 +85,7 @@ const handle = async ({ prepareResult, augmentPrepareResult }) => {
       return `('${a.type}','${a.value}')`;
     });
 
-    const d = await knex
+    const data = await knex
       .from("team_members")
       .joinRaw(
         `JOIN (VALUES ${attributes.join(
@@ -112,13 +109,7 @@ const handle = async ({ prepareResult, augmentPrepareResult }) => {
         ])
       );
 
-    console.log("d1121", d);
-
-    // return await teamMemberRepo.getTeamsAndMembers({
-    //   "teams.tenant": prepareResult["tenant"],
-    //   "team_members.user_uuid": augmentPrepareResult.user.uuid,
-    //   "team_members.status": "invited",
-    // });
+    return data;
   } catch (error) {
     throw error;
   }

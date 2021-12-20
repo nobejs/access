@@ -15,7 +15,6 @@ describe("Test Handler TeamMembers/UserCanViewInvites", () => {
 
   it("user_should_be_able_to_see_team_invites", async () => {
     let result = {};
-    console.log("contextClassRef.noTeamUser123", contextClassRef.noTeamUser);
     try {
       await attributesRepo.createAttributeForUUID(
         contextClassRef.noTeamUser.uuid,
@@ -41,10 +40,8 @@ describe("Test Handler TeamMembers/UserCanViewInvites", () => {
     expect(respondResult).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          user_uuid: null,
-          status: "invited",
-          // "team_members*user_uuid": null,
-          // "team_members*status": "invited",
+          "team_members*user_uuid": null,
+          "team_members*status": "invited",
         }),
       ])
     );
