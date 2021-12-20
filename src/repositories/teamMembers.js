@@ -1,5 +1,6 @@
 const knex = requireKnex();
 const underscoredColumns = requireUtil("underscoredColumns");
+const attributesRepo = requireRepo("attributes");
 
 const countWithConstraints = async (where = {}, whereNot = {}) => {
   try {
@@ -105,11 +106,54 @@ const del = async (where) => {
   }
 };
 
-const findInvites = async (loggedInUserUUID, attributes) => {
-  // SELECT * FROM attributes WHERE
-  // ((attribute_type == 'email' AND attribute_value = "rajiv@betalectic.com")
-  // OR (attribute_type == 'email' AND attribute_value = "rajivs.iitkgp@gmail.com"))
-  // AND status == 'invited';
+const getUserTeamInvites = async (userUuid) => {
+  try {
+    let userAllAttributes = await attributesRepo.findWithConstraints(
+      {
+        user_uuid: userUuid,
+      },
+      ["user_uuid", "type", "value"]
+    );
+
+    if (!userAllAttributes || userAllAttributes.length === 0) {
+      throw userAllAttributes;
+    }
+
+    let attributes = userAllAttributes.map((a) => {
+      return `('${a.type}','${a.value}')`;
+    });
+
+    const data = await knex
+      .from("team_members")
+      .joinRaw(
+        `JOIN (VALUES ${attributes.join(
+          ", "
+        )}) AS t (p,o) ON p = attribute_type AND o = attribute_value`
+      )
+      .join("teams", "teams.uuid", "=", "team_members.team_uuid")
+      .where({ status: "invited" })
+      .select(
+        underscoredColumns([
+          "teams.uuid",
+          "teams.name",
+          "teams.slug",
+          "teams.tenant",
+          "team_members.uuid",
+          "team_members.user_uuid",
+          "team_members.attribute_type",
+          "team_members.attribute_value",
+          "team_members.status",
+          "team_members.role_uuid",
+          "team_members.permissions",
+        ])
+      );
+
+    console.log("data231", data);
+
+    return data;
+  } catch (error) {
+    throw error;
+  }
 };
 
 module.exports = {
@@ -120,5 +164,5 @@ module.exports = {
   findAll,
   del,
   getTeamsAndMembers,
-  findInvites,
+  getUserTeamInvites,
 };

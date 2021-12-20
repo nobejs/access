@@ -1,10 +1,6 @@
-// const getUser = requireFunction("getUser");
-const teamMemberRepo = requireRepo("teamMembers");
+const teamMembersRepo = requireRepo("teamMembers");
 const usersRepo = requireRepo("users");
-const attributesRepo = requireRepo("attributes");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
-const knex = requireKnex();
-const underscoredColumns = requireUtil("underscoredColumns");
 
 const prepare = ({ req }) => {
   try {
@@ -27,18 +23,7 @@ const augmentPrepare = async ({ prepareResult }) => {
       throw user;
     }
 
-    let userAllAttributes = await attributesRepo.findWithConstraints(
-      {
-        user_uuid: user.uuid,
-      },
-      ["user_uuid", "type", "value"]
-    );
-
-    if (!userAllAttributes || userAllAttributes.length === 0) {
-      throw userAllAttributes;
-    }
-
-    return { user, userAllAttributes };
+    return { user };
   } catch (error) {
     throw {
       statusCode: 401,
@@ -53,63 +38,10 @@ const authorize = () => {
 
 const handle = async ({ prepareResult, augmentPrepareResult }) => {
   try {
-    // let attributes = augmentPrepareResult.userAllAttributes;
-
-    // let joinValue = "VALUES ";
-
-    // for (let i = 0; i < attributes.length; i++) {
-    //   let attributeValue = `('${attributes[i].type}', '${attributes[i].value}')`;
-    //   let endingComma = ", ";
-
-    //   // let columnDef =
-    //   //   " AS t (p,o) ON p = attribute_type AND o = attribute_value";
-
-    //   if (i !== attributes.length - 1) {
-    //     joinValue = joinValue + attributeValue + endingComma;
-    //   } else {
-    //     joinValue = joinValue + attributeValue;
-    //   }
-    // }
-
-    // console.log("joinValue", joinValue);
-
-    // joinValue = `VALUES ${attributes.join(", ")}`;
-
-    // const data = await knex.schema.raw(`SELECT * FROM team_members
-    // JOIN (${joinValue}) AS t (p,o) ON p = attribute_type AND o = attribute_value JOIN teams ON team_members.team_uuid = teams.uuid`);
-
-    // console.log("data", data.rows);
-    // return data.rows;
-
-    let attributes = augmentPrepareResult.userAllAttributes.map((a) => {
-      return `('${a.type}','${a.value}')`;
-    });
-
-    const data = await knex
-      .from("team_members")
-      .joinRaw(
-        `JOIN (VALUES ${attributes.join(
-          ", "
-        )}) AS t (p,o) ON p = attribute_type AND o = attribute_value`
-      )
-      .join("teams", "teams.uuid", "=", "team_members.team_uuid")
-      .select(
-        underscoredColumns([
-          "teams.uuid",
-          "teams.name",
-          "teams.slug",
-          "teams.tenant",
-          "team_members.uuid",
-          "team_members.user_uuid",
-          "team_members.attribute_type",
-          "team_members.attribute_value",
-          "team_members.status",
-          "team_members.role_uuid",
-          "team_members.permissions",
-        ])
-      );
-
-    return data;
+    let teamMembers = await teamMembersRepo.getUserTeamInvites(
+      augmentPrepareResult.user.uuid
+    );
+    return teamMembers;
   } catch (error) {
     throw error;
   }
