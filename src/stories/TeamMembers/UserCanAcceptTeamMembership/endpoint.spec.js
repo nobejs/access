@@ -1,35 +1,70 @@
 const contextClassRef = requireUtil("contextHelper");
-const randomUser = requireUtil("randomUser");
-const knex = requireKnex();
 const httpServer = requireHttpServer();
+const truncateAllTables = requireFunction("truncateAllTables");
+const createUserAndTeam = requireFunction("createUserAndTeam");
+const usersRepo = requireRepo("users");
+const teamMembersRepo = requireRepo("teamMembers");
 
 describe("Test API TeamMembers/UserCanAcceptTeamMembership", () => {
-  beforeAll(async () => {
-    contextClassRef.user = randomUser();
-    contextClassRef.headers = {
-      Authorization: `Bearer ${contextClassRef.user.token}`, // An authenticated user is making the api call
-    };
+  beforeEach(async () => {
+    await truncateAllTables();
+    await createUserAndTeam();
   });
 
-  it("dummy_story_which_will_pass", async () => {
+  it("user_can_accept_membership", async () => {
     let respondResult;
+    let userToInvite;
     try {
       const app = httpServer();
 
-      const payload = {};
+      const { user, token } = await usersRepo.createTestUserWithVerifiedToken({
+        type: "email",
+        value: "shubham@betalectic.com",
+        password: "GoodPassword",
+        purpose: "register",
+      });
 
-      // respondResult = await app.inject({
-      //   method: "POST",
-      //   url: "/api_endpoint", // This should be in endpoints.js
-      //   payload,
-      //   headers,
-      // });
+      userToInvite = user;
+      userToInviteToken = token;
+      console.log("userToInvite1121", userToInvite);
+
+      let addTeamMemberPayload = {
+        team_uuid: contextClassRef.testTeam.uuid,
+        attribute_type: "email",
+        attribute_value: "shubham@betalectic.com",
+        status: "invited",
+        user_uuid: userToInvite.uuid,
+      };
+
+      const invitedTeamMember = await teamMembersRepo.createTeamMember(
+        addTeamMemberPayload
+      );
+
+      let headers = {
+        Authorization: `Bearer ${userToInviteToken}`,
+      };
+
+      // let headers = contextClassRef.headers;
+
+      respondResult = await app.inject({
+        method: "POST",
+        url: `/teams/${contextClassRef.testTeam.uuid}/members/${invitedTeamMember.uuid}/accept`,
+        payload: {},
+        headers,
+      });
+      respondResult = respondResult;
     } catch (error) {
       respondResult = error;
     }
 
-    // expect(respondResult.statusCode).toBe(200);
-    // expect(respondResult.json()).toMatchObject({});
-    expect(1).toBe(1);
+    expect(respondResult.statusCode).toBe(200);
+    expect(respondResult.json()).toMatchObject({
+      uuid: expect.any(String),
+      team_uuid: contextClassRef.testTeam.uuid,
+      user_uuid: userToInvite.uuid,
+      status: "accepted",
+      attribute_type: "email",
+      attribute_value: "shubham@betalectic.com",
+    });
   });
 });

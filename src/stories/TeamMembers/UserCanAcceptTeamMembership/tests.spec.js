@@ -15,6 +15,7 @@ describe("Test Handler TeamMembers/UserCanAcceptTeamMembership", () => {
   it("user_can_accept_membership", async () => {
     let result = {};
     let memberUser = {};
+    let respondResult;
     try {
       const { user, token } = await usersRepo.createTestUserWithVerifiedToken({
         type: "email",
@@ -30,21 +31,23 @@ describe("Test Handler TeamMembers/UserCanAcceptTeamMembership", () => {
         attribute_type: "email",
         attribute_value: "shubham@betalectic.com",
         status: "invited",
-        user_uuid: contextClassRef.user.uuid,
+        user_uuid: memberUser.uuid,
       };
 
-      const teamMember = await teamMembersRepo.createTeamMember(payload);
+      const invitedTeamMember = await teamMembersRepo.createTeamMember(payload);
 
       result = await testStrategy("TeamMembers/UserCanAcceptTeamMembership", {
         prepareResult: {
-          team_member_uuid: teamMember.uuid,
+          team_member_uuid: invitedTeamMember.uuid,
           invoking_user_uuid: memberUser.uuid,
+          // invoking_user_uuid: contextClassRef.user.uuid,
         },
       });
+      respondResult = result.respondResult;
     } catch (error) {
+      respondResult = error;
       debugLogger(error);
     }
-    const { respondResult } = result;
 
     expect(respondResult).toMatchObject({
       uuid: expect.any(String),
