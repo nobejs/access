@@ -82,7 +82,7 @@ const handle = async ({ prepareResult }) => {
 };
 
 const respond = ({ handleResult }) => {
-  return { token: handleResult };
+  return { access_token: handleResult };
 };
 
 module.exports = {

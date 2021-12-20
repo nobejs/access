@@ -29,10 +29,10 @@ describe("Test Handler Tokens/TeamAdminCanCreateToken", () => {
     }
 
     const { respondResult } = result;
-    const decoded = await decodeJWT(respondResult.token);
+    const decoded = await decodeJWT(respondResult.access_token);
 
     expect(respondResult).toMatchObject({
-      token: expect.any(String),
+      access_token: expect.any(String),
     });
 
     expect(decoded).toMatchObject({
