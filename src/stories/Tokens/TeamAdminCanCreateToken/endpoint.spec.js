@@ -39,11 +39,11 @@ describe("Test API Tokens/TeamAdminCanCreateToken", () => {
       console.log("error", error);
     }
 
-    const decoded = await decodeJWT(respondResult.json().token);
+    const decoded = await decodeJWT(respondResult.json().access_token);
 
     expect(respondResult.statusCode).toBe(200);
     expect(respondResult.json()).toMatchObject({
-      token: expect.any(String),
+      access_token: expect.any(String),
     });
 
     expect(decoded).toMatchObject({

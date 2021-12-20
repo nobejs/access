@@ -11,7 +11,6 @@ describe("Test API Users/CanLogin", () => {
     await knex("users").truncate();
     await knex("attributes").truncate();
 
-
     const { user, token } = await usersRepo.createTestUserWithVerifiedToken({
       type: "email",
       value: "rajiv@betalectic.com",
@@ -24,15 +23,12 @@ describe("Test API Users/CanLogin", () => {
     contextClassRef.headers = {
       Authorization: `Bearer ${contextClassRef.token}`,
     };
-
-
   });
 
   it("user_can_login", async () => {
     let respondResult;
     try {
       const app = httpServer();
-
 
       const payload = {
         type: "email",
@@ -51,7 +47,7 @@ describe("Test API Users/CanLogin", () => {
 
     expect(respondResult.statusCode).toBe(200);
     expect(respondResult.json()).toMatchObject({
-      token: expect.any(String),
+      access_token: expect.any(String),
     });
   });
 

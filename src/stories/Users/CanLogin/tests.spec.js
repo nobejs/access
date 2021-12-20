@@ -19,8 +19,6 @@ describe("Test Handler Users/CanLogin", () => {
   it("user_cannot_login_with_wrong_password", async () => {
     let result = {};
     try {
-
-
       result = await testStrategy("Users/CanLogin", {
         prepareResult: {
           type: "email",
@@ -62,7 +60,6 @@ describe("Test Handler Users/CanLogin", () => {
     let result = {};
     let respondResult = {};
     try {
-
       result = await testStrategy("Users/CanLogin", {
         prepareResult: {
           type: "email",
@@ -78,7 +75,7 @@ describe("Test Handler Users/CanLogin", () => {
     respondResult = result["respondResult"];
 
     expect(respondResult).toMatchObject({
-      token: expect.any(String),
+      access_token: expect.any(String),
     });
   });
 });
