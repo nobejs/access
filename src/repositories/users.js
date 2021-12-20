@@ -190,6 +190,10 @@ const createTestUserWithVerifiedToken = async (payload) => {
   }
 };
 
+const updateProfileOfUser = async (uuid, payload) => {
+  return await baseRepo.update(table, { uuid: uuid }, { profile: payload });
+};
+
 module.exports = {
   getAllowedTypes,
   createUserWithPassword,
@@ -201,5 +205,5 @@ module.exports = {
   create,
   first,
   createTestUserWithVerifiedToken,
-  // getAttributesOfAUser,
+  updateProfileOfUser,
 };

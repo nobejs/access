@@ -1,14 +1,13 @@
 const debugLogger = requireUtil("debugLogger");
 const knex = requireKnex();
 const usersRepo = requireRepo("users");
+const truncateAllTables = requireFunction("truncateAllTables");
 
 // yarn test -i src/stories/Users/CanLogin/tests.spec.js
 
 describe("Test Handler Users/CanLogin", () => {
   beforeEach(async () => {
-    await knex("users").truncate();
-    await knex("attributes").truncate();
-
+    await truncateAllTables();
     const { user, token } = await usersRepo.createTestUserWithVerifiedToken({
       type: "email",
       value: "rajiv@betalectic.com",

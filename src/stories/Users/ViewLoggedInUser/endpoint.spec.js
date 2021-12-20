@@ -5,24 +5,12 @@ const httpServer = requireHttpServer();
 const tokensRepo = requireRepo("tokens");
 const usersRepo = requireRepo("users");
 const debugLogger = requireUtil("debugLogger");
-
+const truncateAllTables = requireFunction("truncateAllTables");
+const createUser = requireFunction("createUser");
 describe("Test API Users/ViewLoggedInUser", () => {
-  beforeAll(async () => {
-    await knex("users").truncate();
-    await knex("attributes").truncate();
-
-    const { user, token } = await usersRepo.createTestUserWithVerifiedToken({
-      type: "email",
-      value: "rajiv@betalectic.com",
-      password: "GoodPassword",
-    });
-
-    contextClassRef.token = token;
-    contextClassRef.user = user;
-
-    contextClassRef.headers = {
-      Authorization: `Bearer ${contextClassRef.token}`,
-    };
+  beforeEach(async () => {
+    await truncateAllTables();
+    await createUser();
   });
 
   it("logged_in_user_can_fetch_user_object", async () => {
@@ -31,14 +19,10 @@ describe("Test API Users/ViewLoggedInUser", () => {
     try {
       const app = httpServer();
 
-      let token = await tokensRepo.createTokenForUser(contextClassRef.user);
-
       respondResult = await app.inject({
         method: "GET",
         url: "/user",
-        headers: {
-          Authorization: `Bearer ${contextClassRef.token}`,
-        },
+        headers: contextClassRef.headers,
       });
     } catch (error) {
       // debugLogger(error);

@@ -23,6 +23,7 @@ module.exports = (app) => {
           // Login
           ["post", "/login", "Users/CanLogin"],
           ["get", "/user", "Users/ViewLoggedInUser"],
+          ["post", "/user", "Users/UpdateUserProfile"],
           ["get", "/authorize", "Users/Authorize"],
 
           // Teams
