@@ -11,10 +11,10 @@ exports.up = async function (knex) {
     table.string("attribute_type", 255);
     table.string("attribute_value", 255);
     table.string("purpose", 255);
-    table.datetime("expires_at", { useTz: false });
-    table.datetime("created_at", { useTz: false });
-    table.datetime("updated_at", { useTz: false });
-    table.datetime("deleted_at", { useTz: false });
+    table.datetime("expires_at");
+    table.datetime("created_at");
+    table.datetime("updated_at");
+    table.datetime("deleted_at");
   });
 };
 

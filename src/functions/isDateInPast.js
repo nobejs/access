@@ -1,3 +1,3 @@
-module.exports = (jsDateTimeString, jsDateObject = Date.now()) => {
+module.exports = (jsDateTimeString, jsDateObject = new Date()) => {
   return new Date(jsDateTimeString) < jsDateObject;
 };

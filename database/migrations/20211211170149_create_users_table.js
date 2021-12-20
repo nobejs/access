@@ -8,9 +8,9 @@ exports.up = async function (knex) {
       .defaultTo(knex.raw("uuid_generate_v4()"));
     table.string("password", 255);
     table.jsonb("profile");
-    table.datetime("created_at", { useTz: false });
-    table.datetime("updated_at", { useTz: false });
-    table.datetime("deleted_at", { useTz: false });
+    table.datetime("created_at");
+    table.datetime("updated_at");
+    table.datetime("deleted_at");
   });
 };
 

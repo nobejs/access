@@ -9,10 +9,10 @@ exports.up = async function (knex) {
     table.uuid("user_uuid").notNullable();
     table.string("type", 255);
     table.string("value", 255);
-    table.datetime("verified_at", { useTz: false });
-    table.datetime("created_at", { useTz: false });
-    table.datetime("updated_at", { useTz: false });
-    table.datetime("deleted_at", { useTz: false });
+    table.datetime("verified_at");
+    table.datetime("created_at");
+    table.datetime("updated_at");
+    table.datetime("deleted_at");
   });
 };
 
