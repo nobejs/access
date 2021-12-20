@@ -12,16 +12,12 @@ describe("Handler UserCanViewTeamMembers", () => {
   beforeEach(async () => {
     await truncateAllTables();
     await createUserAndTeam();
-    await createTeamMember(contextClassRef.testTeam.uuid);
+    await createTeamMember(contextClassRef.testTeam.uuid, "accepted");
   });
 
-  it.skip("member_should_be_able_to_access_team_members", async () => {
+  it("member_should_be_able_to_access_team_members", async () => {
     let response;
     try {
-      console.log(
-        "contextClassRef.memberToken123",
-        contextClassRef.memberToken
-      );
       const app = httpServer();
       let headers = {
         Authorization: `Bearer ${contextClassRef.memberToken}`,
