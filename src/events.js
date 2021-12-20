@@ -11,6 +11,18 @@ const registrationVerificationEvent = async (payload) => {
   });
 };
 
+const resetPasswordVerificationEvent = async (payload) => {
+  await postEvent({
+    event_type: "auth.reset_password_verification",
+    data: {
+      token: payload.token,
+      type: payload.type,
+      value: payload.value,
+    },
+  });
+};
+
 module.exports = {
   registrationVerificationEvent,
+  resetPasswordVerificationEvent,
 };

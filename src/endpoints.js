@@ -20,6 +20,9 @@ module.exports = (app) => {
           ],
           ["post", "/verify-registration", "Users/VerifyRegistration"],
 
+          ["post", "/request-reset-password", "Users/RequestResetPassword"],
+          ["post", "/reset-password", "Users/ResetPassword"],
+
           // Login
           ["post", "/login", "Users/CanLogin"],
           ["get", "/user", "Users/ViewLoggedInUser"],

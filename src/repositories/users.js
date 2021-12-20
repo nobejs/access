@@ -3,7 +3,10 @@ const baseRepo = requireUtil("baseRepo");
 const attributesRepo = requireRepo("attributes");
 const verificationsRepo = requireRepo("verifications");
 const tokensRepo = requireRepo("tokens");
-const { registrationVerificationEvent } = require("../events");
+const {
+  registrationVerificationEvent,
+  resetPasswordVerificationEvent,
+} = require("../events");
 const isDateInPast = requireFunction("isDateInPast");
 const table = "users";
 
@@ -135,6 +138,51 @@ const verifyAttributeForRegistration = async (payload) => {
   }
 };
 
+const requestAttributeVerificationForResetPassword = async (payload) => {
+  try {
+    // Find if there is already an existing verification for this
+    let verification = await verificationsRepo.findVerificationForResetPassword(
+      {
+        attribute_type: payload.type,
+        attribute_value: payload.value,
+      }
+    );
+
+    // If verification is present already, we can update it
+    if (verification !== undefined) {
+      let verificationObject = await verificationsRepo.updateVerification({
+        uuid: verification.uuid,
+      });
+
+      await resetPasswordVerificationEvent({
+        token: verificationObject.token,
+        type: verificationObject.attribute_type,
+        value: verificationObject.attribute_value,
+      });
+    } else {
+      let attribute = await attributesRepo.first({
+        type: payload.type,
+        value: payload.value,
+      });
+
+      let verificationObject =
+        await verificationsRepo.createVerificationForResetPassword({
+          user_uuid: attribute.user_uuid,
+          attribute_type: payload.type,
+          attribute_value: payload.value,
+        });
+
+      await resetPasswordVerificationEvent({
+        token: verificationObject.token,
+        type: verificationObject.attribute_type,
+        value: verificationObject.attribute_value,
+      });
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
 const createUserWithPassword = async (password) => {
   return await baseRepo.create(table, {
     password: bcrypt.hashSync(password, 5),
@@ -201,6 +249,7 @@ module.exports = {
   authenticateWithPassword,
   verifyAttributeForRegistration,
   requestAttributeVerificationForRegistration,
+  requestAttributeVerificationForResetPassword,
   findUserByTypeAndValue,
   create,
   first,
