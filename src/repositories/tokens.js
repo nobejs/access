@@ -24,6 +24,7 @@ const findAllUserTokens = async (uuid) => {
       "tokens.permissions",
       "tokens.created_at",
       "tokens.updated_at",
+      "tokens.other_info",
     ])
   );
 };
