@@ -183,6 +183,50 @@ const requestAttributeVerificationForResetPassword = async (payload) => {
   }
 };
 
+const verifyAttributeForResetPassword = async (payload) => {
+  try {
+    let verification = await verificationsRepo.findVerificationForResetPassword(
+      {
+        attribute_type: payload.type,
+        attribute_value: payload.value,
+      }
+    );
+
+    if (verification !== undefined && !isDateInPast(verification.expires_at)) {
+      if (payload.token === verification.token) {
+        await updateUserPassword(verification.user_uuid, payload.password);
+
+        await verificationsRepo.removeVerification({
+          uuid: verification.uuid,
+        });
+
+        return {
+          message: "Verification Successful",
+        };
+      } else {
+        throw "err";
+      }
+    } else {
+      throw "err";
+    }
+  } catch (error) {
+    throw {
+      statusCode: 401,
+      message: "Invalid Token",
+    };
+  }
+};
+
+const updateUserPassword = async (uuid, password) => {
+  return await baseRepo.update(
+    table,
+    { uuid: uuid },
+    {
+      password: bcrypt.hashSync(password, 5),
+    }
+  );
+};
+
 const createUserWithPassword = async (password) => {
   return await baseRepo.create(table, {
     password: bcrypt.hashSync(password, 5),
@@ -247,9 +291,10 @@ module.exports = {
   createUserWithPassword,
   registerWithPassword,
   authenticateWithPassword,
-  verifyAttributeForRegistration,
   requestAttributeVerificationForRegistration,
+  verifyAttributeForRegistration,
   requestAttributeVerificationForResetPassword,
+  verifyAttributeForResetPassword,
   findUserByTypeAndValue,
   create,
   first,
