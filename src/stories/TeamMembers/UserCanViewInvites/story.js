@@ -56,35 +56,44 @@ const authorize = () => {
 
 const handle = async ({ prepareResult, augmentPrepareResult }) => {
   try {
-    let attributes = augmentPrepareResult.userAllAttributes;
+    // let attributes = augmentPrepareResult.userAllAttributes;
 
-    let joinValue = "VALUES ";
+    // let joinValue = "VALUES ";
 
-    for (let i = 0; i < attributes.length; i++) {
-      let attributeValue = `('${attributes[i].type}', '${attributes[i].value}')`;
-      let endingComma = ", ";
+    // for (let i = 0; i < attributes.length; i++) {
+    //   let attributeValue = `('${attributes[i].type}', '${attributes[i].value}')`;
+    //   let endingComma = ", ";
 
-      // let columnDef =
-      //   " AS t (p,o) ON p = attribute_type AND o = attribute_value";
+    //   // let columnDef =
+    //   //   " AS t (p,o) ON p = attribute_type AND o = attribute_value";
 
-      if (i !== attributes.length - 1) {
-        joinValue = joinValue + attributeValue + endingComma;
-      } else {
-        joinValue = joinValue + attributeValue;
-      }
-    }
+    //   if (i !== attributes.length - 1) {
+    //     joinValue = joinValue + attributeValue + endingComma;
+    //   } else {
+    //     joinValue = joinValue + attributeValue;
+    //   }
+    // }
 
-    console.log(joinValue);
+    // console.log("joinValue", joinValue);
+
+    // joinValue = `VALUES ${attributes.join(", ")}`;
 
     // const data = await knex.schema.raw(`SELECT * FROM team_members
     // JOIN (${joinValue}) AS t (p,o) ON p = attribute_type AND o = attribute_value JOIN teams ON team_members.team_uuid = teams.uuid`);
 
     // console.log("data", data.rows);
     // return data.rows;
+
+    let attributes = augmentPrepareResult.userAllAttributes.map((a) => {
+      return `('${a.type}','${a.value}')`;
+    });
+
     const d = await knex
       .from("team_members")
       .joinRaw(
-        `JOIN (${joinValue}) AS t (p,o) ON p = attribute_type AND o = attribute_value`
+        `JOIN (VALUES ${attributes.join(
+          ", "
+        )}) AS t (p,o) ON p = attribute_type AND o = attribute_value`
       )
       .join("teams", "teams.uuid", "=", "team_members.team_uuid")
       .select(
