@@ -4,6 +4,7 @@ const attributesRepo = requireRepo("attributes");
 const verificationsRepo = requireRepo("verifications");
 const tokensRepo = requireRepo("tokens");
 const { registrationVerificationEvent } = require("../events");
+const isDateInPast = requireFunction("isDateInPast");
 const table = "users";
 
 const getAllowedTypes = () => {
@@ -106,7 +107,7 @@ const verifyAttributeForRegistration = async (payload) => {
       attribute_value: payload.value,
     });
 
-    if (verification !== undefined) {
+    if (verification !== undefined && !isDateInPast(verification.expires_at)) {
       if (payload.token === verification.token) {
         await attributesRepo.createAttributeForUUID(
           verification.user_uuid,

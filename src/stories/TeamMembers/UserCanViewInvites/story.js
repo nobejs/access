@@ -23,6 +23,7 @@ const augmentPrepare = async ({ prepareResult }) => {
 
   try {
     user = await usersRepo.first({ uuid: prepareResult["invoking_user_uuid"] });
+
     if (user === undefined) {
       throw user;
     }
@@ -37,6 +38,13 @@ const augmentPrepare = async ({ prepareResult }) => {
 
 const handle = async ({ prepareResult, augmentPrepareResult }) => {
   try {
+    // 1. Current logged in user, get the attributes for them
+    // 2. For those attributes, see if there are any invites
+    const loggedInUserAttributes = [
+      { type: "email", value: "rajiv@betalectic.com" },
+      { type: "email", value: "rajivs.iitkgp@gmail.com" },
+    ];
+
     return await teamMemberRepo.getTeamsAndMembers({
       "teams.tenant": prepareResult["tenant"],
       "team_members.user_uuid": augmentPrepareResult.user.uuid,

@@ -26,10 +26,11 @@ describe("Test API Users/Verify", () => {
         password: "AnotherPassword",
       });
 
-      let verification = await verificationsRepo.findVerificationForRegistration({
-        attribute_type: "email",
-        attribute_value: "rajiv@betalectic.com",
-      });
+      let verification =
+        await verificationsRepo.findVerificationForRegistration({
+          attribute_type: "email",
+          attribute_value: "rajiv@betalectic.com",
+        });
 
       respondResult = await app.inject({
         method: "POST",
@@ -54,7 +55,7 @@ describe("Test API Users/Verify", () => {
       respondResult = error;
     }
 
-    // debugLogger(respondResult)
+    debugLogger(respondResult.statusCode);
 
     expect(respondResult.statusCode).toBe(200);
     expect(respondResult.json()).toMatchObject({
