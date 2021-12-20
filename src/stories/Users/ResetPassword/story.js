@@ -65,7 +65,7 @@ const handle = async ({ prepareResult, authorizeResult }) => {
   try {
     let inputPayload = prepareResult;
     await validateInput(inputPayload);
-    await usersRepo.verifyAttributeForResetPassword(inputPayload);
+    return await usersRepo.verifyAttributeForResetPassword(inputPayload);
   } catch (error) {
     throw error;
   }
