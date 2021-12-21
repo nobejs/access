@@ -43,6 +43,7 @@
     "path-to-regexp": "^6.2.0",
     "pg": "^8.7.1",
     "supertest": "^6.1.6",
+    "user-agents": "^1.0.872",
     "uuid": "^8.3.2",
     "validate.js": "^0.13.1"
   }
