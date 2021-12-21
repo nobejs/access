@@ -1,4 +1,4 @@
-import UserAgent from "user-agents";
+const UserAgent = require("user-agents");
 
 module.exports = (app) => {
   try {
