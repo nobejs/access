@@ -12,6 +12,7 @@ module.exports = (app) => {
         ips: request.ips,
         ipRemote: request.raw.connection.remoteAddress,
         userAgent: userAgent.toString(),
+        headers: request.headers,
       });
     });
 
