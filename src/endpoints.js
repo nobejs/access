@@ -1,7 +1,13 @@
 module.exports = (app) => {
   try {
-    app.get("/liveness", async (req, res) => {
-      return res.code(200).send({ status: "Access service is alive" });
+    app.get("/liveness", async (request, res) => {
+      return res.code(200).send({
+        status: "Access service is alive",
+        ip: request.ip,
+        ipRaw: request.raw.ip || "",
+        ips: request.ips,
+        ipRemote: request.raw.connection.remoteAddress,
+      });
     });
 
     app.get("/readiness", async (req, res) => {

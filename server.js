@@ -2,7 +2,9 @@ const Config = require("./config")();
 const httpServer = requireHttpServer();
 const rabbitSendMessage = requireUtil("rabbitSendMessage");
 
-const server = httpServer({});
+const server = httpServer({
+  trustProxy: true,
+});
 
 console.log("Current Date", process.env.TZ, new Date());
 
