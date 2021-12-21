@@ -47,21 +47,6 @@ const augmentPrepare = async ({ prepareResult }) => {
 
 const authorize = async ({ prepareResult, augmentPrepareResult }) => {
   try {
-    console.log(
-      "CHECK",
-      augmentPrepareResult.teamMember.user_uuid,
-      prepareResult.invoking_user_uuid
-    );
-    if (
-      augmentPrepareResult.teamMember.user_uuid !==
-      prepareResult.invoking_user_uuid
-    ) {
-      throw {
-        statusCode: 403,
-        message: "Not Authorized",
-      };
-    }
-
     if (augmentPrepareResult.teamMember) {
       let userAttribute = await usersRepo.findUserByTypeAndValue({
         user_uuid: prepareResult.invoking_user_uuid,
