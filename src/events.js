@@ -3,6 +3,7 @@ const postEvent = requireFunction("postEvent");
 const registrationVerificationEvent = async (payload) => {
   await postEvent({
     event_type: "auth.registration_verification",
+    tags: [],
     data: {
       token: payload.token,
       type: payload.type,
