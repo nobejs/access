@@ -24,8 +24,13 @@ module.exports = async (req, reply) => {
   });
 
   if (needsAuth) {
+    debugLogger("Header", req.headers.authorization);
+
     if (!req.headers.authorization) {
-      debugLogger("Doesn't have authorization header");
+      debugLogger(
+        "Doesn't have authorization header",
+        req.headers.authorization
+      );
       return reply.code(401).send({ error: "Unauthenticated" });
     }
     const bearer = req.headers.authorization.split(" ");
@@ -44,6 +49,7 @@ module.exports = async (req, reply) => {
       req.jti = decoded.jti;
       req.issuer = decoded.iss;
     } catch (error) {
+      debugLogger(JSON.stringify(error));
       debugLogger("Something went wrong in middleware", error);
       return reply.code(401).send({ message: "Unauthenticated" });
     }
