@@ -8,13 +8,20 @@ const rabbitReceiveMessage = async (amqp_endpoint, q, storyName) => {
     var ok = await ch.assertQueue(q, { durable: true });
     ch.consume(q, async (msg) => {
       if (msg !== null) {
-        await queueJobStrategy(storyName, {
-          job: JSON.parse(msg.content.toString()),
-        });
-        await ch.ack(msg);
+        try {
+          await queueJobStrategy(storyName, {
+            job: JSON.parse(msg.content.toString()),
+          });
+          await ch.ack(msg);
+        } catch (error) {
+          if (error.ack) {
+            await ch.ack(msg);
+          }
+        }
       }
     });
   } catch (error) {
+    throw error;
   } finally {
   }
 };
