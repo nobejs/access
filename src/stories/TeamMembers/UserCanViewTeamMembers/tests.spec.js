@@ -41,6 +41,7 @@ describe("Handler AnUserShouldBeAbleToGetTheirTeamMembers", () => {
     }
 
     const { respondResult } = result;
+
     expect(respondResult).toEqual(
       expect.arrayContaining([
         expect.objectContaining({

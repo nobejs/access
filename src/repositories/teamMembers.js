@@ -34,6 +34,7 @@ const getTeamsAndMembers = async (where = {}) => {
   try {
     let memberships = await knex("teams")
       .join("team_members", "teams.uuid", "=", "team_members.team_uuid")
+      .leftJoin("users", "users.uuid", "=", "team_members.user_uuid")
       .where(where)
       .whereNull("team_members.deleted_at")
       .select(
@@ -49,6 +50,7 @@ const getTeamsAndMembers = async (where = {}) => {
           "team_members.status",
           "team_members.role_uuid",
           "team_members.permissions",
+          "users.profile",
         ])
       );
 
