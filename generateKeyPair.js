@@ -27,5 +27,5 @@ const privateKeyEnv = process.env.PRIVATE_KEY.replace(/\\n/g, "\n");
 
   const { payload, protectedHeader } = await jose.jwtVerify(jwt, ecPublicKey);
 
-  console.log(jwt, payload);
+  // console.log(jwt, payload);
 })();

@@ -26,7 +26,6 @@ describe("Test API TeamMembers/UserCanAcceptTeamMembership", () => {
 
       userToInvite = user;
       userToInviteToken = token;
-      console.log("userToInvite1121", userToInvite);
 
       let addTeamMemberPayload = {
         team_uuid: contextClassRef.testTeam.uuid,

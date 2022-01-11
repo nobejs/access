@@ -18,7 +18,6 @@ const first = async (payload) => {
 };
 
 const createAttributeForUUID = async (uuid, payload, verify = false) => {
-  console.log(payload.value);
   await baseRepo.create(table, {
     user_uuid: uuid,
     verified_at: verify ? new Date().toISOString() : NULL, //Todo

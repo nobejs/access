@@ -29,7 +29,7 @@ module.exports = async (teamId, status = "invited") => {
 
     return { teamMember, token };
   } catch (error) {
-    console.log("error", error);
+    // console.log("error", error);
     throw error;
   }
 };

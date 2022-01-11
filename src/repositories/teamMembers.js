@@ -152,8 +152,6 @@ const getUserTeamInvites = async (userUuid) => {
         ])
       );
 
-    console.log("data231", data);
-
     return data;
   } catch (error) {
     throw error;

@@ -11,7 +11,6 @@ const prepare = async ({ req }) => {
     payload["invoking_user_uuid"] = req.sub;
     return payload;
   } catch (error) {
-    console.log("userCanAcceptTeamMemberships-prepare-error", error);
     throw error;
   }
 };
@@ -37,7 +36,6 @@ const augmentPrepare = async ({ prepareResult }) => {
     }
     return { teamMember };
   } catch (error) {
-    console.log("userCanAcceptTeamMemberships-augmentPrepare-error", error);
     throw {
       statusCode: 404,
       message: "Invalid Member",

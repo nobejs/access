@@ -8,7 +8,7 @@ describe("Handler AnUserShouldBeAbleToGetTheirTeamMembers", () => {
   beforeEach(async () => {
     await truncateAllTables();
     await createUserAndTeam();
-    await createTeamMember(contextClassRef.testTeam.uuid);
+    await createTeamMember(contextClassRef.testTeam.uuid, "accepted");
   });
 
   it("outsider_shouldnt_be_able_access_a_team_members", async () => {
@@ -48,6 +48,26 @@ describe("Handler AnUserShouldBeAbleToGetTheirTeamMembers", () => {
           "team_members*user_uuid": contextClassRef.user.uuid,
         }),
       ])
+    );
+  });
+
+  it("throw_invalid_uuid_error", async () => {
+    let result;
+    try {
+      result = await testStrategy("TeamMembers/UserCanViewTeamMembers", {
+        prepareResult: {
+          team_uuid: "gibberish",
+          invoking_user_uuid: contextClassRef.teamMember.user_uuid,
+        },
+      });
+    } catch (error) {
+      result = error;
+    }
+
+    expect(result).toEqual(
+      expect.objectContaining({
+        errorCode: "InputNotValid",
+      })
     );
   });
 });
