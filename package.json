@@ -11,6 +11,7 @@
     "test": "ENVFILE=.env.jest jest --runInBand",
     "test:github": "jest --runInBand",
     "serve": "ENVFILE=.env DEBUG=true nodemon server.js",
+    "serve:nodebug": "ENVFILE=.env nodemon server.js",
     "start": "node server.js",
     "nobe:update": "node ./update && yarn nobe:version",
     "db": "knex",

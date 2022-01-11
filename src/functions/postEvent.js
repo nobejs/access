@@ -17,7 +17,7 @@ module.exports = async (payload) => {
 
   if (process.env.NODE_ENV !== "test") {
     return await axios.post(
-      "https://webhook.site/c163ea5d-07b8-469f-bb05-d9f650a3803d",
+      "https://webhook.site/a479feff-7497-48cf-851c-1dc66c4644f3",
       payload
     );
   }

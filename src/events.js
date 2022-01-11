@@ -2,8 +2,9 @@ const postEvent = requireFunction("postEvent");
 
 const registrationVerificationEvent = async (payload) => {
   await postEvent({
-    event_type: "auth.registration_verification",
+    event_type: `request_otp_to_verify_${payload.type}_during_registration`,
     tags: [],
+    user_id: payload.user_uuid,
     data: {
       token: payload.token,
       type: payload.type,

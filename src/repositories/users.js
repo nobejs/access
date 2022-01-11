@@ -263,12 +263,13 @@ const registerWithPassword = async (payload) => {
   }
 
   await registrationVerificationEvent({
+    user_uuid: verificationObject.user_uuid,
     token: verificationObject.token,
     type: verificationObject.attribute_type,
     value: verificationObject.attribute_value,
   });
 
-  return true;
+  return verification;
 };
 
 const createTestUserWithVerifiedToken = async (payload) => {

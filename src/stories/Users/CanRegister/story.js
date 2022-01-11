@@ -44,9 +44,9 @@ const validateInput = async (payload) => {
           let count =
             typeof payload.value === "string"
               ? await usersRepo.findUserByTypeAndValue({
-                value: payload.value,
-                type: payload.type,
-              })
+                  value: payload.value,
+                  type: payload.type,
+                })
               : -1;
           return count === 0 ? true : false;
         },
@@ -67,10 +67,17 @@ const handle = async ({ prepareResult }) => {
   }
 };
 
-const respond = () => {
-  return {
-    message: "Successfully Registered",
-  };
+const respond = ({ handleResult }) => {
+  console.log("handleResult: ", handleResult);
+  if (handleResult === undefined) {
+    return {
+      message: "Successfully Registered",
+    };
+  } else {
+    return {
+      message: "Already Registered",
+    };
+  }
 };
 
 module.exports = {

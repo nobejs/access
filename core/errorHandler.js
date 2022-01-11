@@ -15,6 +15,8 @@ module.exports = (err, req, res) => {
     return res.status(statusCode).send(err);
   }
 
+  console.log("err", err);
+
   if (process.env.DEBUG === "true") {
     return res.status(500).send({ message: err.message });
   } else {
