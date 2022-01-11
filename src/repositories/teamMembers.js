@@ -1,7 +1,7 @@
 const knex = requireKnex();
 const underscoredColumns = requireUtil("underscoredColumns");
 const attributesRepo = requireRepo("attributes");
-
+const { invitedToTeamEvent } = require("../events");
 let table = "team_members";
 
 const countWithConstraints = async (where = {}, whereNot = {}) => {
@@ -74,11 +74,27 @@ const findWithConstraints = async (where = {}) => {
 
 const createTeamMember = async (payload) => {
   try {
+    let team = await knex("teams").where({ uuid: payload.team_uuid }).first();
+
     payload["created_at"] = new Date().toISOString();
     payload["updated_at"] = new Date().toISOString();
     let team_members = await knex("team_members")
       .insert(payload)
       .returning("*");
+
+    await invitedToTeamEvent({
+      team_uuid: payload.team_uuid,
+      team_name: team.name,
+      type: payload.attribute_type,
+      value: payload.attribute_value,
+      contact_infos: [
+        {
+          type: "email",
+          value: payload.attribute_value,
+        },
+      ],
+    });
+
     return team_members[0];
   } catch (error) {
     throw error;

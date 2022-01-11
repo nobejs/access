@@ -68,7 +68,6 @@ const handle = async ({ prepareResult }) => {
 };
 
 const respond = ({ handleResult }) => {
-  console.log("handleResult: ", handleResult);
   if (handleResult === undefined) {
     return {
       message: "Successfully Registered",

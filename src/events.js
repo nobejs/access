@@ -10,21 +10,38 @@ const registrationVerificationEvent = async (payload) => {
       type: payload.type,
       value: payload.value,
     },
+    contact_infos: payload.contact_infos || [],
   });
 };
 
 const resetPasswordVerificationEvent = async (payload) => {
   await postEvent({
-    event_type: "auth.reset_password_verification",
+    event_type: `request_otp_to_reset_password_through_${payload.type}`,
+    user_id: payload.user_uuid,
     data: {
       token: payload.token,
       type: payload.type,
       value: payload.value,
     },
+    contact_infos: payload.contact_infos || [],
+  });
+};
+
+const invitedToTeamEvent = async (payload) => {
+  await postEvent({
+    event_type: `invited_to_team`,
+    data: {
+      team_uuid: payload.team_uuid,
+      team_name: payload.team_name,
+      type: payload.type,
+      value: payload.value,
+    },
+    contact_infos: payload.contact_infos || [],
   });
 };
 
 module.exports = {
   registrationVerificationEvent,
   resetPasswordVerificationEvent,
+  invitedToTeamEvent,
 };

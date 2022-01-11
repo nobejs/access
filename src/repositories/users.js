@@ -88,9 +88,16 @@ const requestAttributeVerificationForRegistration = async (payload) => {
       });
 
       await registrationVerificationEvent({
+        user_uuid: verificationObject.user_uuid,
         token: verificationObject.token,
         type: verificationObject.attribute_type,
         value: verificationObject.attribute_value,
+        contact_infos: [
+          {
+            type: "email",
+            value: verificationObject.attribute_value,
+          },
+        ],
       });
     } else {
       throw {
@@ -155,9 +162,16 @@ const requestAttributeVerificationForResetPassword = async (payload) => {
       });
 
       await resetPasswordVerificationEvent({
+        user_uuid: verificationObject.user_uuid,
         token: verificationObject.token,
         type: verificationObject.attribute_type,
         value: verificationObject.attribute_value,
+        contact_infos: [
+          {
+            type: "email",
+            value: verificationObject.attribute_value,
+          },
+        ],
       });
     } else {
       let attribute = await attributesRepo.first({
@@ -173,9 +187,16 @@ const requestAttributeVerificationForResetPassword = async (payload) => {
         });
 
       await resetPasswordVerificationEvent({
+        user_uuid: verificationObject.user_uuid,
         token: verificationObject.token,
         type: verificationObject.attribute_type,
         value: verificationObject.attribute_value,
+        contact_infos: [
+          {
+            type: "email",
+            value: verificationObject.attribute_value,
+          },
+        ],
       });
     }
   } catch (error) {
@@ -267,6 +288,12 @@ const registerWithPassword = async (payload) => {
     token: verificationObject.token,
     type: verificationObject.attribute_type,
     value: verificationObject.attribute_value,
+    contact_infos: [
+      {
+        type: "email",
+        value: verificationObject.attribute_value,
+      },
+    ],
   });
 
   return verification;
