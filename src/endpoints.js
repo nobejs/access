@@ -1,17 +1,13 @@
-const UserAgent = require("user-agents");
-
 module.exports = (app) => {
   try {
     app.get("/liveness", async (request, res) => {
-      const userAgent = new UserAgent();
-
       return res.code(200).send({
         status: "Access service is alive",
         ip: request.ip,
         ipRaw: request.raw.ip || "",
         ips: request.ips,
         ipRemote: request.raw.connection.remoteAddress,
-        userAgent: userAgent.toString(),
+        userAgent: request.headers["user-agent"],
         headers: request.headers,
       });
     });
