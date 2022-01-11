@@ -1,9 +1,17 @@
 const Config = require("./config")();
 const httpServer = requireHttpServer();
 const rabbitSendMessage = requireUtil("rabbitSendMessage");
+const contextClassRef = requireUtil("contextHelper");
 
 const server = httpServer({
   trustProxy: true,
+});
+
+server.addHook("onRequest", async (req, reply) => {
+  contextClassRef.client = {
+    ip: req.ip,
+    userAgent: req.headers["user-agent"],
+  };
 });
 
 console.log("Current Date", process.env.TZ, new Date());

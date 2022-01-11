@@ -34,7 +34,6 @@ module.exports = async (payload) => {
           Authorization: `Bearer ${process.env.NEPTUNE_TOKEN}`,
         },
       });
-      console.log("result", result);
     } catch (error) {
       console.log("error", error);
     }
