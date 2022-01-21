@@ -11,7 +11,7 @@ describe("Test API Users/RedirectForLoginWithGoogle", () => {
     };
   });
 
-  it("dummy_story_which_will_pass", async () => {
+  it.skip("dummy_story_which_will_pass", async () => {
     let respondResult;
     try {
       const app = httpServer();
