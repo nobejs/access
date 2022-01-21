@@ -14,6 +14,11 @@ const exclude = Config["excludeFromAuth"];
 
 module.exports = async (req, reply) => {
   let needsAuth = true;
+  // console.log("req.routerPath", req.method, req.url);
+
+  if (req.routerPath === undefined) {
+    return reply.code(404).send({ error: "Unauthenticated" });
+  }
 
   exclude.forEach((p) => {
     let [method, path] = p.split(" ");
@@ -22,6 +27,8 @@ module.exports = async (req, reply) => {
       needsAuth = false;
     }
   });
+
+  // console.log("needsAuth", needsAuth);
 
   if (needsAuth) {
     debugLogger("Header", req.headers.authorization);

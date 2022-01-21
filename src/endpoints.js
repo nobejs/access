@@ -36,6 +36,10 @@ module.exports = (app) => {
           ["get", "/user", "Users/ViewLoggedInUser"],
           ["post", "/user", "Users/UpdateUserProfile"],
           ["get", "/authorize", "Users/Authorize"],
+
+          ["post", "/login/google", "Users/RedirectForLoginWithGoogle"],
+          ["get", "/login/google", "Users/LoginWithGoogle"],
+
           ["get", "/sessions", "Users/GetSessions"],
           ["delete", "/sessions/:session_uuid", "Users/DestroySession"],
 

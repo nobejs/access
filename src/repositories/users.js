@@ -73,6 +73,42 @@ const authenticateWithPassword = async (payload) => {
   }
 };
 
+const registerUserFromGoogle = async (payload) => {
+  try {
+    const findUser = await attributesRepo.first({
+      type: "email",
+      value: payload.email,
+    });
+
+    console.log("findUser", findUser);
+
+    if (findUser === undefined) {
+      const user = await baseRepo.create(table, {
+        profile: {
+          name: payload.name,
+        },
+      });
+
+      console.log("createUser", user);
+
+      await attributesRepo.createAttributeForUUID(
+        user.uuid,
+        {
+          type: "email",
+          value: payload.email,
+        },
+        true
+      );
+
+      let token = await tokensRepo.createTokenForUser(user);
+      return token;
+    } else {
+      let token = await tokensRepo.createTokenForUser(findUser);
+      return token;
+    }
+  } catch (error) {}
+};
+
 const requestAttributeVerificationForRegistration = async (payload) => {
   try {
     // Find if there is already an existing verification for this
@@ -328,4 +364,5 @@ module.exports = {
   first,
   createTestUserWithVerifiedToken,
   updateProfileOfUser,
+  registerUserFromGoogle,
 };
