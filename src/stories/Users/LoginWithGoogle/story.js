@@ -3,7 +3,7 @@ const { OAuth2Client } = require("google-auth-library");
 const usersRepo = requireRepo("users");
 
 const prepare = ({ reqQuery, reqBody, reqParams, req }) => {
-  const payload = findKeysFromRequest(req, ["code"]);
+  const payload = findKeysFromRequest(req, ["code", "redirect_to"]);
   return payload;
 };
 
@@ -27,7 +27,7 @@ const handle = async ({ prepareResult, authorizeResult }) => {
     const oAuth2Client = new OAuth2Client(
       process.env.GOOGLE_CLIENT_ID,
       process.env.GOOGLE_CLIENT_SECRET,
-      process.env.GOOGLE_REDIRECT_URL
+      prepareResult.redirect_to || process.env.GOOGLE_REDIRECT_URL
     );
 
     const r = await oAuth2Client.getToken(prepareResult.code);
