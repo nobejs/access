@@ -1,7 +1,9 @@
+const findKeysFromRequest = requireUtil("findKeysFromRequest");
 const { OAuth2Client } = require("google-auth-library");
 
 const prepare = ({ reqQuery, reqBody, reqParams, req }) => {
-  return {};
+  const payload = findKeysFromRequest(req, ["redirect_to"]);
+  return payload;
 };
 
 const authorize = async ({ prepareResult }) => {
@@ -24,7 +26,7 @@ const handle = async ({ prepareResult, authorizeResult }) => {
     const oAuth2Client = new OAuth2Client(
       process.env.GOOGLE_CLIENT_ID,
       process.env.GOOGLE_CLIENT_SECRET,
-      process.env.GOOGLE_REDIRECT_URL
+      prepareResult.redirect_to || process.env.GOOGLE_REDIRECT_URL
     );
 
     const authorizeUrl = oAuth2Client.generateAuthUrl({
