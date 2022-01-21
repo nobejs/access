@@ -44,8 +44,8 @@ const authenticateWithPassword = async (payload) => {
 
   if (attribute === undefined) {
     throw {
-      statusCode: 401,
-      message: "Invalid Username or Password",
+      statusCode: 422,
+      message: "AttributeNotVerified",
     };
   }
 
@@ -67,7 +67,7 @@ const authenticateWithPassword = async (payload) => {
     return token;
   } else {
     throw {
-      statusCode: 401,
+      statusCode: 422,
       message: "Invalid Username or Password",
     };
   }
@@ -139,7 +139,7 @@ const verifyAttributeForRegistration = async (payload) => {
     }
   } catch (error) {
     throw {
-      statusCode: 401,
+      statusCode: 422,
       message: "Invalid Token",
     };
   }
@@ -232,7 +232,7 @@ const verifyAttributeForResetPassword = async (payload) => {
     }
   } catch (error) {
     throw {
-      statusCode: 401,
+      statusCode: 422,
       message: "Invalid Token",
     };
   }
