@@ -152,6 +152,7 @@ const getUserTeamInvites = async (userUuid) => {
       )
       .join("teams", "teams.uuid", "=", "team_members.team_uuid")
       .where({ status: "invited" })
+      .whereNull("team_members.deleted_at")
       .select(
         underscoredColumns([
           "teams.uuid",
