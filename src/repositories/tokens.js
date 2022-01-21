@@ -2,6 +2,7 @@ const baseRepo = requireUtil("baseRepo");
 const generateJWT = requireFunction("JWT/generateJWT");
 const table = "tokens";
 const underscoredColumns = requireUtil("underscoredColumns");
+const contextClassRef = requireUtil("contextHelper");
 
 const countAll = async (where = {}, whereNot = {}) => {
   return await baseRepo.countAll(table, where, whereNot);
@@ -44,6 +45,9 @@ const createTokenForUser = async (user) => {
     let token = await baseRepo.create(table, {
       sub: user.uuid,
       issuer: "user",
+      other_info: {
+        client: contextClassRef.client,
+      },
     });
     let jwt = await generateJWT(token.uuid, token.sub, token.issuer);
     return jwt;

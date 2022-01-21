@@ -71,7 +71,7 @@ describe("Test API Users/CanLogin", () => {
       respondResult = error;
     }
 
-    expect(respondResult.statusCode).toBe(401);
+    expect(respondResult.statusCode).toBe(422);
     expect(respondResult.json()).toMatchObject({
       message: "Invalid Username or Password",
     });
@@ -97,9 +97,9 @@ describe("Test API Users/CanLogin", () => {
       respondResult = error;
     }
 
-    expect(respondResult.statusCode).toBe(401);
+    expect(respondResult.statusCode).toBe(422);
     expect(respondResult.json()).toMatchObject({
-      message: "Invalid Username or Password",
+      message: "AttributeNotVerified",
     });
   });
 });

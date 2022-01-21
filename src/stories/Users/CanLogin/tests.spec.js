@@ -30,7 +30,7 @@ describe("Test Handler Users/CanLogin", () => {
     }
 
     expect(respondResult).toMatchObject({
-      statusCode: 401,
+      statusCode: 422,
       message: "Invalid Username or Password",
     });
   });
@@ -50,8 +50,8 @@ describe("Test Handler Users/CanLogin", () => {
     }
 
     expect(respondResult).toMatchObject({
-      statusCode: 401,
-      message: "Invalid Username or Password",
+      statusCode: 422,
+      message: "AttributeNotVerified",
     });
   });
 

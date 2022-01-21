@@ -14,8 +14,6 @@ server.addHook("onRequest", async (req, reply) => {
   };
 });
 
-console.log("Current Date", process.env.TZ, new Date());
-
 server.listen(process.env.PORT || 3000, "0.0.0.0", (err, address) => {
   if (err) {
     console.log(err);
