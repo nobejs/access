@@ -75,21 +75,21 @@ const authenticateWithPassword = async (payload) => {
 
 const registerUserFromGoogle = async (payload) => {
   try {
-    const findUser = await attributesRepo.first({
+    const findUserWithAttribute = await attributesRepo.first({
       type: "email",
       value: payload.email,
     });
 
-    console.log("findUser", findUser);
+    console.log("findUserWithAttribute", findUserWithAttribute);
 
-    if (findUser === undefined) {
+    if (findUserWithAttribute === undefined) {
       const user = await baseRepo.create(table, {
         profile: {
           name: payload.name,
         },
       });
 
-      console.log("createUser", user);
+      // console.log("createUser", user);
 
       await attributesRepo.createAttributeForUUID(
         user.uuid,
@@ -103,7 +103,11 @@ const registerUserFromGoogle = async (payload) => {
       let token = await tokensRepo.createTokenForUser(user);
       return token;
     } else {
-      let token = await tokensRepo.createTokenForUser(findUser);
+      let user = await baseRepo.first(table, {
+        uuid: findUserWithAttribute.user_uuid,
+      });
+
+      let token = await tokensRepo.createTokenForUser(user);
       return token;
     }
   } catch (error) {}
