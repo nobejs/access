@@ -5,6 +5,14 @@ const contextClassRef = requireUtil("contextHelper");
 
 const server = httpServer({
   trustProxy: true,
+  rewriteUrl: (req) => {
+    if (process.env.URL_PREFIX !== "") {
+      let newUrl = req.url.replace(process.env.URL_PREFIX, "");
+      return newUrl;
+    } else {
+      return req.url;
+    }
+  },
 });
 
 server.addHook("onRequest", async (req, reply) => {

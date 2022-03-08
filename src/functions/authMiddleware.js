@@ -17,7 +17,7 @@ module.exports = async (req, reply) => {
   // console.log("req.routerPath", req.method, req.url);
 
   if (req.routerPath === undefined) {
-    return reply.code(404).send({ error: "Unauthenticated" });
+    return reply.code(404).send({ error: "Not Found" });
   }
 
   exclude.forEach((p) => {
