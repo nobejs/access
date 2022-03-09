@@ -2,7 +2,7 @@ module.exports = (app) => {
   try {
     app.get("/liveness", async (request, res) => {
       return res.code(200).send({
-        status: "Access service is alive",
+        status: "Access service is healthy",
         ip: request.ip,
         ipRaw: request.raw.ip || "",
         ips: request.ips,
