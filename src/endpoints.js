@@ -9,6 +9,7 @@ module.exports = (app) => {
         ipRemote: request.raw.connection.remoteAddress,
         userAgent: request.headers["user-agent"],
         headers: request.headers,
+        region: process.env.AWS_REGION || "na",
       });
     });
 
