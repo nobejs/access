@@ -12,4 +12,4 @@ FROM node:12-alpine
 COPY --from=stage1 /app /app
 WORKDIR /app
 EXPOSE 3000
-CMD [ "node", "server.js" ]
+CMD [ "nodemon", "server.js" ]

@@ -19,7 +19,9 @@ server.addHook("onSend", function (request, reply, payload, next) {
   console.log("request.url", request.url);
   console.log("request.headers.origin", request.headers.origin);
   // console.log("request.headers", request.headers);
-  // reply.header("Access-Control-Allow-Origin", request.headers.host);
+  if (request.headers.origin) {
+    reply.header("Access-Control-Allow-Origin", request.headers.origin);
+  }
   next();
 });
 
@@ -27,7 +29,7 @@ server.register(require('fastify-cors'), {
   origin: "*",
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
   allowedHeaders: "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,X-Client-Identifier,X-Team-Identifier,Access-Control-Allow-Origin",
-  // credentials: true,
+  credentials: true,
   maxAge: 1728000
 })
 
