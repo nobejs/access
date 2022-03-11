@@ -50,6 +50,7 @@ module.exports = () => {
     errorHandler: "./core/errorHandler",
     notFoundHandler: "./core/notFoundHandler",
     authMiddleware: "./src/functions/authMiddleware",
+    corsMiddleware: "./core/corsMiddleware",
     loadEndpoints: "./core/loadEndpoints",
     validator: "./core/validator",
     endpoints: "./src/endpoints",
@@ -66,5 +67,6 @@ module.exports = () => {
       "POST /reset-password",
     ],
     responseKey: "respondResult",
+    enableCORS: true,
   };
 };
