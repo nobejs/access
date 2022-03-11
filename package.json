@@ -13,6 +13,7 @@
     "serve": "ENVFILE=.env DEBUG=true nodemon server.js",
     "serve:nodebug": "ENVFILE=.env nodemon server.js",
     "start": "node server.js",
+    "start:nodemon": "node server.js",
     "nobe:update": "node ./update && yarn nobe:version",
     "db": "knex",
     "db:migrate": "ENVFILE=.env knex migrate:latest",
@@ -24,9 +25,7 @@
     "bump:minor": "npm version minor",
     "key:generate": "node ./src/functions/JWT/generateKeyPair.js"
   },
-  "devDependencies": {
-    "nodemon": "^2.0.13"
-  },
+  "devDependencies": {},
   "dependencies": {
     "@sentry/node": "^6.16.1",
     "@sentry/tracing": "^6.16.1",
@@ -44,6 +43,7 @@
     "jwt-decode": "^3.1.2",
     "knex": "^0.95.11",
     "njwt": "^1.1.0",
+    "nodemon": "^2.0.15",
     "openpgp": "^5.0.1",
     "path-to-regexp": "^6.2.0",
     "pg": "^8.7.1",
