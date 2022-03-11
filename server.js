@@ -15,6 +15,14 @@ const server = httpServer({
   },
 });
 
+server.register(require('fastify-cors'), {
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+  allowedHeaders: "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,X-Client-Identifier,X-Team-Identifier",
+  credentials: true,
+  maxAge: 1728000
+})
+
 server.addHook("onRequest", async (req, reply) => {
   contextClassRef.client = {
     ip: req.ip,
