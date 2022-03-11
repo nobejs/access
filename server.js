@@ -21,7 +21,7 @@ server.addHook("onSend", function (request, reply, payload, next) {
 });
 
 server.register(require('fastify-cors'), {
-  origin: '*',
+  origin: 'https://access.staging.teurons.com',
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
   allowedHeaders: "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,X-Client-Identifier,X-Team-Identifier,Access-Control-Allow-Origin",
   credentials: true,
