@@ -13,6 +13,15 @@ const debugLogger = requireUtil("debugLogger");
 const exclude = Config["excludeFromAuth"];
 
 module.exports = async (req, reply) => {
+
+  if (req.method === "OPTIONS") {
+    reply.header("Content-Type", "text/plain charset=UTF-8");
+    reply.header("Content-Length", "0");
+    reply.header("Access-Control-Max-Age", "1728000");
+    reply.code(204)
+    reply.send()
+  }
+
   let needsAuth = true;
   // console.log("req.routerPath", req.method, req.url);
 

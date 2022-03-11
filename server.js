@@ -16,12 +16,20 @@ const server = httpServer({
 });
 
 server.addHook("onSend", function (request, reply, payload, next) {
-  console.log("request.url", request.url);
+  console.log("request.url", request.url, request.method);
   console.log("request.headers.origin", request.headers.origin);
   // console.log("request.headers", request.headers);
+
+  if (request.method === "OPTIONS") {
+    reply.header("Content-Type", "text/plain charset=UTF-8");
+    reply.header("Content-Length", "0");
+    reply.header("Access-Control-Max-Age", "1728000");
+  }
+
   if (request.headers.origin) {
     reply.header("Access-Control-Allow-Origin", request.headers.origin);
   }
+
   next();
 });
 
@@ -30,7 +38,6 @@ server.register(require('fastify-cors'), {
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
   allowedHeaders: "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,X-Client-Identifier,X-Team-Identifier,Access-Control-Allow-Origin",
   credentials: true,
-  maxAge: 1728000
 })
 
 // No 'Access-Control-Allow-Origin' header is present on the requested resource.
