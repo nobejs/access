@@ -1,7 +1,7 @@
 #!/bin/bash
 eval yarn bump:pre
 
-eval git push origin master
+eval git push origin master --tags
 
 PACKAGE_VERSION=$(cat package.json \
   | grep version \
