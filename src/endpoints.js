@@ -3,6 +3,7 @@ module.exports = (app) => {
     app.get("/liveness", async (request, res) => {
       return res.code(200).send({
         status: "Access service is healthy",
+        npm_package_version: process.env.npm_package_version,
         ip: request.ip,
         ipRaw: request.raw.ip || "",
         ips: request.ips,
