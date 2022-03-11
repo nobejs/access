@@ -13,7 +13,7 @@
     "serve": "ENVFILE=.env DEBUG=true nodemon server.js",
     "serve:nodebug": "ENVFILE=.env nodemon server.js",
     "start": "node server.js",
-    "start:nodemon": "node server.js",
+    "start:nodemon": "nodemon server.js",
     "nobe:update": "node ./update && yarn nobe:version",
     "db": "knex",
     "db:migrate": "ENVFILE=.env knex migrate:latest",
