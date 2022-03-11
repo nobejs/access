@@ -17,16 +17,17 @@ const server = httpServer({
 
 server.addHook("onSend", function (request, reply, payload, next) {
   console.log("request.url", request.url);
-  console.log("request.headers", request.headers);
-  reply.header("Access-Control-Allow-Origin", request.headers.host);
+  console.log("request.headers.origin", request.headers.origin);
+  // console.log("request.headers", request.headers);
+  // reply.header("Access-Control-Allow-Origin", request.headers.host);
   next();
 });
 
 server.register(require('fastify-cors'), {
-  origin: ['https://access.staging.teurons.com', "https://api.staging.teurons.com"],
+  origin: "*",
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
   allowedHeaders: "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,X-Client-Identifier,X-Team-Identifier,Access-Control-Allow-Origin",
-  credentials: true,
+  // credentials: true,
   maxAge: 1728000
 })
 
