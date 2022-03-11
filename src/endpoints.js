@@ -4,6 +4,7 @@ module.exports = (app) => {
       return res.code(200).send({
         status: "Access service is healthy",
         npm_package_version: process.env.npm_package_version,
+        docker_registry: process.env.DOCKER_REGISTRY || "na",
         ip: request.ip,
         ipRaw: request.raw.ip || "",
         ips: request.ips,
