@@ -15,13 +15,20 @@ const server = httpServer({
   },
 });
 
+server.addHook("onSend", function (request, reply, payload, next) {
+  reply.header("Access-Control-Allow-Origin", request.headers.host);
+  next();
+});
+
 server.register(require('fastify-cors'), {
-  origin: "*",
+  origin: '*',
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-  allowedHeaders: "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,X-Client-Identifier,X-Team-Identifier",
+  allowedHeaders: "DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization,X-Client-Identifier,X-Team-Identifier,Access-Control-Allow-Origin",
   credentials: true,
   maxAge: 1728000
 })
+
+// No 'Access-Control-Allow-Origin' header is present on the requested resource.
 
 server.addHook("onRequest", async (req, reply) => {
   contextClassRef.client = {
