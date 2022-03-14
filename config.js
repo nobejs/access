@@ -55,7 +55,7 @@ module.exports = () => {
     validator: "./core/validator",
     endpoints: "./src/endpoints",
     excludeFromAuth: [
-      "GET /liveness",
+      "GET /health",
       "POST /readiness",
       "POST /register",
       "POST /login",
