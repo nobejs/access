@@ -51,7 +51,7 @@ describe("Test Handler Users/CanLogin", () => {
 
     expect(respondResult).toMatchObject({
       statusCode: 422,
-      message: "AttributeNotVerified",
+      message: "AttributeNotRegistered",
     });
   });
 

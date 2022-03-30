@@ -99,7 +99,7 @@ describe("Test API Users/CanLogin", () => {
 
     expect(respondResult.statusCode).toBe(422);
     expect(respondResult.json()).toMatchObject({
-      message: "AttributeNotVerified",
+      message: "AttributeNotRegistered",
     });
   });
 });
