@@ -30,8 +30,12 @@ jobs:
 
       - name: docker build teams
         run: |
-          docker build . -t nobedocker/access:${{ steps.get_version.outputs.VERSION }}
+          docker build . -t nobedocker/access:${{ steps.get_version.outputs.VERSION }} -t nobedocker/access:latest
 
       - name: docker push
         run: |
           docker push nobedocker/access:${{ steps.get_version.outputs.VERSION }}
+
+      - name: docker push latest
+        run: |
+          docker push nobedocker/access:latest

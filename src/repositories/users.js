@@ -42,10 +42,24 @@ const authenticateWithPassword = async (payload) => {
     value: payload.value,
   });
 
-  if (attribute === undefined) {
+  let verification = await verificationsRepo.findVerificationForRegistration({
+    attribute_type: payload.type,
+    attribute_value: payload.value,
+  });
+
+  console.log("verification", verification)
+
+  if (attribute === undefined && verification !== undefined) {
     throw {
       statusCode: 422,
       message: "AttributeNotVerified",
+    };
+  }
+
+  if (attribute === undefined && verification === undefined) {
+    throw {
+      statusCode: 422,
+      message: "AttributeNotRegistered",
     };
   }
 
@@ -110,7 +124,7 @@ const registerUserFromGoogle = async (payload) => {
       let token = await tokensRepo.createTokenForUser(user);
       return token;
     }
-  } catch (error) {}
+  } catch (error) { }
 };
 
 const requestAttributeVerificationForRegistration = async (payload) => {
@@ -308,6 +322,8 @@ const registerWithPassword = async (payload) => {
   if (verification === undefined) {
     // If no, create a user and also verification for them
     user = await createUserWithPassword(payload.password);
+
+    console.log("user", user)
 
     verificationObject =
       await verificationsRepo.createVerificationForRegistration({
