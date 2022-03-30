@@ -58,7 +58,7 @@ jobs:
           DB_PASSWORD: postgres
           DB_NAME: postgres
           DB_PORT: 5432
-          DB_DIALECT: postgres
+          DB_DIALECT: pg
           DEBUG: true
           PORT: 3000
           PRIVATE_KEY: '-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEILiLApra/MeO5vaAs1mqpawrPXAxzBPzupuKwES71PB1\n-----END PRIVATE KEY-----\n'
