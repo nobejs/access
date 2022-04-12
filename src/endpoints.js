@@ -1,21 +1,18 @@
 const knex = requireKnex();
-const { promises: fs } = require("fs");
+const { promises: fs } = require('fs');
 
 const getNumFiles = async (dir) => {
-  const files = await fs.readdir(dir);
-  return files.length;
-};
+  const files = await fs.readdir(dir)
+  return files.length
+}
 
 module.exports = (app) => {
   try {
     app.get("/health", async (request, res) => {
-      let numberOfFilesInMigrationPath = await getNumFiles(
-        knex.migrate.config.migrationSource.migrationsPaths[0]
-      );
-      let numberOfMigrations = await knex("migrations")
-        .count({ count: "*" })
-        .first();
-      numberOfMigrations = parseInt(numberOfMigrations.count);
+
+      let numberOfFilesInMigrationPath = await getNumFiles(knex.migrate.config.migrationSource.migrationsPaths[0]);
+      let numberOfMigrations = await knex("migrations").count({ count: "*" }).first();
+      numberOfMigrations = parseInt(numberOfMigrations.count)
 
       if (numberOfMigrations === numberOfFilesInMigrationPath) {
         return res.code(200).send({
@@ -86,11 +83,6 @@ module.exports = (app) => {
             "delete",
             "/teams/:team_uuid/tokens/:token_uuid",
             "Tokens/TeamAdminCanDeleteToken",
-          ],
-          [
-            "get",
-            "/teams/:team_uuid/tokens/:token_uuid",
-            "Tokens/TeamAdminCanGetTokensByUuid",
           ],
 
           // Roles
