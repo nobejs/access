@@ -47,8 +47,6 @@ const authenticateWithPassword = async (payload) => {
     attribute_value: payload.value,
   });
 
-  console.log("verification", verification)
-
   if (attribute === undefined && verification !== undefined) {
     throw {
       statusCode: 422,
@@ -94,8 +92,6 @@ const registerUserFromGoogle = async (payload) => {
       value: payload.email,
     });
 
-    console.log("findUserWithAttribute", findUserWithAttribute);
-
     if (findUserWithAttribute === undefined) {
       const user = await baseRepo.create(table, {
         profile: {
@@ -124,7 +120,7 @@ const registerUserFromGoogle = async (payload) => {
       let token = await tokensRepo.createTokenForUser(user);
       return token;
     }
-  } catch (error) { }
+  } catch (error) {}
 };
 
 const requestAttributeVerificationForRegistration = async (payload) => {
@@ -322,8 +318,6 @@ const registerWithPassword = async (payload) => {
   if (verification === undefined) {
     // If no, create a user and also verification for them
     user = await createUserWithPassword(payload.password);
-
-    console.log("user", user)
 
     verificationObject =
       await verificationsRepo.createVerificationForRegistration({
