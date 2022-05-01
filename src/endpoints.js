@@ -1,18 +1,21 @@
 const knex = requireKnex();
-const { promises: fs } = require('fs');
+const { promises: fs } = require("fs");
 
 const getNumFiles = async (dir) => {
-  const files = await fs.readdir(dir)
-  return files.length
-}
+  const files = await fs.readdir(dir);
+  return files.length;
+};
 
 module.exports = (app) => {
   try {
     app.get("/health", async (request, res) => {
-
-      let numberOfFilesInMigrationPath = await getNumFiles(knex.migrate.config.migrationSource.migrationsPaths[0]);
-      let numberOfMigrations = await knex("migrations").count({ count: "*" }).first();
-      numberOfMigrations = parseInt(numberOfMigrations.count)
+      let numberOfFilesInMigrationPath = await getNumFiles(
+        knex.migrate.config.migrationSource.migrationsPaths[0]
+      );
+      let numberOfMigrations = await knex("migrations")
+        .count({ count: "*" })
+        .first();
+      numberOfMigrations = parseInt(numberOfMigrations.count);
 
       if (numberOfMigrations === numberOfFilesInMigrationPath) {
         return res.code(200).send({
@@ -57,6 +60,7 @@ module.exports = (app) => {
           ["post", "/login/google", "Users/RedirectForLoginWithGoogle"],
           ["get", "/login/google", "Users/LoginWithGoogle"],
 
+          ["get", "/logout", "Users/Logout"],
           ["get", "/sessions", "Users/GetSessions"],
           ["delete", "/sessions/:session_uuid", "Users/DestroySession"],
 
@@ -135,7 +139,6 @@ module.exports = (app) => {
       },
     ];
   } catch (error) {
-    console.log("13-error", error);
     throw error;
   }
 };
