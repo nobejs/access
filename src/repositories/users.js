@@ -11,7 +11,7 @@ const isDateInPast = requireFunction("isDateInPast");
 const table = "users";
 
 const getAllowedTypes = () => {
-  return ["email"];
+  return ["email", "mobile"];
 };
 
 // const getAttributesOfAUser = (user_uuid) => {
@@ -47,7 +47,7 @@ const authenticateWithPassword = async (payload) => {
     attribute_value: payload.value,
   });
 
-  console.log("verification", verification)
+  console.log("verification", verification);
 
   if (attribute === undefined && verification !== undefined) {
     throw {
@@ -124,7 +124,7 @@ const registerUserFromGoogle = async (payload) => {
       let token = await tokensRepo.createTokenForUser(user);
       return token;
     }
-  } catch (error) { }
+  } catch (error) {}
 };
 
 const requestAttributeVerificationForRegistration = async (payload) => {
@@ -323,8 +323,6 @@ const registerWithPassword = async (payload) => {
     // If no, create a user and also verification for them
     user = await createUserWithPassword(payload.password);
 
-    console.log("user", user)
-
     verificationObject =
       await verificationsRepo.createVerificationForRegistration({
         user_uuid: user.uuid,
@@ -346,7 +344,7 @@ const registerWithPassword = async (payload) => {
     value: verificationObject.attribute_value,
     contact_infos: [
       {
-        type: "email",
+        type: payload.type,
         value: verificationObject.attribute_value,
       },
     ],

@@ -23,9 +23,11 @@ module.exports = async (payload) => {
   }
 
   if (process.env.NEPTUNE_ENV !== "" && process.env.NEPTUNE_ENV !== undefined) {
-    let eventsEndpoints = `${process.env.NEPTUNE_ENDPOINT}/${process.env.NEPTUNE_ENV}/events`;
+    let eventsEndpoints = `https://edge.teurons.com/neptune/events/ingest`;
 
     // console.log("eventsEndpoints", process.env.NEPTUNE_TOKEN);
+    payload["api_token"] = process.env.NEPTUNE_TOKEN;
+    payload["environment"] = process.env.NEPTUNE_ENV;
 
     try {
       let result = await axios.post(eventsEndpoints, payload, {
