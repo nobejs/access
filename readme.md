@@ -9,6 +9,7 @@ It is built on and dependent on:
 
 ### How to use
 
+- Use postman collection to play with APIs (Workspace ID: 74822521-9125-4c97-8945-cff636e147c0)
 - Access image is already published to: https://hub.docker.com/r/nobedocker/access/tags
 - You can use this image to run as a container
 - You need to provider environment variables (depends on what service you are using to run container like, kubernetes, ecs etc.,)
