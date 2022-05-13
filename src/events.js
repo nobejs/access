@@ -2,7 +2,7 @@ const postEvent = requireFunction("postEvent");
 const contextClassRef = requireUtil("contextHelper");
 
 const registrationVerificationEvent = async (payload) => {
-  console.log("contextClassRef", contextClassRef.client);
+  // console.log("contextClassRef", contextClassRef.client);
 
   await postEvent({
     event_type: `request_otp_to_verify_${payload.type}_during_registration`,
