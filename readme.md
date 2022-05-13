@@ -17,6 +17,13 @@ It is built on and dependent on:
 - Create a neptune team, environment and api token
   - All events which need user communication are already sent to Neptune with required payload
 
+### How to find postman collection?
+
+- Search "Nobe access"
+- It's available under "Betalectic Dev" Team
+
+![Postman Nobe Access](_docs/postman-nobe-access.png "Postman Nobe Access")
+
 ### Stories and APIs
 
 - [Register](_docs/Register.md)
