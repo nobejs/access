@@ -7,13 +7,26 @@ It is built on and dependent on:
 1. NodeJS
 2. Postgres
 
+### How to use
+
+- Access image is already published to: https://hub.docker.com/r/nobedocker/access/tags
+- You can use this image to run as a container
+- You need to provider environment variables (depends on what service you are using to run container like, kubernetes, ecs etc.,)
+  - Check .env.example for checking referene
+- Create a neptune team, environment and api token
+  - All events which need user communication are already sent to Neptune with required payload
+
 ### Stories and APIs
 
 - [Register](_docs/Register.md)
 - [Login](_docs/Login.md)
 - [Password](_docs/Password.md)
 
-### Help Commands
+### Requests/Bugs/Contribution/Support
 
-- Prerelease:
-  gh release create v1.1.2-alpha.42 --notes "v1.1.2-alpha.42" -p
+- Use Github issues to raise issues
+- Use our discord or twitter to reach quickly to us (Visit: https://nobejs.org/)
+
+### License
+
+Coming soon. Mostly MIT. We won't charge. You can fork the code, change it, sell it, use it as you see fit.
