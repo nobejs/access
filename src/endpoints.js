@@ -60,6 +60,9 @@ module.exports = (app) => {
           ["post", "/login/google", "Users/RedirectForLoginWithGoogle"],
           ["get", "/login/google", "Users/LoginWithGoogle"],
 
+          ["post", "/login/otp", "Users/LoginWithOTP"],
+          ["post", "/login/otp/initiate", "Users/InitiateLoginWithOTP"],
+
           ["get", "/logout", "Users/Logout"],
           ["get", "/sessions", "Users/GetSessions"],
           ["delete", "/sessions/:session_uuid", "Users/DestroySession"],

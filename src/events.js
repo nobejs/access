@@ -32,6 +32,20 @@ const resetPasswordVerificationEvent = async (payload) => {
   });
 };
 
+const loginWithOtpEvent = async (payload) => {
+  await postEvent({
+    event_type: `request_otp_to_login_through_${payload.type}`,
+    user_id: payload.user_uuid,
+    client: contextClassRef.client,
+    data: {
+      token: payload.token,
+      type: payload.type,
+      value: payload.value,
+    },
+    contact_infos: payload.contact_infos || [],
+  });
+};
+
 const invitedToTeamEvent = async (payload) => {
   await postEvent({
     event_type: `invited_to_team`,
@@ -50,4 +64,5 @@ module.exports = {
   registrationVerificationEvent,
   resetPasswordVerificationEvent,
   invitedToTeamEvent,
+  loginWithOtpEvent,
 };

@@ -59,6 +59,7 @@ module.exports = () => {
       "POST /readiness",
       "POST /register",
       "POST /login",
+      "POST /login/otp/initiate",
       "POST /login/google",
       "GET /login/google",
       "POST /verify-registration",

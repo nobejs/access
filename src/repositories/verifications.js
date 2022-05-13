@@ -36,6 +36,15 @@ const createVerificationForRegistration = async (data) => {
   return response;
 };
 
+const findVerificationForLogin = async (where = {}) => {
+  return await findVerificationForType(where, "login");
+};
+
+const createVerificationForLogin = async (data) => {
+  let response = await createVerificationForType(data, "login");
+  return response;
+};
+
 const createVerificationForResetPassword = async (data) => {
   let response = await createVerificationForType(data, "reset-password");
   return response;
@@ -56,6 +65,8 @@ module.exports = {
   createVerificationForRegistration,
   findVerificationForResetPassword,
   createVerificationForResetPassword,
+  findVerificationForLogin,
+  createVerificationForLogin,
   updateVerification,
   removeVerification,
   countAll,

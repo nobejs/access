@@ -6,6 +6,7 @@ const tokensRepo = requireRepo("tokens");
 const {
   registrationVerificationEvent,
   resetPasswordVerificationEvent,
+  loginWithOtpEvent,
 } = require("../events");
 const isDateInPast = requireFunction("isDateInPast");
 const table = "users";
@@ -36,7 +37,7 @@ const first = async (payload) => {
   return await baseRepo.first(table, payload);
 };
 
-const authenticateWithPassword = async (payload) => {
+const generateOTPForLogin = async (payload) => {
   let attribute = await attributesRepo.first({
     type: payload.type,
     value: payload.value,
@@ -47,7 +48,85 @@ const authenticateWithPassword = async (payload) => {
     attribute_value: payload.value,
   });
 
-  console.log("verification", verification);
+  if (attribute === undefined && verification !== undefined) {
+    throw {
+      statusCode: 422,
+      message: "AttributeNotVerified",
+    };
+  }
+
+  if (attribute === undefined && verification === undefined) {
+    throw {
+      statusCode: 422,
+      message: "AttributeNotRegistered",
+    };
+  }
+
+  let user = await baseRepo.first(table, {
+    uuid: attribute.user_uuid,
+  });
+
+  verification = await verificationsRepo.findVerificationForLogin({
+    attribute_type: payload.type,
+    attribute_value: payload.value,
+  });
+
+  if (verification !== undefined) {
+    let verificationObject = await verificationsRepo.updateVerification({
+      uuid: verification.uuid,
+    });
+
+    await loginWithOtpEvent({
+      user_uuid: verificationObject.user_uuid,
+      token: verificationObject.token,
+      type: verificationObject.attribute_type,
+      value: verificationObject.attribute_value,
+      contact_infos: [
+        {
+          type: payload.type,
+          value: verificationObject.attribute_value,
+        },
+      ],
+    });
+  } else {
+    let attribute = await attributesRepo.first({
+      type: payload.type,
+      value: payload.value,
+    });
+
+    let verificationObject = await verificationsRepo.createVerificationForLogin(
+      {
+        user_uuid: attribute.user_uuid,
+        attribute_type: payload.type,
+        attribute_value: payload.value,
+      }
+    );
+
+    await loginWithOtpEvent({
+      user_uuid: verificationObject.user_uuid,
+      token: verificationObject.token,
+      type: verificationObject.attribute_type,
+      value: verificationObject.attribute_value,
+      contact_infos: [
+        {
+          type: payload.type,
+          value: verificationObject.attribute_value,
+        },
+      ],
+    });
+  }
+};
+
+const authenticateWithPassword = async (payload) => {
+  let attribute = await attributesRepo.first({
+    type: payload.type,
+    value: payload.value,
+  });
+
+  let verification = await verificationsRepo.findVerificationForRegistration({
+    attribute_type: payload.type,
+    attribute_value: payload.value,
+  });
 
   if (attribute === undefined && verification !== undefined) {
     throw {
@@ -148,7 +227,7 @@ const requestAttributeVerificationForRegistration = async (payload) => {
         value: verificationObject.attribute_value,
         contact_infos: [
           {
-            type: "email",
+            type: payload.type,
             value: verificationObject.attribute_value,
           },
         ],
@@ -222,7 +301,7 @@ const requestAttributeVerificationForResetPassword = async (payload) => {
         value: verificationObject.attribute_value,
         contact_infos: [
           {
-            type: "email",
+            type: payload.type,
             value: verificationObject.attribute_value,
           },
         ],
@@ -383,4 +462,5 @@ module.exports = {
   createTestUserWithVerifiedToken,
   updateProfileOfUser,
   registerUserFromGoogle,
+  generateOTPForLogin,
 };

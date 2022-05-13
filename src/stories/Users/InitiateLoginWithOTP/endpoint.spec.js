@@ -5,7 +5,7 @@ const httpServer = requireHttpServer();
 const truncateAllTables = requireFunction("truncateAllTables");
 const createUser = requireFunction("createUser");
 
-describe("Test API Users/RequestResetPassword", () => {
+describe("Test API Users/InitiateLoginWithOTP", () => {
   beforeEach(async () => {
     await truncateAllTables();
     await createUser();
@@ -23,7 +23,7 @@ describe("Test API Users/RequestResetPassword", () => {
 
       respondResult = await app.inject({
         method: "POST",
-        url: "/request-reset-password", // This should be in endpoints.js
+        url: "/login/otp/initiate", // This should be in endpoints.js
         payload,
       });
     } catch (error) {
@@ -35,7 +35,7 @@ describe("Test API Users/RequestResetPassword", () => {
 
     expect(respondResult.json()).toEqual(
       expect.objectContaining({
-        message: "Request for verification successfully",
+        message: "Request for login with otp successfully",
       })
     );
   });
