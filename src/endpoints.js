@@ -50,6 +50,7 @@ module.exports = (app) => {
 
           ["post", "/request-reset-password", "Users/RequestResetPassword"],
           ["post", "/reset-password", "Users/ResetPassword"],
+          ["post", "/update-password", "Users/UpdatePassword"],
 
           // Login
           ["post", "/login", "Users/CanLogin"],

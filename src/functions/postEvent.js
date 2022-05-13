@@ -13,7 +13,11 @@ module.exports = async (payload) => {
     payload
   );
 
-  // console.log("process.env", process.env);
+  if (process.env.NODE_ENV === "test") {
+    return false;
+  }
+
+  console.log("process.env", process.env);
 
   if (
     process.env.POST_TO_WEBHOOK !== "" &&

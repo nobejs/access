@@ -117,6 +117,69 @@ const generateOTPForLogin = async (payload) => {
   }
 };
 
+const authenticateWithOTP = async (payload) => {
+  try {
+    let attribute = await attributesRepo.first({
+      type: payload.type,
+      value: payload.value,
+    });
+
+    let verification = await verificationsRepo.findVerificationForRegistration({
+      attribute_type: payload.type,
+      attribute_value: payload.value,
+    });
+
+    if (attribute === undefined && verification !== undefined) {
+      throw {
+        statusCode: 422,
+        message: "AttributeNotVerified",
+      };
+    }
+
+    if (attribute === undefined && verification === undefined) {
+      throw {
+        statusCode: 422,
+        message: "AttributeNotRegistered",
+      };
+    }
+
+    verification = await verificationsRepo.findVerificationForLogin({
+      attribute_type: payload.type,
+      attribute_value: payload.value,
+    });
+
+    if (verification !== undefined && !isDateInPast(verification.expires_at)) {
+      if (payload.token === verification.token) {
+        let user = await baseRepo.first(table, {
+          uuid: attribute.user_uuid,
+        });
+
+        await verificationsRepo.removeVerification({
+          uuid: verification.uuid,
+        });
+
+        let token = await tokensRepo.createTokenForUser(user);
+        return token;
+      } else {
+        throw {
+          statusCode: 422,
+          message: "Invalid Token",
+        };
+      }
+    } else {
+      throw {
+        statusCode: 422,
+        message: "Invalid Token",
+      };
+    }
+  } catch (error) {
+    throw {
+      statusCode: 422,
+      message: "Invalid Token",
+    };
+  }
+};
+
 const authenticateWithPassword = async (payload) => {
   let attribute = await attributesRepo.first({
     type: payload.type,
@@ -463,4 +526,5 @@ module.exports = {
   updateProfileOfUser,
   registerUserFromGoogle,
   generateOTPForLogin,
+  authenticateWithOTP,
 };
