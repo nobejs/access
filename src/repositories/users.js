@@ -527,4 +527,5 @@ module.exports = {
   registerUserFromGoogle,
   generateOTPForLogin,
   authenticateWithOTP,
+  updateUserPassword,
 };
