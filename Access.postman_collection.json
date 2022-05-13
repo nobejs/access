@@ -1,0 +1,1177 @@
+{
+	"info": {
+		"_postman_id": "12ebe809-cc90-472a-b98d-4efa83bbe6af",
+		"name": "Access",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Register",
+			"item": [
+				{
+					"name": "Users/CanRegister",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"email\",\n    \"value\": \"rajiv+1@betalectic.com\",\n    \"password\": \"Kissmiss9!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/register",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Users/RequestVerifyForRegistration",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"email\",\n    \"value\": \"rajiv+3@betalectic.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/request-verify-registration",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"request-verify-registration"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Users/VerifyRegistration",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"email\",\n    \"value\": \"rajiv+1@betalectic.com\",\n    \"token\": \"553475\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/verify-registration",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"verify-registration"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Users/CanRegister (Mobile)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"mobile\",\n    \"value\": \"+918897587656\",\n    \"password\": \"Kissmiss9!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/register",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Users/RequestVerifyForRegistration (Mobile)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"mobile\",\n    \"value\": \"+918897587656\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/request-verify-registration",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"request-verify-registration"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Users/VerifyRegistration (Mobile)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"mobile\",\n    \"value\": \"+918897587656\",\n    \"token\": \"329250\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/verify-registration",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"verify-registration"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Login",
+			"item": [
+				{
+					"name": "Users/CanLogin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (responseCode.code === 200)",
+									"{",
+									"    var jsonData = JSON.parse(responseBody);",
+									"",
+									"    pm.environment.set(\"access_token\", jsonData.access_token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"email\",\n    \"value\": \"rajiv+1@betalectic.com\",\n    \"password\": \"Kissmiss10!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/login",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Users/RedirectForLoginWithGoogle",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (responseCode.code === 200)",
+									"{",
+									"    var jsonData = JSON.parse(responseBody);",
+									"",
+									"    pm.environment.set(\"access_token\", jsonData.access_token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/login/google",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"login",
+								"google"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Users/LoginWithGoogle",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (responseCode.code === 200)",
+									"{",
+									"    var jsonData = JSON.parse(responseBody);",
+									"",
+									"    pm.environment.set(\"access_token\", jsonData.access_token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"email\",\n    \"value\": \"rajiv+21@betalectic.com\",\n    \"password\": \"Kissmiss9!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/login/google?code=4/0AX4XfWgwkmQGY2Ru7PxRMYuLMqdNQhrjRdoQlfd2fbeXEDOHE3uu3CWQjuBPo68bAdss9w",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"login",
+								"google"
+							],
+							"query": [
+								{
+									"key": "code",
+									"value": "4/0AX4XfWgwkmQGY2Ru7PxRMYuLMqdNQhrjRdoQlfd2fbeXEDOHE3uu3CWQjuBPo68bAdss9w"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Users/InitiateLoginWithOTP",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (responseCode.code === 200)",
+									"{",
+									"    var jsonData = JSON.parse(responseBody);",
+									"",
+									"    pm.environment.set(\"access_token\", jsonData.access_token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"email\",\n    \"value\": \"rajiv+1@betalectic.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/login/otp/initiate",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"login",
+								"otp",
+								"initiate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Users/InitiateLoginWithOTP (Mobile)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (responseCode.code === 200)",
+									"{",
+									"    var jsonData = JSON.parse(responseBody);",
+									"",
+									"    pm.environment.set(\"access_token\", jsonData.access_token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"mobile\",\n    \"value\": \"+918897587656\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/login/otp/initiate",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"login",
+								"otp",
+								"initiate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Users/LoginWithOTP (Mobile)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (responseCode.code === 200)",
+									"{",
+									"    var jsonData = JSON.parse(responseBody);",
+									"",
+									"    pm.environment.set(\"access_token\", jsonData.access_token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"mobile\",\n    \"value\": \"+918897587656\",\n    \"token\": \"166542\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/login/otp",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"login",
+								"otp"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Teams",
+			"item": [
+				{
+					"name": "Teams/UserCanCreateTeam",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"tenant\": \"neptune-2\",\n    \"name\": \"Test Team 1\",\n    \"slug\": \"test-team-1\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/teams",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"teams"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Teams/UserCanUpdateTeam",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"tenant\": \"neptune\",\n    \"name\": \"Shubhams Personal Team Updated\",\n    \"slug\": \"shubham-personal-team\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/teams/2176b8ec-d2b3-4a2e-bb35-7d3e150fe8c0",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"teams",
+								"2176b8ec-d2b3-4a2e-bb35-7d3e150fe8c0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Teams/UserCanViewTeams",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{access_endpoint}}/teams?tenant=neptune",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"teams"
+							],
+							"query": [
+								{
+									"key": "tenant",
+									"value": "neptune"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Teams/UserCanViewTeam",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{access_endpoint}}/teams/2176b8ec-d2b3-4a2e-bb35-7d3e150fe8c0",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"teams",
+								"2176b8ec-d2b3-4a2e-bb35-7d3e150fe8c0"
+							],
+							"query": [
+								{
+									"key": "tenant",
+									"value": "neptune",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Tokens",
+			"item": [
+				{
+					"name": "Tokens/TeamAdminCanCreateToken",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (responseCode.code === 200)",
+									"{",
+									"    var jsonData = JSON.parse(responseBody);",
+									"",
+									"    pm.environment.set(\"api_token\", jsonData.access_token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Token for Apps (Wiredup)\",\n    \"permissions\": {\n        \"admin\": true,\n        \"post_events\": true\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/teams/{{team_uuid}}/tokens",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"teams",
+								"{{team_uuid}}",
+								"tokens"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Tokens/TeamAdminCanGetTokens",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{access_endpoint}}/teams/{{team_uuid}}/tokens",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"teams",
+								"{{team_uuid}}",
+								"tokens"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Tokens/TeamAdminCanUpdateToken",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (responseCode.code === 200)",
+									"{",
+									"    var jsonData = JSON.parse(responseBody);",
+									"",
+									"    pm.environment.set(\"api_token\", jsonData.access_token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Token for Apps\",\n    \"permissions\": {\n        \"admin\": true,\n        \"post_events\": true,\n        \"manage_templates\": true\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/teams/{{team_uuid}}/tokens/82534f92-aa7a-4c5d-bfc2-d7da2fecde67",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"teams",
+								"{{team_uuid}}",
+								"tokens",
+								"82534f92-aa7a-4c5d-bfc2-d7da2fecde67"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Tokens/TeamAdminCanGetTokenByUuid",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{access_endpoint}}/teams/{{team_uuid}}/tokens/9551046d-8c88-47fb-abd3-4a32c6dd7432",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"teams",
+								"{{team_uuid}}",
+								"tokens",
+								"9551046d-8c88-47fb-abd3-4a32c6dd7432"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Authorize",
+			"item": [
+				{
+					"name": "Users/Authorize (User Token)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{access_endpoint}}/authorize",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"authorize"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Users/Authorize (With Team)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-team-identifier",
+								"value": "{{team_uuid}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{access_endpoint}}/authorize",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"authorize"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Users/Authorize (With API Token)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJFZERTQSJ9.eyJleHAiOjE2NzI3NzI2MDYsInN1YiI6IjZkYmQyYzQ1LTA0YjctNDNiOC04Njg5LTVjZDYwY2RiMTkzZSIsImlzcyI6InRlYW0iLCJqdGkiOiI4ODIwZjNhMy03YTgxLTQ1YjAtOTNhOS04OGJmOThhOGZlNzAifQ.LzmC2lCsd82xYhzslTbmV2rELpIqKgfLYU0MFb6MTK7XAPr8hhNiSap8GpIy9Ku_W4o_22zL3HdYjzNqqtDDAw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "x-team-identifier",
+								"value": "58ebe2c1-3a7d-4e21-b672-d846b213d09f",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"warning": "This is a duplicate header and will be overridden by the Authorization header generated by Postman.",
+								"key": "Authorization",
+								"value": "Bearer {{api_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{access_endpoint}}/authorize",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"authorize"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Team Members",
+			"item": [
+				{
+					"name": "TeamMembers/UserCanViewInvites",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{access_endpoint}}/teams/invites",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"teams",
+								"invites"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TeamMembers/UserCanCreateTeamMember",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"attribute_type\": \"email\",\n    \"attribute_value\": \"rajesh+3@betalectic.com\",\n    \"permissions\": {\n        \"member\": true\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/teams/adda3958-51f6-455f-86b7-579faafe9138/members",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"teams",
+								"adda3958-51f6-455f-86b7-579faafe9138",
+								"members"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TeamMembers/UserCanAcceptTeamMembership",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/teams/{{team_uuid}}/members/670a75c3-fef5-42c4-bd0f-8f0ba7f2a6fe/accept",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"teams",
+								"{{team_uuid}}",
+								"members",
+								"670a75c3-fef5-42c4-bd0f-8f0ba7f2a6fe",
+								"accept"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TeamMembers/UserCanDeleteTeamMember",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{access_endpoint}}/teams/{{team_uuid}}/members/3df415af-27c2-4c4a-bc4b-abc53b103051",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"teams",
+								"{{team_uuid}}",
+								"members",
+								"3df415af-27c2-4c4a-bc4b-abc53b103051"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TeamMembers/UserCanViewTeamMembers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{access_endpoint}}/teams/{{team_uuid}}/members",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"teams",
+								"{{team_uuid}}",
+								"members"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "TeamMembers/UserCanUpdateRolesAndPermissions",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"permissions\": {\n        \"developer\": true\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/teams/{{team_uuid}}/members/9ed90273-45d0-4620-b7c4-06d7c40351d5/assign-role-permission",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"teams",
+								"{{team_uuid}}",
+								"members",
+								"9ed90273-45d0-4620-b7c4-06d7c40351d5",
+								"assign-role-permission"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Reset Password",
+			"item": [
+				{
+					"name": "Users/RequestResetPassword",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"email\",\n    \"value\": \"rajiv@betalectic.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/request-reset-password",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"request-reset-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Users/ResetPassword",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"email\",\n    \"value\": \"rajiv@betalectic.com\",\n    \"password\": \"Kissmiss10!\",\n    \"token\": \"424553\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/reset-password",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"reset-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Users/UpdatePassword",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"password\": \"Kissmiss10!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/update-password",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"update-password"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Liveness",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{access_endpoint}}/health",
+					"host": [
+						"{{access_endpoint}}"
+					],
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{access_endpoint}}/user",
+					"host": [
+						"{{access_endpoint}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User Profile",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Rajiv Seelam\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{access_endpoint}}/user",
+					"host": [
+						"{{access_endpoint}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{access_endpoint}}/logout",
+					"host": [
+						"{{access_endpoint}}"
+					],
+					"path": [
+						"logout"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
