@@ -8,7 +8,7 @@
 
 ## Introduction
 
-You application might provide user to Register via email or mobile. Flow of registration works the following way:
+Your application might provide user to Register via email or mobile. Flow of registration works the following way:
 
 - Step 1: Call `/register` API
 - Step 2: Call `/verify-registration` API
