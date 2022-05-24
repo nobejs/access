@@ -92,6 +92,11 @@ module.exports = (app) => {
             "/teams/:team_uuid/tokens/:token_uuid",
             "Tokens/TeamAdminCanDeleteToken",
           ],
+          [
+            "get",
+            "/teams/:team_uuid/tokens/:token_uuid",
+            "Tokens/TeamAdminCanGetTokensByUuid",
+          ],
 
           // Roles
           ["post", "/teams/:team_uuid/roles", "Roles/TeamAdminCanCreateRole"],
