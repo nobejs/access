@@ -7,19 +7,34 @@ It is built on and dependent on:
 1. NodeJS
 2. Postgres
 
-### Links
+### How to use
 
-- [APIs](_docs/APIs.md)
+- Use postman collection to play with APIs (Workspace ID: 74822521-9125-4c97-8945-cff636e147c0)
+- Access image is already published to: https://hub.docker.com/r/nobedocker/access/tags
+- You can use this image to run as a container
+- You need to provider environment variables (depends on what service you are using to run container like, kubernetes, ecs etc.,)
+  - Check .env.example for checking referene
+- Create a neptune team, environment and api token
+  - All events which need user communication are already sent to Neptune with required payload
 
-**Why we made this?**
+### How to find postman collection?
 
-We have been heavy users of Laravel who have been migration away from it. But we are amazed and still inspired by how amazing Laravel community is and their efforts towards making developers lives amazing.
+- Search "Nobe access"
+- It's available under "Betalectic Dev" Team
 
-For the use-cases of Auth, Teams etc., we are still using Laravel 7/8 as a Microservice, but we have been struggling to make work arounds. At NobeJS we have been trying to build Microservices which are deployable as containers - so you become Framework Agnostic. Instead of importing a third party package into your codebase, you import a container into your infrastructure. Felt much neater.
+![Postman Nobe Access](_docs/postman-nobe-access.png "Postman Nobe Access")
 
-So, some decisions like using JWT etc., are keeping what [Sanctum](https://laravel.com/docs/8.x/sanctum) and other Laravel Packages are doing. We are already able to build successful applications using those concepts, we just want to replace it with something a bit more scalable and agnostic.
+### Stories and APIs
 
-### Help Commands
+- [Register](_docs/Register.md)
+- [Login](_docs/Login.md)
+- [Password](_docs/Password.md)
 
-- Prerelease:
-  gh release create v1.1.2-alpha.42 --notes "v1.1.2-alpha.42" -p
+### Requests/Bugs/Contribution/Support
+
+- Use Github issues to raise issues
+- Use our discord or twitter to reach quickly to us (Visit: https://nobejs.org/)
+
+### License
+
+Coming soon. Mostly MIT. We won't charge. You can fork the code, change it, sell it, use it as you see fit.

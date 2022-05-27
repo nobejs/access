@@ -50,6 +50,7 @@ module.exports = (app) => {
 
           ["post", "/request-reset-password", "Users/RequestResetPassword"],
           ["post", "/reset-password", "Users/ResetPassword"],
+          ["post", "/update-password", "Users/UpdatePassword"],
 
           // Login
           ["post", "/login", "Users/CanLogin"],
@@ -60,6 +61,10 @@ module.exports = (app) => {
           ["post", "/login/google", "Users/RedirectForLoginWithGoogle"],
           ["get", "/login/google", "Users/LoginWithGoogle"],
 
+          ["post", "/login/otp", "Users/LoginWithOTP"],
+          ["post", "/login/otp/initiate", "Users/InitiateLoginWithOTP"],
+
+          ["get", "/logout", "Users/Logout"],
           ["get", "/sessions", "Users/GetSessions"],
           ["delete", "/sessions/:session_uuid", "Users/DestroySession"],
 
@@ -143,7 +148,6 @@ module.exports = (app) => {
       },
     ];
   } catch (error) {
-    console.log("13-error", error);
     throw error;
   }
 };

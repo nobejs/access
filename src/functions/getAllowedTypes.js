@@ -1,4 +1,3 @@
 module.exports = () => {
-  return ["email"];
-  // return ["email", "mobile"];
+  return ["email", "mobile"];
 };
