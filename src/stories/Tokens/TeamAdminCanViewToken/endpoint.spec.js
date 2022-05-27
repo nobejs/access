@@ -3,7 +3,7 @@ const randomUser = requireUtil("randomUser");
 const knex = requireKnex();
 const httpServer = requireHttpServer();
 
-describe("Test API Tokens/TeamAdminCanGetTokensByUuid", () => {
+describe("Test API Tokens/TeamAdminCanViewToken", () => {
   beforeAll(async () => {
     contextClassRef.user = randomUser();
     contextClassRef.headers = {

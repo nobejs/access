@@ -1,11 +1,11 @@
 const debugLogger = requireUtil("debugLogger");
 const knex = requireKnex();
 
-describe("Test Handler Tokens/TeamAdminCanGetTokensByUuid", () => {
+describe("Test Handler Tokens/TeamAdminCanViewToken", () => {
   it("dummy_story_which_will_pass", async () => {
     let result = {};
     try {
-      result = await testStrategy("Tokens/TeamAdminCanGetTokensByUuid", {
+      result = await testStrategy("Tokens/TeamAdminCanViewToken", {
         prepareResult: {},
       });
     } catch (error) {
