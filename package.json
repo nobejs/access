@@ -12,6 +12,7 @@
     "test:github": "jest --runInBand",
     "serve": "ENVFILE=.env DEBUG=true nodemon server.js",
     "serve:nodebug": "ENVFILE=.env nodemon server.js",
+    "migrate-and-start": "knex migrate:latest && node server.js",
     "start": "node server.js",
     "start:nodemon": "nodemon server.js",
     "nobe:update": "node ./update && yarn nobe:version",
