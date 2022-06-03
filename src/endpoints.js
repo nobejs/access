@@ -9,26 +9,44 @@ const getNumFiles = async (dir) => {
 module.exports = (app) => {
   try {
     app.get("/health", async (request, res) => {
-      let numberOfFilesInMigrationPath = await getNumFiles(
-        knex.migrate.config.migrationSource.migrationsPaths[0]
-      );
-      let numberOfMigrations = await knex("migrations")
-        .count({ count: "*" })
-        .first();
-      numberOfMigrations = parseInt(numberOfMigrations.count);
+      try {
+        let numberOfFilesInMigrationPath = await getNumFiles(
+          knex.migrate.config.migrationSource.migrationsPaths[0]
+        );
+        let numberOfMigrations = await knex("migrations")
+          .count({ count: "*" })
+          .first();
+        numberOfMigrations = parseInt(numberOfMigrations.count);
 
-      if (numberOfMigrations === numberOfFilesInMigrationPath) {
-        return res.code(200).send({
-          status: "Access service is healthy",
-          npm_package_version: process.env.npm_package_version,
-          ip: request.ip,
-          userAgent: request.headers["user-agent"],
-          region: process.env.AWS_REGION || "na",
-        });
-      } else {
-        return res.code(400).send({
-          status: "Access is not alive",
-        });
+        if (process.env.DEBUG === "true") {
+          console.log(
+            "numberOfMigrations",
+            numberOfMigrations,
+            numberOfFilesInMigrationPath
+          );
+        }
+
+        if (numberOfMigrations === numberOfFilesInMigrationPath) {
+          return res.code(200).send({
+            status: "Access service is healthy",
+            npm_package_version: process.env.npm_package_version,
+            ip: request.ip,
+            userAgent: request.headers["user-agent"],
+            region: process.env.AWS_REGION || "na",
+          });
+        } else {
+          if (process.env.DEBUG === "true") {
+            console.log("Access is not alive");
+          }
+
+          return res.code(400).send({
+            status: "Access is not alive",
+          });
+        }
+      } catch (error) {
+        if (process.env.DEBUG === "true") {
+          console.log(error);
+        }
       }
     });
 
