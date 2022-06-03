@@ -113,7 +113,7 @@ module.exports = (app) => {
           [
             "get",
             "/teams/:team_uuid/tokens/:token_uuid",
-            "Tokens/TeamAdminCanGetTokensByUuid",
+            "Tokens/TeamAdminCanViewToken",
           ],
 
           // Roles
