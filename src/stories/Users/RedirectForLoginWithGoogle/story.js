@@ -2,7 +2,7 @@ const findKeysFromRequest = requireUtil("findKeysFromRequest");
 const { OAuth2Client } = require("google-auth-library");
 
 const prepare = ({ reqQuery, reqBody, reqParams, req }) => {
-  const payload = findKeysFromRequest(req, ["redirect_to"]);
+  const payload = findKeysFromRequest(req, ["redirect_to", "state"]);
   return payload;
 };
 
@@ -29,10 +29,13 @@ const handle = async ({ prepareResult, authorizeResult }) => {
       prepareResult.redirect_to || process.env.GOOGLE_REDIRECT_URL
     );
 
-    const authorizeUrl = oAuth2Client.generateAuthUrl({
+    let authorizeUrl = oAuth2Client.generateAuthUrl({
       // access_type: "offline",
       scope: process.env.GOOGLE_SCOPES.split(","),
     });
+
+    authorizeUrl =
+      authorizeUrl + `&state=${prepareResult.state || "respond_with_token"}`;
 
     return { redirect_to: authorizeUrl };
   } catch (error) {

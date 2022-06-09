@@ -236,7 +236,7 @@ const registerUserFromGoogle = async (payload) => {
       value: payload.email,
     });
 
-    console.log("findUserWithAttribute", findUserWithAttribute);
+    // console.log("findUserWithAttribute", findUserWithAttribute);
 
     if (findUserWithAttribute === undefined) {
       const user = await baseRepo.create(table, {

@@ -3,7 +3,8 @@ const { OAuth2Client } = require("google-auth-library");
 const usersRepo = requireRepo("users");
 
 const prepare = ({ reqQuery, reqBody, reqParams, req }) => {
-  const payload = findKeysFromRequest(req, ["code", "redirect_to"]);
+  const payload = findKeysFromRequest(req, ["code", "redirect_to", "state"]);
+  // console.log("payload", payload);
   return payload;
 };
 
@@ -55,8 +56,14 @@ const handle = async ({ prepareResult, authorizeResult }) => {
   }
 };
 
-const respond = async ({ handleResult }) => {
+const respond = async ({ prepareResult, handleResult, res }) => {
   try {
+    if (prepareResult.state === "redirect_with_token") {
+      const redirectWithTokenUrl = `${process.env.REDIRECT_WITH_TOKEN_ENDPOINT}?access_token=${handleResult}`;
+      // console.log("redirectWithTokenUrl", redirectWithTokenUrl);
+      return res.redirect(redirectWithTokenUrl);
+    }
+
     return { access_token: handleResult };
   } catch (error) {
     throw error;
