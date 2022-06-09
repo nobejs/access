@@ -17,7 +17,7 @@ To just login with email or mobile:
 
 To login with Google:
 
-- Step 1: Call `/login/google` API
+- Step 1: Call `POST /login/google` API
 - Step 2: You will get a url in response, redirect user to that url
 - Step 3: After user has authorized, Google will redirected user back to "redirect url" you have configured
 - Step 4: Take the code from url sent by Google and then call `GET /login/google?code=`
@@ -70,11 +70,29 @@ Any string, there is no strongness check
 
 ## Users/RedirectForLoginWithGoogle
 
-Verify user registration with OTP
+This API responds with the url to which user should be redirected to, so that they can authenticate with Google.
 
 `POST /login/google`
 
+The flow usually
+
 Sample Request Payload
+
+To directly get the access token, This is default, so you needn't pass it.
+
+```
+{
+    "state" : "respond_with_token"
+}
+```
+
+To get the token along with redirection to an url
+
+```
+{
+    "state" : "redirect_with_token"
+}
+```
 
 ### Parameters
 
@@ -91,6 +109,24 @@ Login with Google
 **code** required
 
 Code given by Google to login.
+
+The response of this api depends on "state" passed in RedirectForLoginWithGoogle story.
+
+State: respond_with_token
+
+You will directly get an access token as part of json response
+
+State: redirect_with_token
+
+You will be redirected to the URL you mentioned in `REDIRECT_WITH_TOKEN_ENDPOINT` environment variable. It would redirect to:
+
+Ex 1: If `REDIRECT_WITH_TOKEN_ENDPOINT=https://teurons.com`
+
+The final redirection would be to: `https://teurons.com?access_token=<access_token>`
+
+Ex 1: If `REDIRECT_WITH_TOKEN_ENDPOINT=teurons://login_screen`
+
+The final redirection would be to: `teurons://login_screen?access_token=<access_token>`
 
 ## Users/InitiateLoginWithOTP
 
