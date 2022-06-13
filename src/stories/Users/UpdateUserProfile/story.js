@@ -10,6 +10,7 @@ const prepare = ({ req }) => {
     "name",
     "profile_picture",
     "bio",
+    "meta",
   ]);
   payload["jti"] = req.jti;
   return payload;
