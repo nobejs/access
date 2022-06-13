@@ -51,6 +51,7 @@ const handle = async ({ prepareResult, authorizeResult }) => {
       "name",
       "profile_picture",
       "bio",
+      "meta",
     ]);
     return await usersRepo.updateProfileOfUser(
       authorizeResult.sub,
