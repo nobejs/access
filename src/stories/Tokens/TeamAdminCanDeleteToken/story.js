@@ -59,7 +59,7 @@ const authorize = async ({ prepareResult }) => {
 const handle = async ({ prepareResult, storyName }) => {
   try {
     let token = await tokensRepo.deleteTokenByConstraints({
-      uuid: prepareResult.jti,
+      uuid: prepareResult.token_uuid,
     });
     return token;
   } catch (error) {
