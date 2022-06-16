@@ -1,19 +1,21 @@
 const postEvent = requireFunction("postEvent");
 const contextClassRef = requireUtil("contextHelper");
+const neptune = require("@teurons/neptune-nodejs");
 
 const registrationVerificationEvent = async (payload) => {
   // console.log("contextClassRef", contextClassRef.client);
 
-  await postEvent({
-    event_type: `request_otp_to_verify_${payload.type}_during_registration`,
+  let eventType = `request_otp_to_verify_${payload.type}_during_registration`;
+  let data = {
+    token: payload.token,
+    type: payload.type,
+    value: payload.value,
+  };
+
+  await neptune.fire(eventType, data, {
     tags: [],
     user_id: payload.user_uuid,
     client: contextClassRef.client,
-    data: {
-      token: payload.token,
-      type: payload.type,
-      value: payload.value,
-    },
     contact_infos: payload.contact_infos || [],
   });
 };
