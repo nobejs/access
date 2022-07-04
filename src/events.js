@@ -8,7 +8,7 @@ const registrationVerificationEvent = async (payload) => {
   let eventType = `request_otp_to_verify_${payload.type}_during_registration`;
   let data = {
     token: payload.token,
-    type: payload.type,
+    type: payload.type === "mobile" ? "mobile_number" : payload.type,
     value: payload.value,
   };
 
@@ -26,7 +26,7 @@ const resetPasswordVerificationEvent = async (payload) => {
   let eventType = `request_otp_to_reset_password_through_${payload.type}`;
   let data = {
     token: payload.token,
-    type: payload.type,
+    type: payload.type === "mobile" ? "mobile_number" : payload.type,
     value: payload.value,
   };
   let neptuneData = {
@@ -42,7 +42,7 @@ const loginWithOtpEvent = async (payload) => {
   let eventType = `request_otp_to_login_through_${payload.type}`;
   let data = {
     token: payload.token,
-    type: payload.type,
+    type: payload.type === "mobile" ? "mobile_number" : payload.type,
     value: payload.value,
   };
 
@@ -61,7 +61,7 @@ const invitedToTeamEvent = async (payload) => {
   let data = {
     team_uuid: payload.team_uuid,
     team_name: payload.team_name,
-    type: payload.type,
+    type: payload.type === "mobile" ? "mobile_number" : payload.type,
     value: payload.value,
   };
 
