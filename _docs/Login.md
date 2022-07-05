@@ -56,11 +56,11 @@ Sample Response:
 
 **type** required
 
-It can be "email" or "mobile"
+It can be "email" or "mobile_number"
 
 **value** required
 
-If type is email, it's email address. If type is mobile, it's any mobile number (any string).
+If type is email, it's email address. If type is mobile_number, it's any mobile number (any string).
 
 value is not validated, but value should be unique
 
@@ -147,11 +147,11 @@ Sample Request Object:
 
 **type** required
 
-It can be "email" or "mobile"
+It can be "email" or "mobile_number"
 
 **value** required
 
-If type is email, it's email address. If type is mobile, it's any mobile number (any string).
+If type is email, it's email address. If type is mobile_number, it's any mobile number (any string).
 
 value is not validated, but value should be unique
 
@@ -175,11 +175,11 @@ Sample Request Object:
 
 **type** required
 
-It can be "email" or "mobile"
+It can be "email" or "mobile_number"
 
 **value** required
 
-If type is email, it's email address. If type is mobile, it's any mobile number (any string).
+If type is email, it's email address. If type is mobile_number, it's any mobile number (any string).
 
 value is not validated, but value should be unique
 
