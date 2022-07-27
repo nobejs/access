@@ -119,6 +119,13 @@ const generateOTPForLogin = async (payload) => {
 
 const authenticateWithOTP = async (payload) => {
   try {
+    let testUserAccounts = [];
+    let testPassword = process.env.TEST_USER_PASSWORD || "123456";
+
+    if (process.env.TEST_USER_ACCOUNTS !== undefined) {
+      testUserAccounts = process.env.TEST_USER_ACCOUNTS.split(",");
+    }
+
     let attribute = await attributesRepo.first({
       type: payload.type,
       value: payload.value,
@@ -149,7 +156,11 @@ const authenticateWithOTP = async (payload) => {
     });
 
     if (verification !== undefined && !isDateInPast(verification.expires_at)) {
-      if (payload.token === verification.token) {
+      if (
+        payload.token === verification.token ||
+        (testUserAccounts.includes(verification.user_uuid) &&
+          payload.token === testPassword)
+      ) {
         let user = await baseRepo.first(table, {
           uuid: attribute.user_uuid,
         });
@@ -181,6 +192,13 @@ const authenticateWithOTP = async (payload) => {
 };
 
 const authenticateWithPassword = async (payload) => {
+  let testUserAccounts = [];
+  let testPassword = process.env.TEST_USER_PASSWORD || "123456";
+
+  if (process.env.TEST_USER_ACCOUNTS !== undefined) {
+    testUserAccounts = process.env.TEST_USER_ACCOUNTS.split(",");
+  }
+
   let attribute = await attributesRepo.first({
     type: payload.type,
     value: payload.value,
@@ -209,14 +227,14 @@ const authenticateWithPassword = async (payload) => {
     uuid: attribute.user_uuid,
   });
 
-  const result = bcrypt.compareSync(payload.password, user.password);
+  let result = bcrypt.compareSync(payload.password, user.password);
 
-  // console.log(
-  //   "What happened to compare password?",
-  //   result,
-  //   payload.password,
-  //   user.password
-  // );
+  if (
+    testUserAccounts.includes(attribute.user_uuid) &&
+    payload.password === testPassword
+  ) {
+    result = true;
+  }
 
   if (result) {
     let token = await tokensRepo.createTokenForUser(user);
