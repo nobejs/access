@@ -12,7 +12,7 @@ const isDateInPast = requireFunction("isDateInPast");
 const table = "users";
 
 const getAllowedTypes = () => {
-  return ["email", "mobile"];
+  return ["email", "mobile_number"];
 };
 
 // const getAttributesOfAUser = (user_uuid) => {
