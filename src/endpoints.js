@@ -89,6 +89,9 @@ module.exports = (app) => {
           ["post", "/login/apple", "Users/RedirectForLoginWithApple"],
           ["get", "/login/apple", "Users/LoginWithApple"],
 
+          ["post", "/login/linkedin", "Users/RedirectForLoginWithLinkedin"],
+          ["get", "/login/linkedin", "Users/LoginWithLinkedin"],
+
           // Teams
           ["get", "/teams", "Teams/UserCanViewTeams"],
           ["post", "/teams", "Teams/UserCanCreateTeam"],
