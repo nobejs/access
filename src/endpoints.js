@@ -86,6 +86,9 @@ module.exports = (app) => {
           ["get", "/sessions", "Users/GetSessions"],
           ["delete", "/sessions/:session_uuid", "Users/DestroySession"],
 
+          ["post", "/login/apple", "Users/RedirectForLoginWithApple"],
+          ["get", "/login/apple", "Users/LoginWithApple"],
+
           // Teams
           ["get", "/teams", "Teams/UserCanViewTeams"],
           ["post", "/teams", "Teams/UserCanCreateTeam"],
