@@ -86,6 +86,15 @@ module.exports = (app) => {
           ["get", "/sessions", "Users/GetSessions"],
           ["delete", "/sessions/:session_uuid", "Users/DestroySession"],
 
+          ["post", "/login/apple", "Users/RedirectForLoginWithApple"],
+          ["get", "/login/apple", "Users/LoginWithApple"],
+
+          ["post", "/login/linkedin", "Users/RedirectForLoginWithLinkedin"],
+          ["get", "/login/linkedin", "Users/LoginWithLinkedin"],
+
+          ["post", "/login/facebook", "Users/RedirectForLoginWithFacebook"],
+          ["get", "/login/facebook", "Users/LoginWithFacebook"],
+
           // Teams
           ["get", "/teams", "Teams/UserCanViewTeams"],
           ["post", "/teams", "Teams/UserCanCreateTeam"],
