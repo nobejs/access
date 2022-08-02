@@ -86,6 +86,9 @@ module.exports = (app) => {
           ["get", "/sessions", "Users/GetSessions"],
           ["delete", "/sessions/:session_uuid", "Users/DestroySession"],
 
+          /* delete account */
+          ["get", "/user/delete", "Users/CanDeleteAccount"],
+
           ["post", "/login/apple", "Users/RedirectForLoginWithApple"],
           ["get", "/login/apple", "Users/LoginWithApple"],
 
