@@ -17,6 +17,10 @@ const first = async (payload) => {
   return await baseRepo.first(table, payload);
 };
 
+const update = async (where, payload) => {
+  return await baseRepo.update(table, where, payload);
+};
+
 const createAttributeForUUID = async (uuid, payload, verify = false) => {
   await baseRepo.create(table, {
     user_uuid: uuid,
@@ -34,6 +38,7 @@ const getAttributesForUUID = async (uuid) => {
 module.exports = {
   create,
   first,
+  update,
   countAll,
   createAttributeForUUID,
   findWithConstraints,

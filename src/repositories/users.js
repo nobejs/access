@@ -5,6 +5,7 @@ const verificationsRepo = requireRepo("verifications");
 const tokensRepo = requireRepo("tokens");
 const {
   registrationVerificationEvent,
+  updateVerificationEvent,
   resetPasswordVerificationEvent,
   loginWithOtpEvent,
 } = require("../events");
@@ -25,8 +26,9 @@ const getAllowedTypes = () => {
 //   }
 // };
 
-const findUserByTypeAndValue = async (where = {}) => {
-  return await baseRepo.countAll("attributes", where);
+const findUserByTypeAndValue = async (where = {}, whereNot = {}) => {
+  // console.log("findUserByTypeAndValue", where, whereNot);
+  return await baseRepo.countAll("attributes", where, whereNot);
 };
 
 const create = async (payload) => {
@@ -236,6 +238,8 @@ const authenticateWithPassword = async (payload) => {
     result = true;
   }
 
+  console.log("result", result);
+
   if (result) {
     let token = await tokensRepo.createTokenForUser(user);
     return token;
@@ -317,6 +321,44 @@ const requestAttributeVerificationForRegistration = async (payload) => {
       throw {
         statusCode: 422,
         message: "Not registered yet",
+      };
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+const requestAttributeVerificationForUpdate = async (payload) => {
+  try {
+    // Find if there is already an existing verification for this
+    let verification = await verificationsRepo.findVerificationForUpdate({
+      attribute_type: payload.type,
+      attribute_value: payload.value,
+    });
+
+    // If verification is present already, we can update it
+    if (verification !== undefined) {
+      let verificationObject = await verificationsRepo.updateVerification({
+        uuid: verification.uuid,
+      });
+
+      await updateVerificationEvent({
+        user_uuid: verificationObject.user_uuid,
+        token: verificationObject.token,
+        type: verificationObject.attribute_type,
+        value: verificationObject.attribute_value,
+        purpose: payload.purpose,
+        contact_infos: [
+          {
+            type: payload.type,
+            value: verificationObject.attribute_value,
+          },
+        ],
+      });
+    } else {
+      throw {
+        statusCode: 422,
+        message: "Not requested yet",
       };
     }
   } catch (error) {
@@ -513,6 +555,47 @@ const registerWithPassword = async (payload) => {
   return verification;
 };
 
+const updateAttribute = async (payload) => {
+  // Find if there is already a registration in process
+
+  let verification = await verificationsRepo.findVerificationForUpdate({
+    attribute_type: payload.type,
+    attribute_value: payload.value,
+  });
+
+  let verificationObject = null;
+
+  if (verification === undefined) {
+    verificationObject = await verificationsRepo.createVerificationForUpdate({
+      user_uuid: payload.sub,
+      attribute_type: payload.type,
+      attribute_value: payload.value,
+    });
+  } else {
+    // If there is a verification, update verification with new token and timestamp
+
+    verificationObject = await verificationsRepo.updateVerification({
+      uuid: verification.uuid,
+    });
+  }
+
+  await updateVerificationEvent({
+    user_uuid: verificationObject.user_uuid,
+    token: verificationObject.token,
+    type: verificationObject.attribute_type,
+    value: verificationObject.attribute_value,
+    purpose: payload.purpose,
+    contact_infos: [
+      {
+        type: payload.type,
+        value: verificationObject.attribute_value,
+      },
+    ],
+  });
+
+  return verification;
+};
+
 const createTestUserWithVerifiedToken = async (payload) => {
   try {
     let user = await createUserWithPassword(payload.password);
@@ -526,6 +609,73 @@ const createTestUserWithVerifiedToken = async (payload) => {
 
 const updateProfileOfUser = async (uuid, payload) => {
   return await baseRepo.update(table, { uuid: uuid }, { profile: payload });
+};
+
+const verifyAttributeForUpdate = async (payload) => {
+  try {
+    let verification = await verificationsRepo.findVerificationForUpdate({
+      attribute_type: payload.type,
+      attribute_value: payload.value,
+    });
+
+    console.log("payload", payload.token === verification.token);
+
+    if (verification !== undefined && !isDateInPast(verification.expires_at)) {
+      if (payload.token === verification.token) {
+        // console.log("payload", payload);
+
+        const existingAttribute = await attributesRepo.first({
+          user_uuid: payload.sub,
+          type: payload.type,
+          ...(payload.purpose && { purpose: payload.purpose }),
+        });
+
+        console.log("existingAttribute", existingAttribute);
+
+        if (existingAttribute === undefined) {
+          await attributesRepo.createAttributeForUUID(
+            verification.user_uuid,
+            {
+              type: payload.type,
+              value: payload.value,
+              ...(payload.purpose && { purpose: payload.purpose }),
+            },
+            true
+          );
+        } else {
+          await attributesRepo.update(
+            {
+              uuid: existingAttribute.uuid,
+            },
+            {
+              type: payload.type,
+              value: payload.value,
+              ...(payload.purpose && { purpose: payload.purpose }),
+            }
+          );
+        }
+
+        await verificationsRepo.removeVerification({
+          uuid: verification.uuid,
+        });
+
+        return {
+          message: "Verification Successful",
+        };
+      } else {
+        throw "Token didn't match";
+      }
+    } else {
+      throw "Verification doesn't exist or is in past";
+    }
+  } catch (error) {
+    console.log("Error", error);
+
+    throw {
+      statusCode: 422,
+      message: "Invalid Token",
+    };
+  }
 };
 
 module.exports = {
@@ -546,4 +696,7 @@ module.exports = {
   generateOTPForLogin,
   authenticateWithOTP,
   updateUserPassword,
+  updateAttribute,
+  requestAttributeVerificationForUpdate,
+  verifyAttributeForUpdate,
 };

@@ -70,6 +70,10 @@ module.exports = (app) => {
           ["post", "/reset-password", "Users/ResetPassword"],
           ["post", "/update-password", "Users/UpdatePassword"],
 
+          ["post", "/update-attribute", "Users/UpdateAttribute"],
+          ["post", "/request-verify-attribute", "Users/RequestVerifyAttribute"],
+          ["post", "/verify-attribute", "Users/VerifyAttribute"],
+
           // Login
           ["post", "/login", "Users/CanLogin"],
           ["get", "/user", "Users/ViewLoggedInUser"],

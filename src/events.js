@@ -22,6 +22,27 @@ const registrationVerificationEvent = async (payload) => {
   await neptune.fire(eventType, data, neptuneData);
 };
 
+const updateVerificationEvent = async (payload) => {
+  // console.log("contextClassRef", contextClassRef.client);
+
+  let eventType = `request_otp_to_verify_${payload.type}_during_update`;
+  let data = {
+    token: payload.token,
+    type: payload.type,
+    value: payload.value,
+    purpose: payload.purpose,
+  };
+
+  let neptuneData = {
+    tags: [],
+    user_id: payload.user_uuid,
+    client: contextClassRef.client,
+    contact_infos: payload.contact_infos || [],
+  };
+
+  await neptune.fire(eventType, data, neptuneData);
+};
+
 const resetPasswordVerificationEvent = async (payload) => {
   let eventType = `request_otp_to_reset_password_through_${payload.type}`;
   let data = {
@@ -76,6 +97,7 @@ const invitedToTeamEvent = async (payload) => {
 module.exports = {
   registrationVerificationEvent,
   resetPasswordVerificationEvent,
+  updateVerificationEvent,
   invitedToTeamEvent,
   loginWithOtpEvent,
 };

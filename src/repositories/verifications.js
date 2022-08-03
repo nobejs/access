@@ -16,6 +16,10 @@ const findVerificationForType = async (where = {}, purpose) => {
   return await baseRepo.first(table, payload);
 };
 
+const findVerificationForUpdate = async (where = {}) => {
+  return await findVerificationForType(where, "update");
+};
+
 const findVerificationForRegistration = async (where = {}) => {
   return await findVerificationForType(where, "register");
 };
@@ -50,6 +54,11 @@ const createVerificationForResetPassword = async (data) => {
   return response;
 };
 
+const createVerificationForUpdate = async (data) => {
+  let response = await createVerificationForType(data, "update");
+  return response;
+};
+
 const updateVerification = async (where, payload = {}) => {
   payload["token"] = generateOTP();
   payload["expires_at"] = getMinutesFromNow(10);
@@ -67,6 +76,8 @@ module.exports = {
   createVerificationForResetPassword,
   findVerificationForLogin,
   createVerificationForLogin,
+  findVerificationForUpdate,
+  createVerificationForUpdate,
   updateVerification,
   removeVerification,
   countAll,
