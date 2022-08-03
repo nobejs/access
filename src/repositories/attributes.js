@@ -35,6 +35,14 @@ const getAttributesForUUID = async (uuid) => {
   return await baseRepo.findAll(table, { user_uuid: uuid });
 };
 
+const deleteAccount = async (where = {}) => {
+  try {
+    return await baseRepo.remove(table, where);
+  } catch (error) {
+    throw error;
+  }
+};
+
 module.exports = {
   create,
   first,
@@ -43,4 +51,5 @@ module.exports = {
   createAttributeForUUID,
   findWithConstraints,
   getAttributesForUUID,
+  deleteAccount,
 };
