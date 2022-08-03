@@ -29,6 +29,7 @@ It is built on and dependent on:
 - [Register](_docs/Register.md)
 - [Login](_docs/Login.md)
 - [Password](_docs/Password.md)
+- [Update Attributes](_docs/Attributes.md)
 
 ### Requests/Bugs/Contribution/Support
 
