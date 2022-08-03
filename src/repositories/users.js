@@ -618,7 +618,7 @@ const verifyAttributeForUpdate = async (payload) => {
       attribute_value: payload.value,
     });
 
-    console.log("payload", payload.token === verification.token);
+    // console.log("payload", payload.token === verification.token);
 
     if (verification !== undefined && !isDateInPast(verification.expires_at)) {
       if (payload.token === verification.token) {

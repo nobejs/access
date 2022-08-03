@@ -64,7 +64,7 @@ const validateInput = async (payload) => {
       },
       type: "string",
       custom_callback: {
-        message: "No verification requested",
+        message: "Invalid Token",
         callback: async (payload) => {
           let verification =
             typeof payload.value === "string"
