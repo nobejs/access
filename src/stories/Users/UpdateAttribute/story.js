@@ -62,7 +62,7 @@ const validateInput = async (payload) => {
                   {
                     value: payload.value,
                     type: payload.type,
-                    ...(payload.purpose && { purpose: payload.purpose }),
+                    // ...(payload.purpose && { purpose: payload.purpose }),
                   },
                   {
                     user_uuid: payload.sub,
