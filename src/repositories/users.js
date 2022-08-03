@@ -630,7 +630,7 @@ const verifyAttributeForUpdate = async (payload) => {
           ...(payload.purpose && { purpose: payload.purpose }),
         });
 
-        console.log("existingAttribute", existingAttribute);
+        // console.log("existingAttribute", existingAttribute);
 
         if (existingAttribute === undefined) {
           await attributesRepo.createAttributeForUUID(
