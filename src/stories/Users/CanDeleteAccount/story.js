@@ -31,8 +31,13 @@ const authorize = async ({ prepareResult }) => {
 
 const handle = async ({ prepareResult, authorizeResult }) => {
   try {
-    return await attributesRepo.deleteAccount({
+    await attributesRepo.deleteAccount({
       user_uuid: authorizeResult.sub,
+    });
+
+    await tokensRepo.deleteTokenByConstraints({
+      sub: authorizeResult.sub,
+      issuer: "user",
     });
   } catch (error) {
     throw error;
@@ -41,7 +46,9 @@ const handle = async ({ prepareResult, authorizeResult }) => {
 
 const respond = async ({ handleResult }) => {
   try {
-    return handleResult;
+    return {
+      message: "Successfully logged out",
+    };
   } catch (error) {
     throw error;
   }
