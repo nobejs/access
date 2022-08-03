@@ -1,8 +1,9 @@
 {
 	"info": {
-		"_postman_id": "12ebe809-cc90-472a-b98d-4efa83bbe6af",
+		"_postman_id": "db4cb57e-1483-4d74-900d-3110de84b1d7",
 		"name": "Access",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3370577"
 	},
 	"item": [
 		{
@@ -15,7 +16,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"type\": \"email\",\n    \"value\": \"rajiv+1@betalectic.com\",\n    \"password\": \"Kissmiss9!\"\n}",
+							"raw": "{\n    \"type\": \"email\",\n    \"value\": \"rajiv@betalectic.com\",\n    \"password\": \"Kissmiss9!\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -41,7 +42,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"type\": \"email\",\n    \"value\": \"rajiv+3@betalectic.com\"\n}",
+							"raw": "{\n    \"type\": \"email\",\n    \"value\": \"shubham@betalectic.com\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -67,7 +68,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"type\": \"email\",\n    \"value\": \"rajiv+1@betalectic.com\",\n    \"token\": \"553475\"\n}",
+							"raw": "{\n    \"type\": \"email\",\n    \"value\": \"shubham@betalectic.com\",\n    \"token\": \"442177\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -192,7 +193,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"type\": \"email\",\n    \"value\": \"rajiv+1@betalectic.com\",\n    \"password\": \"Kissmiss10!\"\n}",
+							"raw": "{\n    \"type\": \"email\",\n    \"value\": \"rajiv@betalectic.com\",\n    \"password\": \"Kissmiss9!\"",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -230,11 +231,14 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\n}",
+							"raw": "{\n \"state\": \"redirect_with_token\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -332,7 +336,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"type\": \"email\",\n    \"value\": \"rajiv+1@betalectic.com\"\n}",
+							"raw": "{\n    \"type\": \"email\",\n    \"value\": \"rajiv@betalectic.com\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1016,7 +1020,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"type\": \"email\",\n    \"value\": \"rajiv@betalectic.com\",\n    \"password\": \"Kissmiss10!\",\n    \"token\": \"424553\"\n}",
+							"raw": "{\n    \"type\": \"email\",\n    \"value\": \"rajiv@betalectic.com\",\n    \"password\": \"Kissmiss9!\",\n    \"token\": \"499103\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1056,6 +1060,89 @@
 							],
 							"path": [
 								"update-password"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Update",
+			"item": [
+				{
+					"name": "Users/UpdateAttribute",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"mobile_number\",\n    \"value\": \"+918897587657\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/update-attribute",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"update-attribute"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Users/RequestVerifyAttribute",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"mobile_number\",\n    \"value\": \"+918897587657\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/request-verify-attribute",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"request-verify-attribute"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Users/VerifyAttribute",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"type\": \"mobile_number\",\n    \"value\": \"+918897587657\",\n    \"token\": \"735862\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/verify-attribute",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"verify-attribute"
 							]
 						}
 					},
@@ -1138,6 +1225,24 @@
 					],
 					"path": [
 						"logout"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{access_endpoint}}/user/delete",
+					"host": [
+						"{{access_endpoint}}"
+					],
+					"path": [
+						"user",
+						"delete"
 					]
 				}
 			},
