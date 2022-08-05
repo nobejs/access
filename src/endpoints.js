@@ -93,8 +93,12 @@ module.exports = (app) => {
           /* delete account */
           ["get", "/user/delete", "Users/CanDeleteAccount"],
 
-          ["post", "/login/apple", "Users/RedirectForLoginWithApple"],
-          ["get", "/login/apple", "Users/LoginWithApple"],
+          [
+            "post",
+            "/login/apple-redirection-url",
+            "Users/RedirectForLoginWithApple",
+          ],
+          ["post", "/login/apple", "Users/LoginWithApple"],
 
           ["post", "/login/linkedin", "Users/RedirectForLoginWithLinkedin"],
           ["get", "/login/linkedin", "Users/LoginWithLinkedin"],
