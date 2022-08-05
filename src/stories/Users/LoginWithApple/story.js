@@ -28,7 +28,7 @@ const handle = async ({ prepareResult, authorizeResult }) => {
     const clientSecret = appleSignin.getClientSecret({
       clientID: process.env.APPLE_CLIENT_ID,
       teamID: process.env.APPLE_TEAM_ID,
-      privateKey: process.env.APPLE_CLIENT_SECRET,
+      privateKey: process.env.APPLE_CLIENT_SECRET.replace(/\\n/g, "\n"),
       keyIdentifier: process.env.APPLE_KEY_IDENTIFIER,
     });
 
