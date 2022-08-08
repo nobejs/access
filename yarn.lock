@@ -309,6 +309,13 @@
   dependencies:
     ajv "^6.12.6"
 
+"@fastify/formbody@^6.0.1":
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/@fastify/formbody/-/formbody-6.0.1.tgz#13d7c5454489a5015c119725f0adda50dcf9fddf"
+  integrity sha512-yIwCitoES4Sh0tPc6v+uHBqZEKw3CooSZ4kUvO9NC8Y7oRBCW+aC+pTgUZ8M3r2DOzRkNO+Pq0jMQkyL2k8jZQ==
+  dependencies:
+    fastify-plugin "^3.0.0"
+
 "@istanbuljs/load-nyc-config@^1.0.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@istanbuljs/load-nyc-config/-/load-nyc-config-1.1.0.tgz#fd3db1d59ecf7cf121e80650bb86712f9b55eced"

@@ -15,13 +15,14 @@ const server = httpServer({
   },
 });
 
-
 server.addHook("onRequest", async (req, reply) => {
   contextClassRef.client = {
     ip: req.ip,
     userAgent: req.headers["user-agent"],
   };
 });
+
+server.register(require("@fastify/formbody", {}));
 
 server.listen(process.env.PORT || 3000, "0.0.0.0", (err, address) => {
   if (err) {
