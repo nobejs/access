@@ -11,6 +11,7 @@ const {
 } = require("../events");
 const isDateInPast = requireFunction("isDateInPast");
 const table = "users";
+const neptune = require("@teurons/neptune-nodejs");
 
 const getAllowedTypes = () => {
   return ["email", "mobile_number"];
