@@ -67,7 +67,7 @@ const handle = async ({ prepareResult, authorizeResult }) => {
 const respond = async ({ prepareResult, handleResult, res }) => {
   try {
     if (prepareResult.state === "redirect_with_token") {
-      const redirectWithTokenUrl = `${process.env.REDIRECT_WITH_TOKEN_ENDPOINT}?access_token=${handleResult}`;
+      const redirectWithTokenUrl = `${process.env.REDIRECT_WITH_TOKEN_ENDPOINT}?access_token=${handleResult}&platform=apple`;
       return res.redirect(redirectWithTokenUrl);
     }
 
