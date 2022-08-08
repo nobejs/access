@@ -35,6 +35,13 @@ const create = async (payload) => {
   return await baseRepo.create(table, payload);
 };
 
+const addUserToNeptune = async (uuid) => {
+  let neptuneData = {
+    user_id: uuid,
+  };
+  await neptune.createUser(neptuneData);
+}
+
 const first = async (payload) => {
   return await baseRepo.first(table, payload);
 };
@@ -267,7 +274,7 @@ const registerUserFromGoogle = async (payload) => {
         },
       });
 
-      // console.log("createUser", user);
+      await addUserToNeptune(user.uuid)
 
       await attributesRepo.createAttributeForUUID(
         user.uuid,
@@ -524,7 +531,7 @@ const registerWithPassword = async (payload) => {
   if (verification === undefined) {
     // If no, create a user and also verification for them
     user = await createUserWithPassword(payload.password);
-
+    await addUserToNeptune( user.uuid),
     verificationObject =
       await verificationsRepo.createVerificationForRegistration({
         user_uuid: user.uuid,
