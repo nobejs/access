@@ -74,6 +74,7 @@ module.exports = () => {
       "GET /login/linkedin",
       "POST /login/facebook",
       "GET /login/facebook",
+      "POST /verify-attribute-with-link/:user_uuid/:verification_code"
     ],
     responseKey: "respondResult",
     enableCORS: true,
