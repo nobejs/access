@@ -5,7 +5,8 @@ const usersRepo = requireRepo("users");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
 
 const prepare = ({ req }) => {
-  const payload = findKeysFromRequest(req, ["type", "value", "password"]);
+  const payload = findKeysFromRequest(req, ["type", "value", "password","verification_method"]);
+  payload['verification_method'] = payload['verification_method'] ? payload['verification_method'] : "otp";
   return payload;
 };
 

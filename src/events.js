@@ -4,13 +4,23 @@ const neptune = require("@teurons/neptune-nodejs");
 
 const registrationVerificationEvent = async (payload) => {
   // console.log("contextClassRef", contextClassRef.client);
-
-  let eventType = `request_otp_to_verify_${payload.type}_during_registration`;
-  let data = {
+   let eventType = null;
+   let data = null;
+if(payload.verification_method == 'otp'){
+   eventType = `request_otp_to_verify_${payload.type}_during_registration`;
+   data = {
     token: payload.token,
     type: payload.type,
     value: payload.value,
   };
+}else if(payload.verification_method === 'link'){
+   eventType = `request_link_to_verify_${payload.type}_during_registration`;
+   data = {
+    link: `${process.env.BASE_URL}/verify-attribute-with-link/${payload.user_uuid}/${payload.token}`,
+    type: payload.type,
+    value: payload.value,
+  };
+}
 
   let neptuneData = {
     tags: [],

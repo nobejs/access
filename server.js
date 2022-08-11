@@ -24,6 +24,8 @@ server.addHook("onRequest", async (req, reply) => {
 
 server.register(require("@fastify/formbody", {}));
 
+// server.register(require('@fastify/url-data'));
+
 server.listen(process.env.PORT || 3000, "0.0.0.0", (err, address) => {
   if (err) {
     console.log(err);

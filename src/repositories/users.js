@@ -502,6 +502,52 @@ const verifyAttributeForResetPassword = async (payload) => {
   }
 };
 
+
+const verifyAttributesWithLink = async (payload) => {
+    try {
+      let verification = await verificationsRepo.findVerificationForRegistration(
+        {
+          user_uuid: payload.user_uuid,
+          token: payload.verification_code,
+        }
+      );
+
+      if (verification !== undefined && !isDateInPast(verification.expires_at)) {
+        if (payload.verification_code === verification.token) {
+          let attribute = {
+            type: verification.attribute_type,
+            value: verification.attribute_value,
+          }
+          await attributesRepo.createAttributeForUUID(
+            verification.user_uuid,
+            attribute,
+            true
+          );
+          await verificationsRepo.removeVerification({
+            uuid: verification.uuid,
+          });
+          let url = process.env.SUCCESS_REDIRECT_URL;
+          console.log(url);
+          return {
+            message: "Verification Successful",
+          };
+        } else {
+          let url = process.env.FAILURE_REDIRECT_URL;
+          console.log(url);
+          throw "err";
+        }
+      } else {
+        throw "err";
+      }
+    } catch (error) {
+      throw {
+        statusCode: 422,
+        message: "Invalid Token",
+      };
+    }
+};
+
+
 const updateUserPassword = async (uuid, password) => {
   return await baseRepo.update(
     table,
@@ -552,6 +598,7 @@ const registerWithPassword = async (payload) => {
     token: verificationObject.token,
     type: verificationObject.attribute_type,
     value: verificationObject.attribute_value,
+    verification_method: payload.verification_method,
     contact_infos: [
       {
         type: payload.type,
@@ -695,6 +742,7 @@ module.exports = {
   verifyAttributeForRegistration,
   requestAttributeVerificationForResetPassword,
   verifyAttributeForResetPassword,
+  verifyAttributesWithLink,
   findUserByTypeAndValue,
   create,
   first,
