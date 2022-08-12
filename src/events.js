@@ -16,7 +16,11 @@ const registrationVerificationEvent = async (payload) => {
 	} else if (payload.verification_method === "link") {
 		eventType = `request_link_to_verify_${payload.type}_during_registration`;
 		data = {
-			link: `${process.env.BASE_URL}/verify-attribute-with-link/${payload.user_uuid}/${payload.token}`,
+			link: `${process.env.BASE_URL}/verify-attribute-with-link/${
+				payload.user_uuid
+			}/${payload.token}/${encodeURIComponent(
+				payload.successRedirect
+			)}/${encodeURIComponent(payload.errorRedirect)}`,
 			type: payload.type,
 			value: payload.value,
 		};

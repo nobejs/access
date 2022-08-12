@@ -104,13 +104,12 @@ const generateOTPForLogin = async (payload) => {
 			value: payload.value,
 		});
 
-		let verificationObject = await verificationsRepo.createVerificationForLogin(
-			{
+		let verificationObject =
+			await verificationsRepo.createVerificationForLogin({
 				user_uuid: attribute.user_uuid,
 				attribute_type: payload.type,
 				attribute_value: payload.value,
-			}
-		);
+			});
 
 		await loginWithOtpEvent({
 			user_uuid: verificationObject.user_uuid,
@@ -141,10 +140,11 @@ const authenticateWithOTP = async (payload) => {
 			value: payload.value,
 		});
 
-		let verification = await verificationsRepo.findVerificationForRegistration({
-			attribute_type: payload.type,
-			attribute_value: payload.value,
-		});
+		let verification =
+			await verificationsRepo.findVerificationForRegistration({
+				attribute_type: payload.type,
+				attribute_value: payload.value,
+			});
 
 		if (attribute === undefined && verification !== undefined) {
 			throw {
@@ -165,7 +165,10 @@ const authenticateWithOTP = async (payload) => {
 			attribute_value: payload.value,
 		});
 
-		if (verification !== undefined && !isDateInPast(verification.expires_at)) {
+		if (
+			verification !== undefined &&
+			!isDateInPast(verification.expires_at)
+		) {
 			if (
 				payload.token === verification.token ||
 				(testUserAccounts.includes(verification.user_uuid) &&
@@ -302,16 +305,19 @@ const registerUserFromGoogle = async (payload) => {
 const requestAttributeVerificationForRegistration = async (payload) => {
 	try {
 		// Find if there is already an existing verification for this
-		let verification = await verificationsRepo.findVerificationForRegistration({
-			attribute_type: payload.type,
-			attribute_value: payload.value,
-		});
+		let verification =
+			await verificationsRepo.findVerificationForRegistration({
+				attribute_type: payload.type,
+				attribute_value: payload.value,
+			});
 
 		// If verification is present already, we can update it
 		if (verification !== undefined) {
-			let verificationObject = await verificationsRepo.updateVerification({
-				uuid: verification.uuid,
-			});
+			let verificationObject = await verificationsRepo.updateVerification(
+				{
+					uuid: verification.uuid,
+				}
+			);
 
 			await registrationVerificationEvent({
 				user_uuid: verificationObject.user_uuid,
@@ -346,9 +352,11 @@ const requestAttributeVerificationForUpdate = async (payload) => {
 
 		// If verification is present already, we can update it
 		if (verification !== undefined) {
-			let verificationObject = await verificationsRepo.updateVerification({
-				uuid: verification.uuid,
-			});
+			let verificationObject = await verificationsRepo.updateVerification(
+				{
+					uuid: verification.uuid,
+				}
+			);
 
 			await updateVerificationEvent({
 				user_uuid: verificationObject.user_uuid,
@@ -376,12 +384,16 @@ const requestAttributeVerificationForUpdate = async (payload) => {
 
 const verifyAttributeForRegistration = async (payload) => {
 	try {
-		let verification = await verificationsRepo.findVerificationForRegistration({
-			attribute_type: payload.type,
-			attribute_value: payload.value,
-		});
+		let verification =
+			await verificationsRepo.findVerificationForRegistration({
+				attribute_type: payload.type,
+				attribute_value: payload.value,
+			});
 
-		if (verification !== undefined && !isDateInPast(verification.expires_at)) {
+		if (
+			verification !== undefined &&
+			!isDateInPast(verification.expires_at)
+		) {
 			if (payload.token === verification.token) {
 				await attributesRepo.createAttributeForUUID(
 					verification.user_uuid,
@@ -412,18 +424,19 @@ const verifyAttributeForRegistration = async (payload) => {
 const requestAttributeVerificationForResetPassword = async (payload) => {
 	try {
 		// Find if there is already an existing verification for this
-		let verification = await verificationsRepo.findVerificationForResetPassword(
-			{
+		let verification =
+			await verificationsRepo.findVerificationForResetPassword({
 				attribute_type: payload.type,
 				attribute_value: payload.value,
-			}
-		);
+			});
 
 		// If verification is present already, we can update it
 		if (verification !== undefined) {
-			let verificationObject = await verificationsRepo.updateVerification({
-				uuid: verification.uuid,
-			});
+			let verificationObject = await verificationsRepo.updateVerification(
+				{
+					uuid: verification.uuid,
+				}
+			);
 
 			await resetPasswordVerificationEvent({
 				user_uuid: verificationObject.user_uuid,
@@ -470,16 +483,21 @@ const requestAttributeVerificationForResetPassword = async (payload) => {
 
 const verifyAttributeForResetPassword = async (payload) => {
 	try {
-		let verification = await verificationsRepo.findVerificationForResetPassword(
-			{
+		let verification =
+			await verificationsRepo.findVerificationForResetPassword({
 				attribute_type: payload.type,
 				attribute_value: payload.value,
-			}
-		);
+			});
 
-		if (verification !== undefined && !isDateInPast(verification.expires_at)) {
+		if (
+			verification !== undefined &&
+			!isDateInPast(verification.expires_at)
+		) {
 			if (payload.token === verification.token) {
-				await updateUserPassword(verification.user_uuid, payload.password);
+				await updateUserPassword(
+					verification.user_uuid,
+					payload.password
+				);
 
 				await verificationsRepo.removeVerification({
 					uuid: verification.uuid,
@@ -504,12 +522,16 @@ const verifyAttributeForResetPassword = async (payload) => {
 
 const verifyAttributesWithLink = async (payload) => {
 	try {
-		let verification = await verificationsRepo.findVerificationForRegistration({
-			user_uuid: payload.user_uuid,
-			token: payload.verification_code,
-		});
+		let verification =
+			await verificationsRepo.findVerificationForRegistration({
+				user_uuid: payload.user_uuid,
+				token: payload.verification_code,
+			});
 
-		if (verification !== undefined && !isDateInPast(verification.expires_at)) {
+		if (
+			verification !== undefined &&
+			!isDateInPast(verification.expires_at)
+		) {
 			if (payload.verification_code === verification.token) {
 				let attribute = {
 					type: verification.attribute_type,
@@ -523,12 +545,8 @@ const verifyAttributesWithLink = async (payload) => {
 				await verificationsRepo.removeVerification({
 					uuid: verification.uuid,
 				});
-				let url = process.env.SUCCESS_REDIRECT_URL;
 
-				return {
-					message: "Verification Successful",
-					url: url,
-				};
+				return res.redirect(success_redirect);
 			} else {
 				throw "err";
 			}
@@ -536,12 +554,7 @@ const verifyAttributesWithLink = async (payload) => {
 			throw "err";
 		}
 	} catch (error) {
-		let url = process.env.FAILURE_REDIRECT_URL;
-		throw {
-			statusCode: 422,
-			message: "Invalid Token",
-			url: url,
-		};
+		return res.redirect(failure_redirect);
 	}
 };
 
@@ -596,6 +609,8 @@ const registerWithPassword = async (payload) => {
 		type: verificationObject.attribute_type,
 		value: verificationObject.attribute_value,
 		verification_method: payload.verification_method,
+		successRedirect: payload.success_redirect,
+		errorRedirect: payload.failure_redirect,
 		contact_infos: [
 			{
 				type: payload.type,
@@ -618,11 +633,12 @@ const updateAttribute = async (payload) => {
 	let verificationObject = null;
 
 	if (verification === undefined) {
-		verificationObject = await verificationsRepo.createVerificationForUpdate({
-			user_uuid: payload.sub,
-			attribute_type: payload.type,
-			attribute_value: payload.value,
-		});
+		verificationObject =
+			await verificationsRepo.createVerificationForUpdate({
+				user_uuid: payload.sub,
+				attribute_type: payload.type,
+				attribute_value: payload.value,
+			});
 	} else {
 		// If there is a verification, update verification with new token and timestamp
 
@@ -672,7 +688,10 @@ const verifyAttributeForUpdate = async (payload) => {
 
 		// console.log("payload", payload.token === verification.token);
 
-		if (verification !== undefined && !isDateInPast(verification.expires_at)) {
+		if (
+			verification !== undefined &&
+			!isDateInPast(verification.expires_at)
+		) {
 			if (payload.token === verification.token) {
 				// console.log("payload", payload);
 
@@ -690,7 +709,9 @@ const verifyAttributeForUpdate = async (payload) => {
 						{
 							type: payload.type,
 							value: payload.value,
-							...(payload.purpose && { purpose: payload.purpose }),
+							...(payload.purpose && {
+								purpose: payload.purpose,
+							}),
 						},
 						true
 					);
@@ -702,7 +723,9 @@ const verifyAttributeForUpdate = async (payload) => {
 						{
 							type: payload.type,
 							value: payload.value,
-							...(payload.purpose && { purpose: payload.purpose }),
+							...(payload.purpose && {
+								purpose: payload.purpose,
+							}),
 						}
 					);
 				}
