@@ -36,13 +36,6 @@ const create = async (payload) => {
 	return await baseRepo.create(table, payload);
 };
 
-const addUserToNeptune = async (uuid) => {
-	let neptuneData = {
-		user_id: uuid,
-	};
-	await neptune.createUser(neptuneData);
-};
-
 const first = async (payload) => {
 	return await baseRepo.first(table, payload);
 };
@@ -277,8 +270,6 @@ const registerUserFromGoogle = async (payload) => {
 					name: payload.name,
 				},
 			});
-
-			await addUserToNeptune(user.uuid);
 
 			await attributesRepo.createAttributeForUUID(
 				user.uuid,
@@ -592,13 +583,12 @@ const registerWithPassword = async (payload) => {
 	if (verification === undefined) {
 		// If no, create a user and also verification for them
 		user = await createUserWithPassword(payload.password);
-		await addUserToNeptune(user.uuid),
-			(verificationObject =
-				await verificationsRepo.createVerificationForRegistration({
-					user_uuid: user.uuid,
-					attribute_type: payload.type,
-					attribute_value: payload.value,
-				}));
+		verificationObject =
+			await verificationsRepo.createVerificationForRegistration({
+				user_uuid: user.uuid,
+				attribute_type: payload.type,
+				attribute_value: payload.value,
+			});
 	} else {
 		// If there is a verification, update verification with new token and timestamp
 
