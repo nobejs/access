@@ -29,12 +29,12 @@ const findVerificationForResetPassword = async (where = {}) => {
 };
 
 const createVerificationForType = async (data, purpose) => {
-	let tokenExpairy = process.env.TOKEN_EXPAIRY_TIME
-		? process.env.TOKEN_EXPAIRY_TIME
+	let tokenExpiry = process.env.TOKEN_EXPIRY_TIME
+		? process.env.TOKEN_EXPIRY_TIME
 		: 10;
 	let payload = { ...data, ...{ purpose } };
 	payload["token"] = generateOTP();
-	payload["expires_at"] = getMinutesFromNow(tokenExpairy);
+	payload["expires_at"] = getMinutesFromNow(tokenExpiry);
 	return await baseRepo.create(table, payload);
 };
 

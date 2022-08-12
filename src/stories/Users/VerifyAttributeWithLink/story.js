@@ -1,8 +1,10 @@
 const usersRepo = requireRepo("users");
 
 const prepare = ({ reqQuery, reqBody, reqParams, req }) => {
-	const payload = reqParams;
-	console.log(payload);
+	const payload = {
+		...reqParams,
+		...reqQuery,
+	};
 	return payload;
 };
 
@@ -29,9 +31,13 @@ const handle = async ({ prepareResult, authorizeResult }) => {
 	}
 };
 
-const respond = async ({ handleResult }) => {
+const respond = async ({ prepareResult, handleResult, res }) => {
 	try {
-		return handleResult;
+		if (handleResult.success) {
+			res.redirect(prepareResult.success_redirect);
+		} else {
+			res.redirect(prepareResult.failure_redirect);
+		}
 	} catch (error) {
 		throw error;
 	}

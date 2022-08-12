@@ -18,9 +18,9 @@ const registrationVerificationEvent = async (payload) => {
 		data = {
 			link: `${process.env.BASE_URL}/verify-attribute-with-link/${
 				payload.user_uuid
-			}/${payload.token}/${encodeURIComponent(
+			}/${payload.token}?success_redirect=${encodeURIComponent(
 				payload.successRedirect
-			)}/${encodeURIComponent(payload.errorRedirect)}`,
+			)}&failure_redirect=${encodeURIComponent(payload.errorRedirect)}`,
 			type: payload.type,
 			value: payload.value,
 		};

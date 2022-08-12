@@ -546,7 +546,9 @@ const verifyAttributesWithLink = async (payload) => {
 					uuid: verification.uuid,
 				});
 
-				return res.redirect(success_redirect);
+				return {
+					success: true,
+				};
 			} else {
 				throw "err";
 			}
@@ -554,7 +556,9 @@ const verifyAttributesWithLink = async (payload) => {
 			throw "err";
 		}
 	} catch (error) {
-		return res.redirect(failure_redirect);
+		return {
+			success: false,
+		};
 	}
 };
 

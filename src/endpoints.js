@@ -72,7 +72,7 @@ module.exports = (app) => {
 
 					[
 						"post",
-						"/verify-attribute-with-link/:user_uuid/:verification_code/:success_redirect/:failure_redirect",
+						"/verify-attribute-with-link/:user_uuid/:verification_code",
 						"Users/VerifyAttributeWithLink",
 					],
 
