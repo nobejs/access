@@ -27,6 +27,45 @@ const getAllowedTypes = () => {
 //   }
 // };
 
+const addUserToNeptune = async (uuid) => {
+	let neptuneData = {
+		user_id: uuid,
+	};
+	await neptune.createUser(neptuneData);
+};
+
+const addUserContactInfoToNeptune = async (uuid, payload) => {
+	let user_id = uuid;
+	let neptuneData = {};
+
+	switch (payload.type) {
+		case "email":
+			neptuneData = {
+				type: "email",
+				value: payload.value,
+				filterable: "regular",
+			};
+			break;
+		case "mobile_number":
+			neptuneData = {
+				type: "mobile_number",
+				value: payload.value,
+			};
+			break;
+		default:
+			break;
+	}
+
+	// For firebase token
+	// let neptuneData = {
+	//   type: "firebase_token",
+	//   value: "123-456-789",
+	//   filterable: "regular",
+	// }
+
+	await neptune.addUserContactInfo(user_id, neptuneData);
+};
+
 const findUserByTypeAndValue = async (where = {}, whereNot = {}) => {
 	// console.log("findUserByTypeAndValue", where, whereNot);
 	return await baseRepo.countAll("attributes", where, whereNot);
@@ -271,6 +310,8 @@ const registerUserFromGoogle = async (payload) => {
 				},
 			});
 
+			await addUserToNeptune(user.uuid);
+
 			await attributesRepo.createAttributeForUUID(
 				user.uuid,
 				{
@@ -279,6 +320,11 @@ const registerUserFromGoogle = async (payload) => {
 				},
 				true
 			);
+
+			await addUserContactInfoToNeptune(user.uuid, {
+				type: "email",
+				value: payload.email,
+			});
 
 			let token = await tokensRepo.createTokenForUser(user);
 			return token;
@@ -391,6 +437,12 @@ const verifyAttributeForRegistration = async (payload) => {
 					payload,
 					true
 				);
+
+				await addUserContactInfoToNeptune(verification.user_uuid, {
+					type: payload.type,
+					value: payload.value,
+				});
+
 				await verificationsRepo.removeVerification({
 					uuid: verification.uuid,
 				});
@@ -533,6 +585,12 @@ const verifyAttributesWithLink = async (payload) => {
 					attribute,
 					true
 				);
+
+				await addUserContactInfoToNeptune(
+					verification.user_uuid,
+					attribute
+				);
+
 				await verificationsRepo.removeVerification({
 					uuid: verification.uuid,
 				});
@@ -583,6 +641,7 @@ const registerWithPassword = async (payload) => {
 	if (verification === undefined) {
 		// If no, create a user and also verification for them
 		user = await createUserWithPassword(payload.password);
+		await addUserToNeptune(user.uuid);
 		verificationObject =
 			await verificationsRepo.createVerificationForRegistration({
 				user_uuid: user.uuid,
@@ -709,6 +768,11 @@ const verifyAttributeForUpdate = async (payload) => {
 						},
 						true
 					);
+
+					await addUserContactInfoToNeptune(verification.user_uuid, {
+						type: payload.type,
+						value: payload.value,
+					});
 				} else {
 					await attributesRepo.update(
 						{
