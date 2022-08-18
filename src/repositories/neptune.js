@@ -8,30 +8,10 @@ const addUserToNeptune = async (uuid) => {
 };
 
 const prepareUserContactInfoPayload = async (payload) => {
-	let neptuneData = {};
-
-	switch (payload.type) {
-		case "email":
-			neptuneData = {
-				type: "email",
-				value: payload.value,
-				filterable: "regular",
-			};
-			break;
-		case "mobile_number":
-			neptuneData = {
-				type: "mobile_number",
-				value: payload.value,
-			};
-			break;
-		default:
-			break;
-		// For firebase token
-		// let neptuneData = {
-		//   type: "firebase_token",
-		//   value: "123-456-789",
-		//   filterable: "regular",
-	}
+	let neptuneData = {
+		type: payload.type,
+		value: payload.value,
+	};
 
 	return neptuneData;
 };
