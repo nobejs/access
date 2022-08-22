@@ -1,10 +1,15 @@
 const neptune = require("@teurons/neptune-nodejs");
+const debugLogger = requireUtil("debugLogger");
 
 const addUserToNeptune = async (uuid) => {
 	let neptuneData = {
 		user_id: uuid,
 	};
-	await neptune.createUser(neptuneData);
+	try {
+		await neptune.createUser(neptuneData);
+	} catch (error) {
+		debugLogger(error);
+	}
 };
 
 const prepareUserContactInfoPayload = async (payload) => {
@@ -18,20 +23,35 @@ const prepareUserContactInfoPayload = async (payload) => {
 
 const addUserContactInfoToNeptune = async (uuid, payload) => {
 	let user_id = uuid;
-	let neptuneData = await prepareUserContactInfoPayload(payload);
-
-	await neptune.addUserContactInfo(user_id, neptuneData);
+	try {
+		let neptuneData = await prepareUserContactInfoPayload(payload);
+		await neptune.addUserContactInfo(user_id, neptuneData);
+	} catch (error) {
+		debugLogger(error);
+	}
 };
 
 const updateUserContactInfo = async (uuid, payload) => {
 	let user_id = uuid;
-	let neptuneData = await prepareUserContactInfoPayload(payload);
+	try {
+		let neptuneData = await prepareUserContactInfoPayload(payload);
+		await neptune.updateUserContactInfo(user_id, neptuneData);
+	} catch (error) {
+		debugLogger(error);
+	}
+};
 
-	await neptune.updateUserContactInfo(user_id, neptuneData);
+const fireEvent = async (eventType, data, neptuneData) => {
+	try {
+		await neptune.fire(eventType, data, neptuneData);
+	} catch (error) {
+		debugLogger(error);
+	}
 };
 
 module.exports = {
 	addUserToNeptune,
 	addUserContactInfoToNeptune,
 	updateUserContactInfo,
+	fireEvent,
 };
