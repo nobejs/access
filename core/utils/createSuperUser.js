@@ -24,6 +24,9 @@ module.exports.createSuperUser = async () => {
 			let payload = {
 				email: email,
 				password: bcrypt.hashSync(password, 5),
+				permissions: { superuser: "*" },
+				created_at: new Date(),
+				updated_at: new Date(),
 			};
 
 			try {
