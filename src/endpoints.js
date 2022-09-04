@@ -64,11 +64,7 @@ module.exports = (app) => {
 						"/request-verify-registration",
 						"Users/RequestVerifyRegistration",
 					],
-					[
-						"post",
-						"/verify-registration",
-						"Users/VerifyRegistration",
-					],
+					["post", "/verify-registration", "Users/VerifyRegistration"],
 
 					[
 						"post",
@@ -76,20 +72,12 @@ module.exports = (app) => {
 						"Users/VerifyAttributeWithLink",
 					],
 
-					[
-						"post",
-						"/request-reset-password",
-						"Users/RequestResetPassword",
-					],
+					["post", "/request-reset-password", "Users/RequestResetPassword"],
 					["post", "/reset-password", "Users/ResetPassword"],
 					["post", "/update-password", "Users/UpdatePassword"],
 
 					["post", "/update-attribute", "Users/UpdateAttribute"],
-					[
-						"post",
-						"/request-verify-attribute",
-						"Users/RequestVerifyAttribute",
-					],
+					["post", "/request-verify-attribute", "Users/RequestVerifyAttribute"],
 					["post", "/verify-attribute", "Users/VerifyAttribute"],
 
 					// Login
@@ -98,27 +86,25 @@ module.exports = (app) => {
 					["post", "/user", "Users/UpdateUserProfile"],
 					["get", "/authorize", "Users/Authorize"],
 
-					[
-						"post",
-						"/login/google",
-						"Users/RedirectForLoginWithGoogle",
-					],
+					["post", "/login/google", "Users/RedirectForLoginWithGoogle"],
 					["get", "/login/google", "Users/LoginWithGoogle"],
 
 					["post", "/login/otp", "Users/LoginWithOTP"],
-					[
-						"post",
-						"/login/otp/initiate",
-						"Users/InitiateLoginWithOTP",
-					],
+					["post", "/login/otp/initiate", "Users/InitiateLoginWithOTP"],
 
 					["get", "/logout", "Users/Logout"],
 					["get", "/sessions", "Users/GetSessions"],
+					["delete", "/sessions/:session_uuid", "Users/DestroySession"],
+
+					//admins
+
+					["post", "/admin/login", "Admin/CanLogin"],
 					[
-						"delete",
-						"/sessions/:session_uuid",
-						"Users/DestroySession",
+						"post",
+						"/admin/request-reset-password",
+						"Admin/RequestResetPassword",
 					],
+					["post", "/admin/reset-password", "Admin/ResetPassword"],
 
 					/* delete account */
 					["get", "/user/delete", "Users/CanDeleteAccount"],
@@ -130,18 +116,10 @@ module.exports = (app) => {
 					],
 					["post", "/login/apple", "Users/LoginWithApple"],
 
-					[
-						"post",
-						"/login/linkedin",
-						"Users/RedirectForLoginWithLinkedin",
-					],
+					["post", "/login/linkedin", "Users/RedirectForLoginWithLinkedin"],
 					["get", "/login/linkedin", "Users/LoginWithLinkedin"],
 
-					[
-						"post",
-						"/login/facebook",
-						"Users/RedirectForLoginWithFacebook",
-					],
+					["post", "/login/facebook", "Users/RedirectForLoginWithFacebook"],
 					["get", "/login/facebook", "Users/LoginWithFacebook"],
 
 					// Teams
@@ -162,11 +140,7 @@ module.exports = (app) => {
 						"/teams/:team_uuid/tokens/:token_uuid",
 						"Tokens/TeamAdminCanUpdateToken",
 					],
-					[
-						"get",
-						"/teams/:team_uuid/tokens",
-						"Tokens/TeamAdminCanGetTokens",
-					],
+					["get", "/teams/:team_uuid/tokens", "Tokens/TeamAdminCanGetTokens"],
 					[
 						"delete",
 						"/teams/:team_uuid/tokens/:token_uuid",
@@ -179,16 +153,8 @@ module.exports = (app) => {
 					],
 
 					// Roles
-					[
-						"post",
-						"/teams/:team_uuid/roles",
-						"Roles/TeamAdminCanCreateRole",
-					],
-					[
-						"get",
-						"/teams/:team_uuid/roles",
-						"Roles/TeamAdminCanGetRoles",
-					],
+					["post", "/teams/:team_uuid/roles", "Roles/TeamAdminCanCreateRole"],
+					["get", "/teams/:team_uuid/roles", "Roles/TeamAdminCanGetRoles"],
 					[
 						"get",
 						"/teams/:team_uuid/roles/:role_uuid",

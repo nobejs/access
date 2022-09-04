@@ -3,7 +3,7 @@ const adminRepo = requireRepo("admin");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
 
 const prepare = ({ reqQuery, reqBody, reqParams, req }) => {
-	const payload = findKeysFromRequest(req, ["value", "password"]);
+	const payload = findKeysFromRequest(req, ["value"]);
 	return payload;
 };
 
@@ -13,16 +13,23 @@ const authorize = async ({ prepareResult }) => {
 
 const validateInput = async (payload) => {
 	const constraints = {
-		password: {
-			presence: {
-				allowEmpty: false,
-				message: "^Please enter password",
-			},
-		},
 		value: {
 			presence: {
 				allowEmpty: false,
 				message: "^Please enter email",
+			},
+			type: "string",
+			custom_callback: {
+				message: "User doesn't exist",
+				callback: async (payload) => {
+					let userCount =
+						typeof payload.value === "string"
+							? await adminRepo.findUserByValue({
+									email: payload.value,
+							  })
+							: -1;
+					return userCount > 0 ? true : false;
+				},
 			},
 		},
 	};
@@ -30,11 +37,11 @@ const validateInput = async (payload) => {
 	return validator(payload, constraints);
 };
 
-const handle = async ({ prepareResult, authorizeResult }) => {
+const handle = async ({ prepareResult }) => {
 	try {
-		let inputPayload = { ...prepareResult };
+		let inputPayload = prepareResult;
 		await validateInput(inputPayload);
-		return await adminRepo.authenticateWithPassword(prepareResult);
+		await adminRepo.requestAttributeVerificationForResetPassword(inputPayload);
 	} catch (error) {
 		throw error;
 	}

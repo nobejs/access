@@ -1,4 +1,6 @@
 module.exports.createSuperUser = async () => {
+	require("dotenv").config();
+
 	const bcrypt = require("bcrypt");
 	const readline = require("readline").createInterface({
 		input: process.stdin,
@@ -11,7 +13,7 @@ module.exports.createSuperUser = async () => {
 			host: process.env.DB_HOST,
 			user: process.env.DB_USERNAME,
 			password: process.env.DB_PASSWORD,
-			database: "access",
+			database: process.env.DB_NAME,
 		},
 	});
 
