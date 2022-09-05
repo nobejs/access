@@ -36,20 +36,21 @@ module.exports.createSuperUser = async () => {
 					.from("admins")
 					.then((rows) => {
 						if (rows.length > 0) {
-							console.log("super user already exists");
+							console.log("\x1b[31m", "super user already exists");
+							process.exit();
 						} else {
 							db.insert(payload)
 								.into("admins")
 								.returning("*")
 								.then((rows) => {
-									console.log("super user created");
-									process.exit(1);
+									console.log("\x1b[32m", "super user created successfully");
+									process.exit();
 								});
 						}
 					});
 			} catch (error) {
 				console.log(error);
-				process.exit(1);
+				process.exit();
 			}
 		});
 	});
