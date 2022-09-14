@@ -56,6 +56,22 @@ const createTokenForUser = async (user) => {
   }
 };
 
+const createTokenForAdmin = async (admin) => {
+  try {
+    let token = await baseRepo.create(table, {
+      sub: admin.uuid,
+      issuer: "admin",
+      other_info: {
+        client: contextClassRef.client,
+      },
+    });
+    let jwt = await generateJWT(token.uuid, token.sub, token.issuer);
+    return jwt;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const createTokenForTeam = async (payload) => {
   try {
     let token = await baseRepo.create(table, {
@@ -115,6 +131,7 @@ module.exports = {
   update,
   deleteTokenByConstraints,
   createTokenForUser,
+  createTokenForAdmin,
   createTokenForTeam,
   checkIfValidJti,
   getTokensForTeam,

@@ -7,6 +7,7 @@
   "scripts": {
     "nobe:genstory": "node ./core/utils/generateStory",
     "nobe:genuser": "node ./core/utils/randomUser",
+    "nobe:gensuperuser": "node -e 'require(\"./core/utils/createSuperUser.js\").createSuperUser()'",
     "nobe:version": "node ./core/version",
     "test": "ENVFILE=.env.jest jest --runInBand",
     "test:github": "jest --runInBand",
