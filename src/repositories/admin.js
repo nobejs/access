@@ -16,10 +16,18 @@ const first = async (payload) => {
 
 const authenticateWithPassword = async (payload) => {
   let admin = await baseRepo.first(table, {
-    email: payload.value,
+    email: payload.email,
   });
 
+  if (admin === undefined) {
+		throw {
+			statusCode: 422,
+			message: "NotRegistered",
+		};
+	}
+
   let result = bcrypt.compareSync(payload.password, admin.password);
+
 
   if (result) {
     let token = await tokensRepo.createTokenForAdmin(admin);

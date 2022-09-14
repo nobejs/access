@@ -3,7 +3,7 @@ const adminRepo = requireRepo("admin");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
 
 const prepare = ({ reqQuery, reqBody, reqParams, req }) => {
-  const payload = findKeysFromRequest(req, ["value", "password"]);
+  const payload = findKeysFromRequest(req, ["email", "password"]);
   return payload;
 };
 
@@ -19,7 +19,7 @@ const validateInput = async (payload) => {
         message: "^Please enter password",
       },
     },
-    value: {
+    email: {
       presence: {
         allowEmpty: false,
         message: "^Please enter email",
@@ -40,12 +40,8 @@ const handle = async ({ prepareResult, authorizeResult }) => {
   }
 };
 
-const respond = async ({ handleResult }) => {
-  try {
-    return handleResult;
-  } catch (error) {
-    throw error;
-  }
+const respond = ({ handleResult }) => {
+  return { access_token: handleResult };
 };
 
 module.exports = {
