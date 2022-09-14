@@ -3,6 +3,7 @@ const baseRepo = requireUtil("baseRepo");
 const attributesRepo = requireRepo("attributes");
 const verificationsRepo = requireRepo("verifications");
 const tokensRepo = requireRepo("tokens");
+const neptune = requireRepo("neptune");
 const {
 	registrationVerificationEvent,
 	updateVerificationEvent,
@@ -11,7 +12,6 @@ const {
 } = require("../events");
 const isDateInPast = requireFunction("isDateInPast");
 const table = "users";
-const neptune = require("@teurons/neptune-nodejs");
 
 const getAllowedTypes = () => {
 	return ["email", "mobile_number"];
@@ -271,6 +271,8 @@ const registerUserFromGoogle = async (payload) => {
 				},
 			});
 
+			await neptune.addUserToNeptune(user.uuid);
+
 			await attributesRepo.createAttributeForUUID(
 				user.uuid,
 				{
@@ -279,6 +281,11 @@ const registerUserFromGoogle = async (payload) => {
 				},
 				true
 			);
+
+			await neptune.addUserContactInfoToNeptune(user.uuid, {
+				type: "email",
+				value: payload.email,
+			});
 
 			let token = await tokensRepo.createTokenForUser(user);
 			return token;
@@ -391,6 +398,15 @@ const verifyAttributeForRegistration = async (payload) => {
 					payload,
 					true
 				);
+
+				await neptune.addUserContactInfoToNeptune(
+					verification.user_uuid,
+					{
+						type: payload.type,
+						value: payload.value,
+					}
+				);
+
 				await verificationsRepo.removeVerification({
 					uuid: verification.uuid,
 				});
@@ -533,6 +549,12 @@ const verifyAttributesWithLink = async (payload) => {
 					attribute,
 					true
 				);
+
+				await neptune.addUserContactInfoToNeptune(
+					verification.user_uuid,
+					attribute
+				);
+
 				await verificationsRepo.removeVerification({
 					uuid: verification.uuid,
 				});
@@ -583,6 +605,7 @@ const registerWithPassword = async (payload) => {
 	if (verification === undefined) {
 		// If no, create a user and also verification for them
 		user = await createUserWithPassword(payload.password);
+		await neptune.addUserToNeptune(user.uuid);
 		verificationObject =
 			await verificationsRepo.createVerificationForRegistration({
 				user_uuid: user.uuid,
@@ -638,6 +661,11 @@ const updateAttribute = async (payload) => {
 
 		verificationObject = await verificationsRepo.updateVerification({
 			uuid: verification.uuid,
+		});
+
+		await neptune.updateUserContactInfo(verification.uuid, {
+			type: payload.type,
+			value: payload.value,
 		});
 	}
 
@@ -708,6 +736,14 @@ const verifyAttributeForUpdate = async (payload) => {
 							}),
 						},
 						true
+					);
+
+					await neptune.addUserContactInfoToNeptune(
+						verification.user_uuid,
+						{
+							type: payload.type,
+							value: payload.value,
+						}
 					);
 				} else {
 					await attributesRepo.update(
