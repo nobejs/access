@@ -5,7 +5,7 @@ const findKeysFromRequest = requireUtil("findKeysFromRequest");
 const getAllowedTypes = requireFunction("getAllowedTypes");
 
 const prepare = ({ reqQuery, reqBody, reqParams, req }) => {
-  const payload = findKeysFromRequest(req, ["token"]);
+  const payload = findKeysFromRequest(req, ["value"]);
   payload["jti"] = req.jti;
   return payload;
 };
@@ -34,9 +34,23 @@ const authorize = async ({ prepareResult }) => {
   }
 };
 
+const validateInput = async (payload) => {
+  const constraints = {
+    value: {
+      presence: {
+        allowEmpty: false,
+        message: "^Please enter a value",
+      },
+    },
+  };
+
+  return validator(payload, constraints);
+};
+
 const handle = async ({ prepareResult, authorizeResult }) => {
-  
   try {
+    await validateInput(prepareResult);
+
     return await usersRepo.deRegisterFirebaseToken(
       authorizeResult.sub,
       prepareResult

@@ -13,9 +13,7 @@ const debugLogger = requireUtil("debugLogger");
 const exclude = Config["excludeFromAuth"];
 
 module.exports = async (req, reply) => {
-
   if (req.method !== "OPTIONS") {
-
     let needsAuth = true;
     // console.log("req.routerPath", req.method, req.url);
 
@@ -34,7 +32,7 @@ module.exports = async (req, reply) => {
     // console.log("needsAuth", needsAuth);
 
     if (needsAuth) {
-      debugLogger("Header", req.headers.authorization);
+      // debugLogger("Header", req.headers.authorization);
 
       if (!req.headers.authorization) {
         debugLogger(
