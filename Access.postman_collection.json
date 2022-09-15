@@ -193,7 +193,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"type\": \"email\",\n    \"value\": \"rajiv@betalectic.com\",\n    \"password\": \"Kissmiss9!\"",
+							"raw": "{\n    \"type\": \"mobile_number\",\n    \"value\": \"+918897587657\",\n    \"password\": \"Kissmiss9!\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -787,6 +787,33 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Users/Authorize (Admin Token)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJFZERTQSJ9.eyJleHAiOjE2OTQ3MDE2OTAsInN1YiI6IjhkYmZhNzI0LTU0ZmItNGM5ZC1hNzE4LTg1MGFjOTNhYTcxYyIsImlzcyI6ImFkbWluIiwianRpIjoiNDNlNWU5Y2EtODEyOS00NjdmLWFjMGUtYmFkZWVhMTYwMGEzIn0.YRjEduqG7yq6dio0YR2tWgfh13gG1KYQ8QxeLEQoIkTs228LiAfGQ_ExjzxHjD8KJ00_IMup7povr5GBLQm4DA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{access_endpoint}}/authorize",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"authorize"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -1143,6 +1170,111 @@
 							],
 							"path": [
 								"verify-attribute"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Admin/CanLogin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (responseCode.code === 200)",
+									"{",
+									"    var jsonData = JSON.parse(responseBody);",
+									"",
+									"    pm.environment.set(\"access_token\", jsonData.access_token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"rajiv@betalectic.com\",\n    \"password\": \"kissmiss9\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/admin/login",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"admin",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Firebase",
+			"item": [
+				{
+					"name": "Register Firebase Token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"value\": \"gibberish-token\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/register-firebase-token",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"register-firebase-token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "De Register Firebase Token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"value\": \"gibberish-token\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/de-register-firebase-token",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"de-register-firebase-token"
 							]
 						}
 					},
