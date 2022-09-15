@@ -96,10 +96,10 @@ module.exports = (app) => {
           ["get", "/sessions", "Users/GetSessions"],
           ["delete", "/sessions/:session_uuid", "Users/DestroySession"],
 
-<<<<<<< HEAD
           /* Firebase Token */
           ["post", "/register-firebase-token", "Users/RegisterFirebaseToken"],
-=======
+          ["post", "/de-register-firebase-token", "Users/DeRegisterFirebaseToken"],
+
           //admins
 
           ["post", "/admin/login", "Admin/CanLogin"],
@@ -109,7 +109,6 @@ module.exports = (app) => {
             "Admin/RequestResetPassword",
           ],
           ["post", "/admin/reset-password", "Admin/ResetPassword"],
->>>>>>> 91ebf80d90d4bf60995843313641e014a4843ee1
 
           /* delete account */
           ["get", "/user/delete", "Users/CanDeleteAccount"],

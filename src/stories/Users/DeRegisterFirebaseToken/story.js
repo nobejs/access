@@ -5,7 +5,7 @@ const findKeysFromRequest = requireUtil("findKeysFromRequest");
 const getAllowedTypes = requireFunction("getAllowedTypes");
 
 const prepare = ({ reqQuery, reqBody, reqParams, req }) => {
-  const payload = findKeysFromRequest(req, ["type", "value"]);
+  const payload = findKeysFromRequest(req, ["token"]);
   payload["jti"] = req.jti;
   return payload;
 };
@@ -35,8 +35,9 @@ const authorize = async ({ prepareResult }) => {
 };
 
 const handle = async ({ prepareResult, authorizeResult }) => {
+  
   try {
-    return await usersRepo.registerFirebaseToken(
+    return await usersRepo.deRegisterFirebaseToken(
       authorizeResult.sub,
       prepareResult
     );
