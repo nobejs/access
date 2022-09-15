@@ -1,6 +1,6 @@
 const postEvent = requireFunction("postEvent");
 const contextClassRef = requireUtil("contextHelper");
-const neptune = require("@teurons/neptune-nodejs");
+const neptune = requireRepo("neptune");
 
 const registrationVerificationEvent = async (payload) => {
 	// console.log("contextClassRef", contextClassRef.client);
@@ -33,9 +33,7 @@ const registrationVerificationEvent = async (payload) => {
 		contact_infos: payload.contact_infos || [],
 	};
 
-	if (process.env.NEPTUNE_TOKEN && process.env.NEPTUNE_ENV) {
-		await neptune.fire(eventType, data, neptuneData);
-	}
+	await neptune.fireEvent(eventType, data, neptuneData);
 };
 
 const updateVerificationEvent = async (payload) => {
@@ -56,7 +54,7 @@ const updateVerificationEvent = async (payload) => {
 		contact_infos: payload.contact_infos || [],
 	};
 
-	await neptune.fire(eventType, data, neptuneData);
+	await neptune.fireEvent(eventType, data, neptuneData);
 };
 
 const resetPasswordVerificationEvent = async (payload) => {
@@ -72,7 +70,7 @@ const resetPasswordVerificationEvent = async (payload) => {
 		contact_infos: payload.contact_infos || [],
 	};
 
-	await neptune.fire(eventType, data, neptuneData);
+	await neptune.fireEvent(eventType, data, neptuneData);
 };
 
 const loginWithOtpEvent = async (payload) => {
@@ -90,7 +88,7 @@ const loginWithOtpEvent = async (payload) => {
 		contact_infos: payload.contact_infos || [],
 	};
 
-	await neptune.fire(eventType, data, neptuneData);
+	await neptune.fireEvent(eventType, data, neptuneData);
 };
 
 const invitedToTeamEvent = async (payload) => {
@@ -107,7 +105,7 @@ const invitedToTeamEvent = async (payload) => {
 		contact_infos: payload.contact_infos || [],
 	};
 
-	await neptune.fire(eventType, data, neptuneData);
+	await neptune.fireEvent(eventType, data, neptuneData);
 };
 
 module.exports = {

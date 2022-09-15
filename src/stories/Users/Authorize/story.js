@@ -14,6 +14,7 @@ const TeamsRepo = requireRepo("teams");
 // const RolesRepo = requireRepo("roles");
 const TokensRepo = requireRepo("tokens");
 const TeamMembersRepo = requireRepo("teamMembers");
+const AdminsRepo = requireRepo("admin");
 const getTeamMemberPermissions = requireFunction("getTeamMemberPermissions");
 const getTokenPermissions = requireFunction("getTokenPermissions");
 
@@ -46,6 +47,16 @@ const handle = async ({ prepareResult }) => {
       prepareResult["team_uuid"] === undefined
     ) {
       return {};
+    }
+
+    if (
+      prepareResult.issuer === "admin" &&
+      prepareResult["team_uuid"] === undefined
+    ) {
+      let admin =  await AdminsRepo.first({
+        uuid: prepareResult.sub
+      })
+      return admin.permissions;
     }
 
     // If issuer is user and there is  `X-Team-Identifier`

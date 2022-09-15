@@ -610,10 +610,10 @@
   dependencies:
     defer-to-connect "^1.0.1"
 
-"@teurons/neptune-nodejs@^1.1.8":
-  version "1.1.8"
-  resolved "https://registry.yarnpkg.com/@teurons/neptune-nodejs/-/neptune-nodejs-1.1.8.tgz#d9680682c6025313f4f881aaed9e9c2439a90f5e"
-  integrity sha512-DLu4mv+0OZ2pkL2UE5KEYtGI7LuZr46OI1zOwVRAuQGhPyR9k7m6QIsfo8GFxCtFBDpmD0pNjhxUS6NGAz4glw==
+"@teurons/neptune-nodejs@^1.1.9":
+  version "1.1.9"
+  resolved "https://registry.yarnpkg.com/@teurons/neptune-nodejs/-/neptune-nodejs-1.1.9.tgz#64ba0ae69b8490da126cc84a70160f086903a9fc"
+  integrity sha512-tcEcSOuxmP28PS4mh4J1EuH4TUo8CmxuTNcBhDHq4o0K0CxJfB6jtqAmcscfWOU0PtZbOiozgCmS9hA+L8bS2A==
   dependencies:
     axios "^0.21.1"
 
