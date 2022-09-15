@@ -41,6 +41,16 @@ const updateUserContactInfo = async (uuid, payload) => {
 	}
 };
 
+const deleteUserContactInfo =  async (uuid, payload) => {
+	let user_id = uuid;
+	try {
+		let neptuneData = await prepareUserContactInfoPayload(payload);
+		await neptune.deleteUserContactInfo(user_id,{ data:{ neptuneData }});
+	} catch (error) {
+		debugLogger(error);
+	}
+}
+
 const fireEvent = async (eventType, data, neptuneData) => {
 	try {
 		await neptune.fire(eventType, data, neptuneData);
@@ -54,4 +64,5 @@ module.exports = {
 	addUserContactInfoToNeptune,
 	updateUserContactInfo,
 	fireEvent,
+	deleteUserContactInfo,
 };

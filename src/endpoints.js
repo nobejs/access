@@ -96,6 +96,10 @@ module.exports = (app) => {
           ["get", "/sessions", "Users/GetSessions"],
           ["delete", "/sessions/:session_uuid", "Users/DestroySession"],
 
+          /* Firebase Token */
+          ["post", "/register-firebase-token", "Users/RegisterFirebaseToken"],
+          ["post", "/de-register-firebase-token", "Users/DeRegisterFirebaseToken"],
+
           //admins
 
           ["post", "/admin/login", "Admin/CanLogin"],
