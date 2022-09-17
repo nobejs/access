@@ -9,6 +9,7 @@ const {
   updateVerificationEvent,
   resetPasswordVerificationEvent,
   loginWithOtpEvent,
+  addOrUpdateUserContactInfoToNeptune,
 } = require("../events");
 const isDateInPast = requireFunction("isDateInPast");
 const table = "users";
@@ -268,7 +269,11 @@ const registerUserFromGoogle = async (payload) => {
         },
       });
 
-      await neptune.addUserToNeptune(user.uuid);
+      await addOrUpdateUserContactInfoToNeptune({
+        userUuid: user.uuid,
+        eventType: "addUserToNeptune",
+        neptuneData: {},
+      });
 
       await attributesRepo.createAttributeForUUID(
         user.uuid,
@@ -580,7 +585,13 @@ const registerWithPassword = async (payload) => {
   if (verification === undefined) {
     // If no, create a user and also verification for them
     user = await createUserWithPassword(payload.password);
-    await neptune.addUserToNeptune(user.uuid);
+
+    await addOrUpdateUserContactInfoToNeptune({
+      userUuid: user.uuid,
+      eventType: "addUserToNeptune",
+      neptuneData: {},
+    });
+
     verificationObject =
       await verificationsRepo.createVerificationForRegistration({
         user_uuid: user.uuid,
@@ -637,10 +648,10 @@ const updateAttribute = async (payload) => {
       uuid: verification.uuid,
     });
 
-    await neptune.updateUserContactInfo(verification.uuid, {
-      type: payload.type,
-      value: payload.value,
-    });
+    // await neptune.updateUserContactInfo(verification.uuid, {
+    //   type: payload.type,
+    //   value: payload.value,
+    // });
   }
 
   await updateVerificationEvent({

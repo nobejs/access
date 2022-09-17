@@ -20,14 +20,13 @@ const authenticateWithPassword = async (payload) => {
   });
 
   if (admin === undefined) {
-		throw {
-			statusCode: 422,
-			message: "NotRegistered",
-		};
-	}
+    throw {
+      statusCode: 422,
+      message: "NotRegistered",
+    };
+  }
 
   let result = bcrypt.compareSync(payload.password, admin.password);
-
 
   if (result) {
     let token = await tokensRepo.createTokenForAdmin(admin);
