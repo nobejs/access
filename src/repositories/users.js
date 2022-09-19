@@ -44,6 +44,240 @@ const first = async (payload) => {
   return await baseRepo.first(table, payload);
 };
 
+/**  Registration - Start */
+
+// When user registers with any attribute_type we use this method
+// We also send verification code or link based on method via events
+const registerWithPassword = async (payload) => {
+  // Find if there is already a registration in process
+
+  let verification = await verificationsRepo.findVerificationForRegistration({
+    attribute_type: payload.type,
+    attribute_value: payload.value,
+  });
+
+  let user = null;
+  let verificationObject = null;
+
+  if (verification === undefined) {
+    // If no, create a user and also verification for them
+    user = await createUserWithPassword(payload.password);
+    await neptune.addUserToNeptune(user.uuid);
+    verificationObject =
+      await verificationsRepo.createVerificationForRegistration({
+        user_uuid: user.uuid,
+        attribute_type: payload.type,
+        attribute_value: payload.value,
+      });
+
+    await eventBus("user_created", {
+      verificationObject: verificationObject,
+      payload: payload,
+    });
+  } else {
+    // If there is a verification, update verification with new token and timestamp
+
+    verificationObject = await verificationsRepo.updateVerification({
+      uuid: verification.uuid,
+    });
+
+    await eventBus("verification_requested", {
+      verificationObject: verificationObject,
+      payload: payload,
+    });
+  }
+
+  return verification;
+};
+
+// If user wants to get the verification code for registration
+const requestAttributeVerificationForRegistration = async (payload) => {
+  try {
+    // Find if there is already an existing verification for this
+    let verification = await verificationsRepo.findVerificationForRegistration({
+      attribute_type: payload.type,
+      attribute_value: payload.value,
+    });
+
+    // If verification is present already, we can update it
+    if (verification !== undefined) {
+      let verificationObject = await verificationsRepo.updateVerification({
+        uuid: verification.uuid,
+      });
+
+      await eventBus("verification_requested", {
+        verificationObject: verificationObject,
+        payload: payload,
+      });
+    } else {
+      throw {
+        statusCode: 422,
+        message: "Not registered yet",
+      };
+    }
+  } catch (error) {
+    throw error;
+  }
+};
+
+// This method is used to verify user using an OTP
+const verifyAttributeForRegistrationUsingOTP = async (payload) => {
+  try {
+    let verification = await verificationsRepo.findVerificationForRegistration({
+      attribute_type: payload.type,
+      attribute_value: payload.value,
+    });
+
+    if (verification !== undefined && !isDateInPast(verification.expires_at)) {
+      if (payload.token === verification.token) {
+        await attributesRepo.createAttributeForUUID(
+          verification.user_uuid,
+          payload,
+          true
+        );
+
+        let userObject = await baseRepo.first(table, {
+          uuid: verification.user_uuid,
+        });
+
+        await eventBus("user_registered", {
+          verificationObject: verification,
+          userObject: userObject,
+          payload: payload,
+        });
+
+        // await neptune.addUserContactInfoToNeptune(verification.user_uuid, {
+        //   type: payload.type,
+        //   value: payload.value,
+        // });
+
+        await verificationsRepo.removeVerification({
+          uuid: verification.uuid,
+        });
+
+        let token = await tokensRepo.createTokenForUser(userObject);
+        return token;
+
+        return {
+          message: "Verification Successful",
+        };
+      } else {
+        throw "err";
+      }
+    } else {
+      throw "err";
+    }
+  } catch (error) {
+    throw {
+      statusCode: 422,
+      message: "Invalid Token",
+    };
+  }
+};
+
+// The following method is verify user using a Link
+const verifyAttributeForRegistrationUsingLink = async (payload) => {
+  try {
+    let verification = await verificationsRepo.findVerificationForRegistration({
+      user_uuid: payload.user_uuid,
+      token: payload.verification_code,
+    });
+
+    if (verification !== undefined && !isDateInPast(verification.expires_at)) {
+      if (payload.verification_code === verification.token) {
+        let attribute = {
+          type: verification.attribute_type,
+          value: verification.attribute_value,
+        };
+        await attributesRepo.createAttributeForUUID(
+          verification.user_uuid,
+          attribute,
+          true
+        );
+
+        let userObject = await baseRepo.first(table, {
+          uuid: verification.user_uuid,
+        });
+
+        await eventBus("user_registered", {
+          verificationObject: verification,
+          userObject: userObject,
+          payload: payload,
+        });
+
+        await verificationsRepo.removeVerification({
+          uuid: verification.uuid,
+        });
+
+        return {
+          success: true,
+        };
+      } else {
+        throw "err";
+      }
+    } else {
+      throw "err";
+    }
+  } catch (error) {
+    return {
+      success: false,
+    };
+  }
+};
+
+const registerUserFromGoogle = async (payload) => {
+  try {
+    const findUserWithAttribute = await attributesRepo.first({
+      type: "email",
+      value: payload.email,
+    });
+
+    // console.log("findUserWithAttribute", findUserWithAttribute);
+
+    if (findUserWithAttribute === undefined) {
+      const user = await baseRepo.create(table, {
+        profile: {
+          name: payload.name,
+        },
+      });
+
+      await attributesRepo.createAttributeForUUID(
+        user.uuid,
+        {
+          type: "email",
+          value: payload.email,
+        },
+        true
+      );
+
+      // Todo: Test Login with Google
+      await eventBus("user_registered", {
+        verificationObject: {
+          user_uuid: user.uuid,
+          attribute_type: "email",
+          attribute_value: payload.email,
+        },
+        userObject: userObject,
+        payload: payload,
+      });
+
+      let token = await tokensRepo.createTokenForUser(user);
+      return token;
+    } else {
+      let user = await baseRepo.first(table, {
+        uuid: findUserWithAttribute.user_uuid,
+      });
+
+      let token = await tokensRepo.createTokenForUser(user);
+      return token;
+    }
+  } catch (error) {}
+};
+
+/**  Registration - End */
+
+/** Login via OTP - Start */
+
 const generateOTPForLogin = async (payload) => {
   let attribute = await attributesRepo.first({
     type: payload.type,
@@ -83,6 +317,7 @@ const generateOTPForLogin = async (payload) => {
       uuid: verification.uuid,
     });
 
+    // Todo: Process via Event Bus
     await loginWithOtpEvent({
       user_uuid: verificationObject.user_uuid,
       token: verificationObject.token,
@@ -108,6 +343,8 @@ const generateOTPForLogin = async (payload) => {
         attribute_value: payload.value,
       }
     );
+
+    // Todo: Process via Event Bus
 
     await loginWithOtpEvent({
       user_uuid: verificationObject.user_uuid,
@@ -198,6 +435,8 @@ const authenticateWithOTP = async (payload) => {
   }
 };
 
+/** Login via OTP - End */
+
 const authenticateWithPassword = async (payload) => {
   let testUserAccounts = [];
   let testPassword = process.env.TEST_USER_PASSWORD || "123456";
@@ -256,80 +495,6 @@ const authenticateWithPassword = async (payload) => {
   }
 };
 
-const registerUserFromGoogle = async (payload) => {
-  try {
-    const findUserWithAttribute = await attributesRepo.first({
-      type: "email",
-      value: payload.email,
-    });
-
-    // console.log("findUserWithAttribute", findUserWithAttribute);
-
-    if (findUserWithAttribute === undefined) {
-      const user = await baseRepo.create(table, {
-        profile: {
-          name: payload.name,
-        },
-      });
-
-      await neptune.addUserToNeptune(user.uuid);
-
-      await attributesRepo.createAttributeForUUID(
-        user.uuid,
-        {
-          type: "email",
-          value: payload.email,
-        },
-        true
-      );
-
-      await neptune.addUserContactInfoToNeptune(user.uuid, {
-        type: "email",
-        value: payload.email,
-      });
-
-      let token = await tokensRepo.createTokenForUser(user);
-      return token;
-    } else {
-      let user = await baseRepo.first(table, {
-        uuid: findUserWithAttribute.user_uuid,
-      });
-
-      let token = await tokensRepo.createTokenForUser(user);
-      return token;
-    }
-  } catch (error) {}
-};
-
-const requestAttributeVerificationForRegistration = async (payload) => {
-  try {
-    // Find if there is already an existing verification for this
-    let verification = await verificationsRepo.findVerificationForRegistration({
-      attribute_type: payload.type,
-      attribute_value: payload.value,
-    });
-
-    // If verification is present already, we can update it
-    if (verification !== undefined) {
-      let verificationObject = await verificationsRepo.updateVerification({
-        uuid: verification.uuid,
-      });
-
-      await eventBus("verification_requested", {
-        verificationObject: verificationObject,
-        payload: payload,
-      });
-    } else {
-      throw {
-        statusCode: 422,
-        message: "Not registered yet",
-      };
-    }
-  } catch (error) {
-    throw error;
-  }
-};
-
 const requestAttributeVerificationForUpdate = async (payload) => {
   try {
     // Find if there is already an existing verification for this
@@ -365,57 +530,6 @@ const requestAttributeVerificationForUpdate = async (payload) => {
     }
   } catch (error) {
     throw error;
-  }
-};
-
-const verifyAttributeForRegistration = async (payload) => {
-  try {
-    let verification = await verificationsRepo.findVerificationForRegistration({
-      attribute_type: payload.type,
-      attribute_value: payload.value,
-    });
-
-    if (verification !== undefined && !isDateInPast(verification.expires_at)) {
-      if (payload.token === verification.token) {
-        await attributesRepo.createAttributeForUUID(
-          verification.user_uuid,
-          payload,
-          true
-        );
-
-        let userObject = await baseRepo.first(table, {
-          uuid: verification.user_uuid,
-        });
-
-        await eventBus("user_registered", {
-          verificationObject: verification,
-          userObject: userObject,
-          payload: payload,
-        });
-
-        // await neptune.addUserContactInfoToNeptune(verification.user_uuid, {
-        //   type: payload.type,
-        //   value: payload.value,
-        // });
-
-        await verificationsRepo.removeVerification({
-          uuid: verification.uuid,
-        });
-
-        return {
-          message: "Verification Successful",
-        };
-      } else {
-        throw "err";
-      }
-    } else {
-      throw "err";
-    }
-  } catch (error) {
-    throw {
-      statusCode: 422,
-      message: "Invalid Token",
-    };
   }
 };
 
@@ -512,50 +626,6 @@ const verifyAttributeForResetPassword = async (payload) => {
   }
 };
 
-const verifyAttributesWithLink = async (payload) => {
-  try {
-    let verification = await verificationsRepo.findVerificationForRegistration({
-      user_uuid: payload.user_uuid,
-      token: payload.verification_code,
-    });
-
-    if (verification !== undefined && !isDateInPast(verification.expires_at)) {
-      if (payload.verification_code === verification.token) {
-        let attribute = {
-          type: verification.attribute_type,
-          value: verification.attribute_value,
-        };
-        await attributesRepo.createAttributeForUUID(
-          verification.user_uuid,
-          attribute,
-          true
-        );
-
-        await neptune.addUserContactInfoToNeptune(
-          verification.user_uuid,
-          attribute
-        );
-
-        await verificationsRepo.removeVerification({
-          uuid: verification.uuid,
-        });
-
-        return {
-          success: true,
-        };
-      } else {
-        throw "err";
-      }
-    } else {
-      throw "err";
-    }
-  } catch (error) {
-    return {
-      success: false,
-    };
-  }
-};
-
 const updateUserPassword = async (uuid, password) => {
   return await baseRepo.update(
     table,
@@ -570,48 +640,6 @@ const createUserWithPassword = async (password) => {
   return await baseRepo.create(table, {
     password: bcrypt.hashSync(password, 5),
   });
-};
-
-const registerWithPassword = async (payload) => {
-  // Find if there is already a registration in process
-
-  let verification = await verificationsRepo.findVerificationForRegistration({
-    attribute_type: payload.type,
-    attribute_value: payload.value,
-  });
-
-  let user = null;
-  let verificationObject = null;
-
-  if (verification === undefined) {
-    // If no, create a user and also verification for them
-    user = await createUserWithPassword(payload.password);
-    await neptune.addUserToNeptune(user.uuid);
-    verificationObject =
-      await verificationsRepo.createVerificationForRegistration({
-        user_uuid: user.uuid,
-        attribute_type: payload.type,
-        attribute_value: payload.value,
-      });
-
-    await eventBus("user_created", {
-      verificationObject: verificationObject,
-      payload: payload,
-    });
-  } else {
-    // If there is a verification, update verification with new token and timestamp
-
-    verificationObject = await verificationsRepo.updateVerification({
-      uuid: verification.uuid,
-    });
-
-    await eventBus("verification_requested", {
-      verificationObject: verificationObject,
-      payload: payload,
-    });
-  }
-
-  return verification;
 };
 
 const updateAttribute = async (payload) => {
@@ -794,10 +822,10 @@ module.exports = {
   registerWithPassword,
   authenticateWithPassword,
   requestAttributeVerificationForRegistration,
-  verifyAttributeForRegistration,
+  verifyAttributeForRegistrationUsingOTP,
   requestAttributeVerificationForResetPassword,
   verifyAttributeForResetPassword,
-  verifyAttributesWithLink,
+  verifyAttributeForRegistrationUsingLink,
   findUserByTypeAndValue,
   create,
   first,

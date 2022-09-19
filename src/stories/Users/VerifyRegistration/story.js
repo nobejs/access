@@ -15,15 +15,16 @@ const authorize = ({ prepareResult }) => {
 
 const handle = async ({ prepareResult }) => {
   try {
-    return await usersRepo.verifyAttributeForRegistration(prepareResult);
+    return await usersRepo.verifyAttributeForRegistrationUsingOTP(
+      prepareResult
+    );
   } catch (error) {
     throw error;
   }
 };
 
 const respond = ({ handleResult }) => {
-  // console.log("handleResult", handleResult)
-  return handleResult;
+  return { access_token: handleResult };
 };
 
 module.exports = {

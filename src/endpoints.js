@@ -68,7 +68,7 @@ module.exports = (app) => {
 
           [
             "get",
-            "/verify-attribute-with-link/:user_uuid/:verification_code",
+            "/verify-registration-attribute-with-link/:user_uuid/:verification_code",
             "Users/VerifyAttributeWithLink",
           ],
 

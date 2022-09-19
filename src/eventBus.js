@@ -35,7 +35,7 @@ const preparePayloadFromVerificationObject = async (eventData) => {
     eventType = `request_link_to_verify_${eventObject.type}_during_registration`;
     data = {
       verification_method: payload.verification_method,
-      link: `${process.env.BASE_URL}/verify-attribute-with-link/${
+      link: `${process.env.BASE_URL}/verify-registration-attribute-with-link/${
         eventObject.user_uuid
       }/${eventObject.token}?success_redirect=${encodeURIComponent(
         eventObject.successRedirect
