@@ -3,12 +3,11 @@ const validate = require("../helpers/validate");
 const cleanPayload = require("../helpers/cleanPayload");
 const getOperations = require("../helpers/getOperations");
 const runOperations = require("../helpers/runOperations");
-const saveFacet = require("../helpers/saveFacet");
 const authorize = require("../helpers/authorize");
 const executeSequence = require("../helpers/executeSequence");
 const enhanceWithHooks = require("../helpers/enhanceWithHooks");
-const fillBelongsToOneResources = require("../helpers/fillBelongsToOneResources");
-const runTransformations = require("../helpers/runTransformations");
+const deleteHasManyResources = require("../helpers/deleteHasManyResources");
+const deleteHasOneResources = require("../helpers/deleteHasOneResources");
 
 module.exports = async (context) => {
   const sequence = await enhanceWithHooks(context, {
@@ -18,10 +17,10 @@ module.exports = async (context) => {
     handle: [
       getOperations,
       runOperations,
-      fillBelongsToOneResources,
-      runTransformations,
+      deleteHasOneResources,
+      deleteHasManyResources,
     ],
-    respond: [saveFacet],
+    respond: [],
   });
 
   context = await executeSequence(context, sequence);
