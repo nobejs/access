@@ -1,5 +1,6 @@
-const neptune = requireRepo("neptune");
+const neptuneRepo = requireRepo("neptune");
 const contextClassRef = requireUtil("contextHelper");
+const debugLogger = requireUtil("debugLogger");
 
 const preparePayloadFromVerificationObject = async (eventData) => {
   const verificationObject = eventData.verificationObject;
@@ -64,12 +65,57 @@ const processVerificationRequested = async (eventData) => {
   await preparePayloadFromVerificationObject(eventData);
 };
 
+const processUserRegistered = async (eventData) => {
+  console.log("processUserRegistered", eventData);
+
+  const verificationObject = eventData.verificationObject;
+  const userObject = eventData.userObject;
+  const payload = eventData.payload;
+  let eventType = null;
+  let data = null;
+
+  const eventObject = {
+    user_uuid: verificationObject.user_uuid,
+    type: verificationObject.attribute_type,
+    value: verificationObject.attribute_value,
+    contact_infos: [
+      {
+        type: verificationObject.attribute_type,
+        value: verificationObject.attribute_value,
+      },
+    ],
+  };
+
+  eventType = `user_registered_using_${verificationObject.attribute_type}`;
+
+  let neptuneData = {
+    tags: [],
+    user_id: eventObject.user_uuid,
+    client: contextClassRef.client,
+    contact_infos: eventObject.contact_infos || [],
+  };
+
+  if (process.env.SEND_EVENTS === "neptune") {
+    await neptuneRepo.addUserContactInfoToNeptune(eventObject.user_uuid, {
+      type: verificationObject.attribute_type,
+      value: verificationObject.attribute_value,
+      meta: userObject.profile || {},
+    });
+  }
+
+  await fireEventToExternalEntity(eventType, data, neptuneData);
+};
+
 const eventBus = async (event, data) => {
   try {
     console.log("eventBus....", event);
     switch (event) {
       case "user_created":
         await processUserCreated(data);
+        break;
+
+      case "user_registered":
+        await processUserRegistered(data);
         break;
 
       case "verification_requested":
@@ -83,7 +129,7 @@ const eventBus = async (event, data) => {
 
 const fireEventToExternalEntity = async (eventType, data, neptuneData) => {
   if (process.env.SEND_EVENTS === "neptune") {
-    await neptune.fireEvent(eventType, data, neptuneData);
+    await neptuneRepo.fireEvent(eventType, data, neptuneData);
   }
 };
 

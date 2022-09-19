@@ -383,10 +383,20 @@ const verifyAttributeForRegistration = async (payload) => {
           true
         );
 
-        await neptune.addUserContactInfoToNeptune(verification.user_uuid, {
-          type: payload.type,
-          value: payload.value,
+        let userObject = await baseRepo.first(table, {
+          uuid: verification.user_uuid,
         });
+
+        await eventBus("user_registered", {
+          verificationObject: verification,
+          userObject: userObject,
+          payload: payload,
+        });
+
+        // await neptune.addUserContactInfoToNeptune(verification.user_uuid, {
+        //   type: payload.type,
+        //   value: payload.value,
+        // });
 
         await verificationsRepo.removeVerification({
           uuid: verification.uuid,

@@ -10,9 +10,10 @@ const getUserFromNeptune = async (uuid) => {
   }
 };
 
-const addUserToNeptune = async (uuid) => {
+const addUserToNeptune = async (uuid, meta = {}) => {
   let neptuneData = {
     user_id: uuid,
+    meta: meta,
   };
   try {
     await neptune.createUser(neptuneData);
@@ -31,18 +32,22 @@ const prepareUserContactInfoPayload = async (payload) => {
   return neptuneData;
 };
 
-const addUserContactInfoToNeptune = async (uuid, payload) => {
-  let user_id = uuid;
+const addUserContactInfoToNeptune = async (user_uuid, payload) => {
+  let neptuneData = {
+    type: payload.type,
+    value: payload.value,
+  };
+
   try {
-    await getUserFromNeptune(uuid);
-    let neptuneData = await prepareUserContactInfoPayload(payload);
-    return await neptune.addUserContactInfo(user_id, neptuneData);
+    await getUserFromNeptune(user_uuid);
+    return await neptune.addUserContactInfo(user_uuid, neptuneData);
   } catch (error) {
+    console.log("error", error);
+
     try {
       if (error.response.status === 404) {
-        await addUserToNeptune(user_id);
-        let neptuneData = await prepareUserContactInfoPayload(payload);
-        return await neptune.addUserContactInfo(user_id, neptuneData);
+        await neptune.addUserToNeptune(user_uuid, payload.meta);
+        return await neptune.addUserContactInfo(user_uuid, neptuneData);
       }
 
       if (error.response.status === 422) {
