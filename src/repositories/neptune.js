@@ -25,13 +25,12 @@ const addUserToNeptune = async (uuid, payload = {}) => {
 
 const updateUser = async (user_uuid, payload = {}) => {
   let neptuneData = {
-    user_id: user_uuid,
     meta: payload.meta || {},
   };
 
   try {
     await getUserFromNeptune(user_uuid);
-    await neptune.updateUser(neptuneData);
+    let updatedUser = await neptune.updateUser(user_uuid, neptuneData);
   } catch (error) {
     try {
       if (error.response.status === 404) {
@@ -40,6 +39,7 @@ const updateUser = async (user_uuid, payload = {}) => {
       }
 
       if (error.response.status === 422) {
+        debugLogger("Validation error", error.response.data);
         return error.response.data;
       }
     } catch (error) {
