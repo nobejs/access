@@ -81,7 +81,7 @@ const registerWithPassword = async (payload) => {
       uuid: verification.uuid,
     });
 
-    await eventBus("verification_requested", {
+    await eventBus("verification_requested_during_registration", {
       verificationObject: verificationObject,
       payload: payload,
     });
@@ -105,7 +105,7 @@ const requestAttributeVerificationForRegistration = async (payload) => {
         uuid: verification.uuid,
       });
 
-      await eventBus("verification_requested", {
+      await eventBus("verification_requested_during_registration", {
         verificationObject: verificationObject,
         payload: payload,
       });
@@ -146,21 +146,12 @@ const verifyAttributeForRegistrationUsingOTP = async (payload) => {
           payload: payload,
         });
 
-        // await neptune.addUserContactInfoToNeptune(verification.user_uuid, {
-        //   type: payload.type,
-        //   value: payload.value,
-        // });
-
         await verificationsRepo.removeVerification({
           uuid: verification.uuid,
         });
 
         let token = await tokensRepo.createTokenForUser(userObject);
         return token;
-
-        return {
-          message: "Verification Successful",
-        };
       } else {
         throw "err";
       }
@@ -437,6 +428,8 @@ const authenticateWithOTP = async (payload) => {
 
 /** Login via OTP - End */
 
+/** Login via Password - Start */
+
 const authenticateWithPassword = async (payload) => {
   let testUserAccounts = [];
   let testPassword = process.env.TEST_USER_PASSWORD || "123456";
@@ -495,6 +488,10 @@ const authenticateWithPassword = async (payload) => {
   }
 };
 
+/** Login via Password - End */
+
+/** Update Any Attribute - Start */
+
 const requestAttributeVerificationForUpdate = async (payload) => {
   try {
     // Find if there is already an existing verification for this
@@ -532,6 +529,54 @@ const requestAttributeVerificationForUpdate = async (payload) => {
     throw error;
   }
 };
+
+const updateAttribute = async (payload) => {
+  // Find if there is already a registration in process
+
+  let verification = await verificationsRepo.findVerificationForUpdate({
+    attribute_type: payload.type,
+    attribute_value: payload.value,
+  });
+
+  let verificationObject = null;
+
+  if (verification === undefined) {
+    verificationObject = await verificationsRepo.createVerificationForUpdate({
+      user_uuid: payload.sub,
+      attribute_type: payload.type,
+      attribute_value: payload.value,
+    });
+  } else {
+    // If there is a verification, update verification with new token and timestamp
+
+    verificationObject = await verificationsRepo.updateVerification({
+      uuid: verification.uuid,
+    });
+
+    await neptune.updateUserContactInfo(verification.uuid, {
+      type: payload.type,
+      value: payload.value,
+    });
+  }
+
+  await updateVerificationEvent({
+    user_uuid: verificationObject.user_uuid,
+    token: verificationObject.token,
+    type: verificationObject.attribute_type,
+    value: verificationObject.attribute_value,
+    purpose: payload.purpose,
+    contact_infos: [
+      {
+        type: payload.type,
+        value: verificationObject.attribute_value,
+      },
+    ],
+  });
+
+  return verification;
+};
+
+/** Update Any Attribute - End */
 
 const requestAttributeVerificationForResetPassword = async (payload) => {
   try {
@@ -640,52 +685,6 @@ const createUserWithPassword = async (password) => {
   return await baseRepo.create(table, {
     password: bcrypt.hashSync(password, 5),
   });
-};
-
-const updateAttribute = async (payload) => {
-  // Find if there is already a registration in process
-
-  let verification = await verificationsRepo.findVerificationForUpdate({
-    attribute_type: payload.type,
-    attribute_value: payload.value,
-  });
-
-  let verificationObject = null;
-
-  if (verification === undefined) {
-    verificationObject = await verificationsRepo.createVerificationForUpdate({
-      user_uuid: payload.sub,
-      attribute_type: payload.type,
-      attribute_value: payload.value,
-    });
-  } else {
-    // If there is a verification, update verification with new token and timestamp
-
-    verificationObject = await verificationsRepo.updateVerification({
-      uuid: verification.uuid,
-    });
-
-    await neptune.updateUserContactInfo(verification.uuid, {
-      type: payload.type,
-      value: payload.value,
-    });
-  }
-
-  await updateVerificationEvent({
-    user_uuid: verificationObject.user_uuid,
-    token: verificationObject.token,
-    type: verificationObject.attribute_type,
-    value: verificationObject.attribute_value,
-    purpose: payload.purpose,
-    contact_infos: [
-      {
-        type: payload.type,
-        value: verificationObject.attribute_value,
-      },
-    ],
-  });
-
-  return verification;
 };
 
 const createTestUserWithVerifiedToken = async (payload) => {

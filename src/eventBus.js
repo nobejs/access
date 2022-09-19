@@ -2,10 +2,13 @@ const neptuneRepo = requireRepo("neptune");
 const contextClassRef = requireUtil("contextHelper");
 const debugLogger = requireUtil("debugLogger");
 
-const preparePayloadFromVerificationObject = async (eventData) => {
+const preparePayloadFromVerificationObject = async (
+  eventType,
+  verifyViaLinkRoute,
+  eventData
+) => {
   const verificationObject = eventData.verificationObject;
   const payload = eventData.payload;
-  let eventType = null;
   let data = null;
   const eventObject = {
     user_uuid: verificationObject.user_uuid,
@@ -24,7 +27,6 @@ const preparePayloadFromVerificationObject = async (eventData) => {
   };
 
   if (eventObject.verification_method == "otp") {
-    eventType = `request_otp_to_verify_${payload.type}_during_registration`;
     data = {
       verification_method: payload.verification_method,
       token: eventObject.token,
@@ -32,10 +34,9 @@ const preparePayloadFromVerificationObject = async (eventData) => {
       value: eventObject.value,
     };
   } else if (eventObject.verification_method === "link") {
-    eventType = `request_link_to_verify_${eventObject.type}_during_registration`;
     data = {
       verification_method: payload.verification_method,
-      link: `${process.env.BASE_URL}/verify-registration-attribute-with-link/${
+      link: `${process.env.BASE_URL}/${verifyViaLinkRoute}/${
         eventObject.user_uuid
       }/${eventObject.token}?success_redirect=${encodeURIComponent(
         eventObject.successRedirect
@@ -58,16 +59,44 @@ const preparePayloadFromVerificationObject = async (eventData) => {
 };
 
 const processUserCreated = async (eventData) => {
-  await preparePayloadFromVerificationObject(eventData);
+  const payload = eventData.payload;
+  const verification_method = payload.verification_method;
+  let eventType = null;
+  let verifyViaLinkRoute = "verify-registration-attribute-with-link";
+
+  if (verification_method == "otp") {
+    eventType = `request_otp_to_verify_${payload.type}_during_registration`;
+  } else if (verification_method === "link") {
+    eventType = `request_link_to_verify_${eventObject.type}_during_registration`;
+  }
+
+  await preparePayloadFromVerificationObject(
+    eventType,
+    verifyViaLinkRoute,
+    eventData
+  );
 };
 
-const processVerificationRequested = async (eventData) => {
-  await preparePayloadFromVerificationObject(eventData);
+const processVerificationRequestedDuringRegistration = async (eventData) => {
+  const payload = eventData.payload;
+  const verification_method = payload.verification_method;
+  let eventType = null;
+  let verifyViaLinkRoute = "verify-registration-attribute-with-link";
+
+  if (verification_method == "otp") {
+    eventType = `request_otp_to_verify_${payload.type}_during_registration`;
+  } else if (verification_method === "link") {
+    eventType = `request_link_to_verify_${eventObject.type}_during_registration`;
+  }
+
+  await preparePayloadFromVerificationObject(
+    eventType,
+    verifyViaLinkRoute,
+    eventData
+  );
 };
 
 const processUserRegistered = async (eventData) => {
-  console.log("processUserRegistered", eventData);
-
   const verificationObject = eventData.verificationObject;
   const userObject = eventData.userObject;
   const payload = eventData.payload;
@@ -107,7 +136,6 @@ const processUserRegistered = async (eventData) => {
 };
 
 const processUserUpdatedProfile = async (eventData) => {
-  console.log("processUserUpdatedProfile", eventData);
   const userObject = eventData.user;
 
   if (process.env.SEND_EVENTS === "neptune") {
@@ -129,8 +157,8 @@ const eventBus = async (event, data) => {
         await processUserRegistered(data);
         break;
 
-      case "verification_requested":
-        await processVerificationRequested(data);
+      case "verification_requested_during_registration":
+        await processVerificationRequestedDuringRegistration(data);
         break;
 
       case "user_updated_profile":
