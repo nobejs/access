@@ -108,23 +108,32 @@ const invitedToTeamEvent = async (payload) => {
   await neptune.fireEvent(eventType, data, neptuneData);
 };
 
-const addOrUpdateUserContactInfoToNeptune = async (payload) => {
-  let eventType = payload.eventType;
+const userCreated = async (payload) => {
   let userUuid = payload.userUuid;
-  let neptuneData = payload.neptuneData;
-
   if (process.env.SEND_EVENTS_TO) {
     if (process.env.SEND_EVENTS_TO === "neptune") {
-      switch (eventType) {
-        case "addUserToNeptune":
-          neptune.addUserToNeptune(userUuid);
-          break;
-        default:
-          break;
-      }
+      neptune.addUserToNeptune(userUuid);
     }
   }
 };
+
+// const addOrUpdateUserContactInfoToNeptune = async (payload) => {
+//   let eventType = payload.eventType;
+//   let userUuid = payload.userUuid;
+//   let neptuneData = payload.neptuneData;
+
+//   if (process.env.SEND_EVENTS_TO) {
+//     if (process.env.SEND_EVENTS_TO === "neptune") {
+//       switch (eventType) {
+//         case "addUserToNeptune":
+//           neptune.addUserToNeptune(userUuid);
+//           break;
+//         default:
+//           break;
+//       }
+//     }
+//   }
+// };
 
 module.exports = {
   registrationVerificationEvent,
@@ -132,5 +141,6 @@ module.exports = {
   updateVerificationEvent,
   invitedToTeamEvent,
   loginWithOtpEvent,
+  userCreated,
   addOrUpdateUserContactInfoToNeptune,
 };
