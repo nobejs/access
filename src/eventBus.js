@@ -106,6 +106,17 @@ const processUserRegistered = async (eventData) => {
   await fireEventToExternalEntity(eventType, data, neptuneData);
 };
 
+const processUserUpdatedProfile = async (eventData) => {
+  console.log("processUserUpdatedProfile", eventData);
+  const userObject = eventData.user;
+
+  if (process.env.SEND_EVENTS === "neptune") {
+    await neptuneRepo.updateUser(userObject.uuid, {
+      meta: userObject.profile || {},
+    });
+  }
+};
+
 const eventBus = async (event, data) => {
   try {
     console.log("eventBus....", event);
@@ -120,6 +131,10 @@ const eventBus = async (event, data) => {
 
       case "verification_requested":
         await processVerificationRequested(data);
+        break;
+
+      case "user_updated_profile":
+        await processUserUpdatedProfile(data);
         break;
     }
   } catch (error) {

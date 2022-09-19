@@ -10,16 +10,42 @@ const getUserFromNeptune = async (uuid) => {
   }
 };
 
-const addUserToNeptune = async (uuid, meta = {}) => {
+const addUserToNeptune = async (uuid, payload = {}) => {
   let neptuneData = {
     user_id: uuid,
-    meta: meta,
+    meta: payload.meta || {},
   };
   try {
     await neptune.createUser(neptuneData);
   } catch (error) {
     debugLogger(error);
     throw error;
+  }
+};
+
+const updateUser = async (user_uuid, payload = {}) => {
+  let neptuneData = {
+    user_id: user_uuid,
+    meta: payload.meta || {},
+  };
+
+  try {
+    await getUserFromNeptune(user_uuid);
+    await neptune.updateUser(neptuneData);
+  } catch (error) {
+    try {
+      if (error.response.status === 404) {
+        await neptune.addUserToNeptune(user_uuid, payload.meta);
+        await neptune.updateUser(neptuneData);
+      }
+
+      if (error.response.status === 422) {
+        return error.response.data;
+      }
+    } catch (error) {
+      debugLogger(error);
+      throw error;
+    }
   }
 };
 
@@ -42,8 +68,6 @@ const addUserContactInfoToNeptune = async (user_uuid, payload) => {
     await getUserFromNeptune(user_uuid);
     return await neptune.addUserContactInfo(user_uuid, neptuneData);
   } catch (error) {
-    console.log("error", error);
-
     try {
       if (error.response.status === 404) {
         await neptune.addUserToNeptune(user_uuid, payload.meta);
@@ -95,6 +119,7 @@ const fireEvent = async (eventType, data, neptuneData) => {
 };
 
 module.exports = {
+  updateUser,
   addUserToNeptune,
   addUserContactInfoToNeptune,
   updateUserContactInfo,

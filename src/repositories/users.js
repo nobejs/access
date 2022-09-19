@@ -672,7 +672,21 @@ const createTestUserWithVerifiedToken = async (payload) => {
 };
 
 const updateProfileOfUser = async (uuid, payload) => {
-  return await baseRepo.update(table, { uuid: uuid }, { profile: payload });
+  try {
+    let user = await baseRepo.update(
+      table,
+      { uuid: uuid },
+      { profile: payload }
+    );
+
+    await eventBus("user_updated_profile", {
+      user: user,
+    });
+
+    return user;
+  } catch (error) {
+    throw error;
+  }
 };
 
 const verifyAttributeForUpdate = async (payload) => {
