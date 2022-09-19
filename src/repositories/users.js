@@ -5,16 +5,20 @@ const verificationsRepo = requireRepo("verifications");
 const tokensRepo = requireRepo("tokens");
 const neptune = requireRepo("neptune");
 const {
-  registrationVerificationEvent,
   updateVerificationEvent,
   resetPasswordVerificationEvent,
   loginWithOtpEvent,
 } = require("../events");
+const eventBus = require("../eventBus");
 const isDateInPast = requireFunction("isDateInPast");
 const table = "users";
 
 const getAllowedTypes = () => {
   return ["email", "mobile_number"];
+};
+
+const getAllowedVerificationMethods = () => {
+  return ["otp", "link"];
 };
 
 // const getAttributesOfAUser = (user_uuid) => {
@@ -311,17 +315,9 @@ const requestAttributeVerificationForRegistration = async (payload) => {
         uuid: verification.uuid,
       });
 
-      await registrationVerificationEvent({
-        user_uuid: verificationObject.user_uuid,
-        token: verificationObject.token,
-        type: verificationObject.attribute_type,
-        value: verificationObject.attribute_value,
-        contact_infos: [
-          {
-            type: payload.type,
-            value: verificationObject.attribute_value,
-          },
-        ],
+      await eventBus("verification_requested", {
+        verificationObject: verificationObject,
+        payload: payload,
       });
     } else {
       throw {
@@ -587,29 +583,23 @@ const registerWithPassword = async (payload) => {
         attribute_type: payload.type,
         attribute_value: payload.value,
       });
+
+    await eventBus("user_created", {
+      verificationObject: verificationObject,
+      payload: payload,
+    });
   } else {
     // If there is a verification, update verification with new token and timestamp
 
     verificationObject = await verificationsRepo.updateVerification({
       uuid: verification.uuid,
     });
-  }
 
-  await registrationVerificationEvent({
-    user_uuid: verificationObject.user_uuid,
-    token: verificationObject.token,
-    type: verificationObject.attribute_type,
-    value: verificationObject.attribute_value,
-    verification_method: payload.verification_method,
-    successRedirect: payload.success_redirect,
-    errorRedirect: payload.failure_redirect,
-    contact_infos: [
-      {
-        type: payload.type,
-        value: verificationObject.attribute_value,
-      },
-    ],
-  });
+    await eventBus("verification_requested", {
+      verificationObject: verificationObject,
+      payload: payload,
+    });
+  }
 
   return verification;
 };
@@ -775,6 +765,7 @@ const deRegisterFirebaseToken = async (userUuid, payload) => {
 
 module.exports = {
   getAllowedTypes,
+  getAllowedVerificationMethods,
   createUserWithPassword,
   registerWithPassword,
   authenticateWithPassword,

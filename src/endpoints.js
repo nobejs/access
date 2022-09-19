@@ -67,7 +67,7 @@ module.exports = (app) => {
           ["post", "/verify-registration", "Users/VerifyRegistration"],
 
           [
-            "post",
+            "get",
             "/verify-attribute-with-link/:user_uuid/:verification_code",
             "Users/VerifyAttributeWithLink",
           ],
@@ -98,7 +98,11 @@ module.exports = (app) => {
 
           /* Firebase Token */
           ["post", "/register-firebase-token", "Users/RegisterFirebaseToken"],
-          ["post", "/de-register-firebase-token", "Users/DeRegisterFirebaseToken"],
+          [
+            "post",
+            "/de-register-firebase-token",
+            "Users/DeRegisterFirebaseToken",
+          ],
 
           //admins
 
