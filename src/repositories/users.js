@@ -584,6 +584,7 @@ const registerWithPassword = async (payload) => {
     // If no, create a user and also verification for them
     user = await createUserWithPassword(payload.password);
 
+    console.log(user);
     await userCreated({
       userUuid: user.uuid,
     });

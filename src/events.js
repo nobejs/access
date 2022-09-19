@@ -109,12 +109,14 @@ const invitedToTeamEvent = async (payload) => {
 };
 
 const userCreated = async (payload) => {
+  console.log(payload);
   let userUuid = payload.userUuid;
-  if (process.env.SEND_EVENTS_TO) {
-    if (process.env.SEND_EVENTS_TO === "neptune") {
-      neptune.addUserToNeptune(userUuid);
-    }
-  }
+
+  //   if (process.env.SEND_EVENTS_TO) {
+  //     if (process.env.SEND_EVENTS_TO === "neptune") {
+  //       neptune.addUserToNeptune(userUuid);
+  //     }
+  //   }
 };
 
 // const addOrUpdateUserContactInfoToNeptune = async (payload) => {
@@ -142,5 +144,4 @@ module.exports = {
   invitedToTeamEvent,
   loginWithOtpEvent,
   userCreated,
-  addOrUpdateUserContactInfoToNeptune,
 };
