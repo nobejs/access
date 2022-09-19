@@ -47,12 +47,14 @@ describe("Test Handler Users/RequestVerify", () => {
         prepareResult: {
           type: "email",
           value: "rajiv@betalectic.com",
+          verification_method: "otp",
         },
       });
     } catch (error) {
-      // debugLogger(error);
+      debugLogger(error);
     }
     const { respondResult } = result;
+
     expect(respondResult).toEqual(
       expect.objectContaining({
         message: "Request for verification successfully",

@@ -17,6 +17,7 @@ describe("Test Handler Users/CanRegister", () => {
           type: "email",
           value: "rajiv@betalectic.com",
           password: "AnotherPassword",
+          verification_method: "otp",
         },
       });
     } catch (error) {
@@ -30,5 +31,5 @@ describe("Test Handler Users/CanRegister", () => {
     });
   });
 
-  it.skip("user_cannot_register_with_existing_email", async () => { });
+  it.skip("user_cannot_register_with_existing_email", async () => {});
 });
