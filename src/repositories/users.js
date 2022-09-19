@@ -553,12 +553,13 @@ const updateAttribute = async (payload) => {
       uuid: verification.uuid,
     });
 
-    await neptune.updateUserContactInfo(verification.uuid, {
-      type: payload.type,
-      value: payload.value,
-    });
+    // await neptune.updateUserContactInfo(verification.uuid, {
+    //   type: payload.type,
+    //   value: payload.value,
+    // });
   }
 
+  // Todo: Use Event Bus
   await updateVerificationEvent({
     user_uuid: verificationObject.user_uuid,
     token: verificationObject.token,
@@ -576,7 +577,87 @@ const updateAttribute = async (payload) => {
   return verification;
 };
 
+const verifyAttributeForUpdate = async (payload) => {
+  try {
+    let verification = await verificationsRepo.findVerificationForUpdate({
+      attribute_type: payload.type,
+      attribute_value: payload.value,
+    });
+
+    // console.log("payload", payload.token === verification.token);
+
+    if (verification !== undefined && !isDateInPast(verification.expires_at)) {
+      if (payload.token === verification.token) {
+        // console.log("payload", payload);
+
+        const existingAttribute = await attributesRepo.first({
+          user_uuid: payload.sub,
+          type: payload.type,
+          ...(payload.purpose && { purpose: payload.purpose }),
+        });
+
+        // console.log("existingAttribute", existingAttribute);
+
+        if (existingAttribute === undefined) {
+          await attributesRepo.createAttributeForUUID(
+            verification.user_uuid,
+            {
+              type: payload.type,
+              value: payload.value,
+              ...(payload.purpose && {
+                purpose: payload.purpose,
+              }),
+            },
+            true
+          );
+
+          await neptune.addUserContactInfoToNeptune(verification.user_uuid, {
+            type: payload.type,
+            value: payload.value,
+          });
+        } else {
+          await attributesRepo.update(
+            {
+              uuid: existingAttribute.uuid,
+            },
+            {
+              type: payload.type,
+              value: payload.value,
+              ...(payload.purpose && {
+                purpose: payload.purpose,
+              }),
+            }
+          );
+        }
+
+        // Todo: Use Event Bus
+
+        await verificationsRepo.removeVerification({
+          uuid: verification.uuid,
+        });
+
+        return {
+          message: "Verification Successful",
+        };
+      } else {
+        throw "Token didn't match";
+      }
+    } else {
+      throw "Verification doesn't exist or is in past";
+    }
+  } catch (error) {
+    console.log("Error", error);
+
+    throw {
+      statusCode: 422,
+      message: "Invalid Token",
+    };
+  }
+};
+
 /** Update Any Attribute - End */
+
+/** Reset Password - Start */
 
 const requestAttributeVerificationForResetPassword = async (payload) => {
   try {
@@ -637,7 +718,7 @@ const requestAttributeVerificationForResetPassword = async (payload) => {
   }
 };
 
-const verifyAttributeForResetPassword = async (payload) => {
+const verifyAttributeForResetPasswordWithOTP = async (payload) => {
   try {
     let verification = await verificationsRepo.findVerificationForResetPassword(
       {
@@ -670,6 +751,8 @@ const verifyAttributeForResetPassword = async (payload) => {
     };
   }
 };
+
+/** Reset Password - End */
 
 const updateUserPassword = async (uuid, password) => {
   return await baseRepo.update(
@@ -716,82 +799,6 @@ const updateProfileOfUser = async (uuid, payload) => {
   }
 };
 
-const verifyAttributeForUpdate = async (payload) => {
-  try {
-    let verification = await verificationsRepo.findVerificationForUpdate({
-      attribute_type: payload.type,
-      attribute_value: payload.value,
-    });
-
-    // console.log("payload", payload.token === verification.token);
-
-    if (verification !== undefined && !isDateInPast(verification.expires_at)) {
-      if (payload.token === verification.token) {
-        // console.log("payload", payload);
-
-        const existingAttribute = await attributesRepo.first({
-          user_uuid: payload.sub,
-          type: payload.type,
-          ...(payload.purpose && { purpose: payload.purpose }),
-        });
-
-        // console.log("existingAttribute", existingAttribute);
-
-        if (existingAttribute === undefined) {
-          await attributesRepo.createAttributeForUUID(
-            verification.user_uuid,
-            {
-              type: payload.type,
-              value: payload.value,
-              ...(payload.purpose && {
-                purpose: payload.purpose,
-              }),
-            },
-            true
-          );
-
-          await neptune.addUserContactInfoToNeptune(verification.user_uuid, {
-            type: payload.type,
-            value: payload.value,
-          });
-        } else {
-          await attributesRepo.update(
-            {
-              uuid: existingAttribute.uuid,
-            },
-            {
-              type: payload.type,
-              value: payload.value,
-              ...(payload.purpose && {
-                purpose: payload.purpose,
-              }),
-            }
-          );
-        }
-
-        await verificationsRepo.removeVerification({
-          uuid: verification.uuid,
-        });
-
-        return {
-          message: "Verification Successful",
-        };
-      } else {
-        throw "Token didn't match";
-      }
-    } else {
-      throw "Verification doesn't exist or is in past";
-    }
-  } catch (error) {
-    console.log("Error", error);
-
-    throw {
-      statusCode: 422,
-      message: "Invalid Token",
-    };
-  }
-};
-
 const registerFirebaseToken = async (userUuid, payload) => {
   try {
     return await neptune.addUserContactInfoToNeptune(userUuid, {
@@ -823,7 +830,7 @@ module.exports = {
   requestAttributeVerificationForRegistration,
   verifyAttributeForRegistrationUsingOTP,
   requestAttributeVerificationForResetPassword,
-  verifyAttributeForResetPassword,
+  verifyAttributeForResetPasswordWithOTP,
   verifyAttributeForRegistrationUsingLink,
   findUserByTypeAndValue,
   create,
