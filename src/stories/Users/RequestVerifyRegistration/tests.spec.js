@@ -86,6 +86,7 @@ describe("Test Handler Users/RequestVerify", () => {
         prepareResult: {
           type: "email",
           value: "rajiv@betalectic.com",
+          verification_method: "otp",
         },
       });
 
@@ -96,7 +97,7 @@ describe("Test Handler Users/RequestVerify", () => {
 
       verificationCounts = await verificationsRepo.countAll();
     } catch (error) {
-      // debugLogger(error);
+      debugLogger(error);
     }
 
     const { respondResult } = result;
