@@ -55,7 +55,7 @@ const preparePayloadFromVerificationObject = async (
     contact_infos: eventObject.contact_infos || [],
   };
 
-  console.log("neptuneData", eventObject);
+  // console.log("neptuneData", eventObject);
 
   await fireEventToExternalEntity(eventType, data, neptuneData);
 };
@@ -69,7 +69,7 @@ const processUserCreated = async (eventData) => {
   if (verification_method == "otp") {
     eventType = `request_otp_to_verify_${payload.type}_during_registration`;
   } else if (verification_method === "link") {
-    eventType = `request_link_to_verify_${eventObject.type}_during_registration`;
+    eventType = `request_link_to_verify_${payload.type}_during_registration`;
   }
 
   await preparePayloadFromVerificationObject(
@@ -145,6 +145,12 @@ const processUserRegistered = async (eventData) => {
     user_id: eventObject.user_uuid,
     client: contextClassRef.client,
     contact_infos: eventObject.contact_infos || [],
+  };
+
+  data = {
+    user_uuid: verificationObject.user_uuid,
+    type: verificationObject.attribute_type,
+    value: verificationObject.attribute_value,
   };
 
   if (process.env.SEND_EVENTS === "neptune") {
@@ -257,7 +263,7 @@ const processUserRequestedResetPassword = async (eventData) => {
 
 const eventBus = async (event, data) => {
   try {
-    console.log("eventBus....", event);
+    // console.log("eventBus....", event);
     switch (event) {
       case "user_created":
         await processUserCreated(data);

@@ -74,7 +74,7 @@ module.exports = () => {
       "GET /login/linkedin",
       "POST /login/facebook",
       "GET /login/facebook",
-      "GET /verify-attribute-with-link/:user_uuid/:verification_code",
+      "GET /verify-registration-attribute-with-link/:user_uuid/:verification_code",
       "POST /reset-password-with-link",
       "POST /admin/login",
       "POST /admin/request-reset-password",

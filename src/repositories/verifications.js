@@ -13,7 +13,6 @@ const findAll = async (where = {}, columns = ["*"]) => {
 
 const findVerificationForType = async (where = {}, purpose) => {
   let payload = { ...where, ...{ purpose } };
-  console.log("findVerificationForType", payload);
   return await baseRepo.first(table, payload);
 };
 
