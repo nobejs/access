@@ -654,18 +654,23 @@ const requestAttributeVerificationForResetPassword = async (payload) => {
         uuid: verification.uuid,
       });
 
-      await resetPasswordVerificationEvent({
-        user_uuid: verificationObject.user_uuid,
-        token: verificationObject.token,
-        type: verificationObject.attribute_type,
-        value: verificationObject.attribute_value,
-        contact_infos: [
-          {
-            type: payload.type,
-            value: verificationObject.attribute_value,
-          },
-        ],
+      await eventBus("user_requested_reset_password", {
+        verificationObject: verificationObject,
+        payload: payload,
       });
+
+      // await resetPasswordVerificationEvent({
+      //   user_uuid: verificationObject.user_uuid,
+      //   token: verificationObject.token,
+      //   type: verificationObject.attribute_type,
+      //   value: verificationObject.attribute_value,
+      //   contact_infos: [
+      //     {
+      //       type: payload.type,
+      //       value: verificationObject.attribute_value,
+      //     },
+      //   ],
+      // });
     } else {
       let attribute = await attributesRepo.first({
         type: payload.type,
@@ -679,18 +684,23 @@ const requestAttributeVerificationForResetPassword = async (payload) => {
           attribute_value: payload.value,
         });
 
-      await resetPasswordVerificationEvent({
-        user_uuid: verificationObject.user_uuid,
-        token: verificationObject.token,
-        type: verificationObject.attribute_type,
-        value: verificationObject.attribute_value,
-        contact_infos: [
-          {
-            type: "email",
-            value: verificationObject.attribute_value,
-          },
-        ],
+      await eventBus("user_requested_reset_password", {
+        verificationObject: verificationObject,
+        payload: payload,
       });
+
+      // await resetPasswordVerificationEvent({
+      //   user_uuid: verificationObject.user_uuid,
+      //   token: verificationObject.token,
+      //   type: verificationObject.attribute_type,
+      //   value: verificationObject.attribute_value,
+      //   contact_infos: [
+      //     {
+      //       type: "email",
+      //       value: verificationObject.attribute_value,
+      //     },
+      //   ],
+      // });
     }
   } catch (error) {
     throw error;
@@ -716,6 +726,44 @@ const verifyAttributeForResetPasswordWithOTP = async (payload) => {
 
         return {
           message: "Verification Successful",
+        };
+      } else {
+        throw "err";
+      }
+    } else {
+      throw "err";
+    }
+  } catch (error) {
+    throw {
+      statusCode: 422,
+      message: "Invalid Token",
+    };
+  }
+};
+
+const verifyAttributeForResetPasswordWithLink = async (payload) => {
+  try {
+    console.log("verifyAttributeForResetPasswordWithLink", payload);
+
+    let verification = await verificationsRepo.findVerificationForResetPassword(
+      {
+        user_uuid: payload.user_uuid,
+        token: payload.token,
+      }
+    );
+
+    console.log("verifyAttributeForResetPasswordWithLink", verification);
+
+    if (verification !== undefined && !isDateInPast(verification.expires_at)) {
+      if (payload.token === verification.token) {
+        await updateUserPassword(verification.user_uuid, payload.password);
+
+        await verificationsRepo.removeVerification({
+          uuid: verification.uuid,
+        });
+
+        return {
+          success: true,
         };
       } else {
         throw "err";
@@ -825,4 +873,5 @@ module.exports = {
   verifyAttributeForUpdate,
   registerFirebaseToken,
   deRegisterFirebaseToken,
+  verifyAttributeForResetPasswordWithLink,
 };

@@ -20,7 +20,7 @@ const preparePayloadFromVerificationObject = async (
     errorRedirect: payload.failure_redirect,
     contact_infos: [
       {
-        type: payload.type,
+        type: verificationObject.attribute_type,
         value: verificationObject.attribute_value,
       },
     ],
@@ -88,7 +88,7 @@ const processVerificationRequestedDuringRegistration = async (eventData) => {
   if (verification_method == "otp") {
     eventType = `request_otp_to_verify_${payload.type}_during_registration`;
   } else if (verification_method === "link") {
-    eventType = `request_link_to_verify_${eventObject.type}_during_registration`;
+    eventType = `request_link_to_verify_${payload.type}_during_registration`;
   }
 
   await preparePayloadFromVerificationObject(
@@ -235,6 +235,26 @@ const processUserRequestLoginOTP = async (eventData) => {
   await fireEventToExternalEntity(eventType, data, neptuneData);
 };
 
+const processUserRequestedResetPassword = async (eventData) => {
+  const verificationObject = eventData.verificationObject;
+  const payload = eventData.payload;
+  const verification_method = payload.verification_method;
+  let eventType = null;
+  let verifyViaLinkRoute = "reset-password-with-link";
+
+  if (verification_method == "otp") {
+    eventType = `request_otp_to_reset_password_through_${verificationObject.attribute_type}`;
+  } else if (verification_method === "link") {
+    eventType = `request_link_to_reset_password_through_${verificationObject.attribute_type}`;
+  }
+
+  await preparePayloadFromVerificationObject(
+    eventType,
+    verifyViaLinkRoute,
+    eventData
+  );
+};
+
 const eventBus = async (event, data) => {
   try {
     console.log("eventBus....", event);
@@ -269,6 +289,10 @@ const eventBus = async (event, data) => {
 
       case "user_requested_login_otp":
         await processUserRequestLoginOTP(data);
+        break;
+
+      case "user_requested_reset_password":
+        await processUserRequestedResetPassword(data);
         break;
     }
   } catch (error) {
