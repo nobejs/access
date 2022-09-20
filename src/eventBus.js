@@ -5,7 +5,8 @@ const debugLogger = requireUtil("debugLogger");
 const preparePayloadFromVerificationObject = async (
   eventType,
   verifyViaLinkRoute,
-  eventData
+  eventData,
+  urlLink = null
 ) => {
   const verificationObject = eventData.verificationObject;
   const payload = eventData.payload;
@@ -46,6 +47,10 @@ const preparePayloadFromVerificationObject = async (
       value: eventObject.value,
       purpose: payload.purpose,
     };
+
+    if (urlLink !== null) {
+      data.link = urlLink;
+    }
   }
 
   let neptuneData = {
@@ -254,10 +259,13 @@ const processUserRequestedResetPassword = async (eventData) => {
     eventType = `request_link_to_reset_password_through_${verificationObject.attribute_type}`;
   }
 
+  let urlLink = `${payload.prefix_url}?user_uuid=${verificationObject.user_uuid}&token=${verificationObject.token}`;
+
   await preparePayloadFromVerificationObject(
     eventType,
     verifyViaLinkRoute,
-    eventData
+    eventData,
+    urlLink
   );
 };
 

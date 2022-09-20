@@ -8,6 +8,7 @@ const prepare = ({ req }) => {
     "type",
     "value",
     "verification_method",
+    "prefix_url",
   ]);
   payload["verification_method"] = payload["verification_method"]
     ? payload["verification_method"]
@@ -63,6 +64,18 @@ const validateInput = async (payload) => {
       },
     },
   };
+
+  if (payload.verification_method && payload.verification_method === "link") {
+    const prefix_url = {
+      presence: {
+        allowEmpty: true,
+        message: "^Please enter prefix_url",
+      },
+      url: true,
+    };
+
+    constraints["prefix_url"] = prefix_url;
+  }
 
   return validator(payload, constraints);
 };

@@ -658,19 +658,6 @@ const requestAttributeVerificationForResetPassword = async (payload) => {
         verificationObject: verificationObject,
         payload: payload,
       });
-
-      // await resetPasswordVerificationEvent({
-      //   user_uuid: verificationObject.user_uuid,
-      //   token: verificationObject.token,
-      //   type: verificationObject.attribute_type,
-      //   value: verificationObject.attribute_value,
-      //   contact_infos: [
-      //     {
-      //       type: payload.type,
-      //       value: verificationObject.attribute_value,
-      //     },
-      //   ],
-      // });
     } else {
       let attribute = await attributesRepo.first({
         type: payload.type,
@@ -688,19 +675,6 @@ const requestAttributeVerificationForResetPassword = async (payload) => {
         verificationObject: verificationObject,
         payload: payload,
       });
-
-      // await resetPasswordVerificationEvent({
-      //   user_uuid: verificationObject.user_uuid,
-      //   token: verificationObject.token,
-      //   type: verificationObject.attribute_type,
-      //   value: verificationObject.attribute_value,
-      //   contact_infos: [
-      //     {
-      //       type: "email",
-      //       value: verificationObject.attribute_value,
-      //     },
-      //   ],
-      // });
     }
   } catch (error) {
     throw error;

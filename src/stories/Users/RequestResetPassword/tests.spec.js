@@ -18,6 +18,7 @@ describe("Test Handler Users/RequestResetPassword", () => {
         prepareResult: {
           type: contextClassRef.userPayload.type,
           value: contextClassRef.userPayload.value,
+          verification_method: "otp",
         },
       });
     } catch (error) {
@@ -39,6 +40,7 @@ describe("Test Handler Users/RequestResetPassword", () => {
         prepareResult: {
           type: "email",
           value: "shubham@betalectic.com",
+          verification_method: "otp",
         },
       });
     } catch (error) {
@@ -62,6 +64,7 @@ describe("Test Handler Users/RequestResetPassword", () => {
         prepareResult: {
           type: contextClassRef.userPayload.type,
           value: contextClassRef.userPayload.value,
+          verification_method: "otp",
         },
       });
 
@@ -74,6 +77,7 @@ describe("Test Handler Users/RequestResetPassword", () => {
         prepareResult: {
           type: contextClassRef.userPayload.type,
           value: contextClassRef.userPayload.value,
+          verification_method: "otp",
         },
       });
 
