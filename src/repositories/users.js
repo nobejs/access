@@ -58,7 +58,6 @@ const registerWithPassword = async (payload) => {
   if (verification === undefined) {
     // If no, create a user and also verification for them
     user = await createUserWithPassword(payload.password);
-    // await neptune.addUserToNeptune(user.uuid);
     verificationObject =
       await verificationsRepo.createVerificationForRegistration({
         user_uuid: user.uuid,
