@@ -5,7 +5,6 @@ const verificationsRepo = requireRepo("verifications");
 const tokensRepo = requireRepo("tokens");
 const neptune = requireRepo("neptune");
 const {
-  updateVerificationEvent,
   resetPasswordVerificationEvent,
   loginWithOtpEvent,
 } = require("../events");
@@ -506,18 +505,9 @@ const requestAttributeVerificationForUpdate = async (payload) => {
         uuid: verification.uuid,
       });
 
-      await updateVerificationEvent({
-        user_uuid: verificationObject.user_uuid,
-        token: verificationObject.token,
-        type: verificationObject.attribute_type,
-        value: verificationObject.attribute_value,
-        purpose: payload.purpose,
-        contact_infos: [
-          {
-            type: payload.type,
-            value: verificationObject.attribute_value,
-          },
-        ],
+      await eventBus("verification_requested_during_update", {
+        verificationObject: verificationObject,
+        payload: payload,
       });
     } else {
       throw {
@@ -559,19 +549,9 @@ const updateAttribute = async (payload) => {
     // });
   }
 
-  // Todo: Use Event Bus
-  await updateVerificationEvent({
-    user_uuid: verificationObject.user_uuid,
-    token: verificationObject.token,
-    type: verificationObject.attribute_type,
-    value: verificationObject.attribute_value,
-    purpose: payload.purpose,
-    contact_infos: [
-      {
-        type: payload.type,
-        value: verificationObject.attribute_value,
-      },
-    ],
+  await eventBus("verification_requested_during_update", {
+    verificationObject: verificationObject,
+    payload: payload,
   });
 
   return verification;
@@ -599,7 +579,7 @@ const verifyAttributeForUpdate = async (payload) => {
         // console.log("existingAttribute", existingAttribute);
 
         if (existingAttribute === undefined) {
-          await attributesRepo.createAttributeForUUID(
+          let createdAttribute = await attributesRepo.createAttributeForUUID(
             verification.user_uuid,
             {
               type: payload.type,
@@ -611,12 +591,16 @@ const verifyAttributeForUpdate = async (payload) => {
             true
           );
 
-          await neptune.addUserContactInfoToNeptune(verification.user_uuid, {
-            type: payload.type,
-            value: payload.value,
+          await eventBus("user_added_new_attribute", {
+            attributeObject: createdAttribute,
           });
+
+          // await neptune.addUserContactInfoToNeptune(verification.user_uuid, {
+          //   type: payload.type,
+          //   value: payload.value,
+          // });
         } else {
-          await attributesRepo.update(
+          let updatedAttribute = await attributesRepo.update(
             {
               uuid: existingAttribute.uuid,
             },
@@ -628,6 +612,11 @@ const verifyAttributeForUpdate = async (payload) => {
               }),
             }
           );
+
+          await eventBus("user_updated_existing_attribute", {
+            existingAttribute: existingAttribute,
+            attributeObject: updatedAttribute,
+          });
         }
 
         // Todo: Use Event Bus

@@ -32,6 +32,7 @@ const preparePayloadFromVerificationObject = async (
       token: eventObject.token,
       type: eventObject.type,
       value: eventObject.value,
+      purpose: payload.purpose,
     };
   } else if (eventObject.verification_method === "link") {
     data = {
@@ -43,6 +44,7 @@ const preparePayloadFromVerificationObject = async (
       )}&failure_redirect=${encodeURIComponent(eventObject.errorRedirect)}`,
       type: eventObject.type,
       value: eventObject.value,
+      purpose: payload.purpose,
     };
   }
 
@@ -88,6 +90,27 @@ const processVerificationRequestedDuringRegistration = async (eventData) => {
   } else if (verification_method === "link") {
     eventType = `request_link_to_verify_${eventObject.type}_during_registration`;
   }
+
+  await preparePayloadFromVerificationObject(
+    eventType,
+    verifyViaLinkRoute,
+    eventData
+  );
+};
+
+const processVerificationRequestedDuringUpdate = async (eventData) => {
+  const payload = eventData.payload;
+  const verification_method = payload.verification_method;
+  let eventType = null;
+  let verifyViaLinkRoute = "verify-registration-attribute-with-link";
+
+  // if (verification_method == "otp") {
+  //   eventType = `request_otp_to_verify_${payload.type}_during_registration`;
+  // } else if (verification_method === "link") {
+  //   eventType = `request_link_to_verify_${eventObject.type}_during_registration`;
+  // }
+
+  eventType = `request_otp_to_verify_${payload.type}_during_update`;
 
   await preparePayloadFromVerificationObject(
     eventType,
@@ -145,6 +168,40 @@ const processUserUpdatedProfile = async (eventData) => {
   }
 };
 
+const processUserUpdatedExistingAttribute = async (eventData) => {
+  const { attributeObject, existingAttribute } = eventData;
+  let deleteResult = await neptuneRepo.deleteUserContactInfo(
+    existingAttribute.user_uuid,
+    {
+      type: existingAttribute.type,
+      value: existingAttribute.value,
+      purpose: existingAttribute.purpose,
+    }
+  );
+
+  let addResult = await neptuneRepo.addUserContactInfoToNeptune(
+    attributeObject.user_uuid,
+    {
+      type: attributeObject.type,
+      value: attributeObject.value,
+      purpose: attributeObject.purpose,
+    }
+  );
+};
+
+const processUserAddedNewAttribute = async (eventData) => {
+  const { attributeObject } = eventData;
+
+  let addResult = await neptuneRepo.addUserContactInfoToNeptune(
+    attributeObject.user_uuid,
+    {
+      type: attributeObject.type,
+      value: attributeObject.value,
+      purpose: attributeObject.purpose,
+    }
+  );
+};
+
 const eventBus = async (event, data) => {
   try {
     console.log("eventBus....", event);
@@ -159,6 +216,19 @@ const eventBus = async (event, data) => {
 
       case "verification_requested_during_registration":
         await processVerificationRequestedDuringRegistration(data);
+        break;
+
+      case "verification_requested_during_update":
+        await processVerificationRequestedDuringUpdate(data);
+        break;
+
+      case "user_updated_existing_attribute":
+        await processUserUpdatedExistingAttribute(data);
+        break;
+
+      case "user_added_new_attribute":
+        await processUserAddedNewAttribute(data);
+
         break;
 
       case "user_updated_profile":

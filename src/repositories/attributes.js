@@ -22,7 +22,7 @@ const update = async (where, payload) => {
 };
 
 const createAttributeForUUID = async (uuid, payload, verify = false) => {
-  await baseRepo.create(table, {
+  return await baseRepo.create(table, {
     user_uuid: uuid,
     verified_at: verify ? new Date().toISOString() : NULL, //Todo
     type: payload.type,
