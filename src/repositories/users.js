@@ -4,10 +4,7 @@ const attributesRepo = requireRepo("attributes");
 const verificationsRepo = requireRepo("verifications");
 const tokensRepo = requireRepo("tokens");
 const neptune = requireRepo("neptune");
-const {
-  resetPasswordVerificationEvent,
-  loginWithOtpEvent,
-} = require("../events");
+const { resetPasswordVerificationEvent } = require("../events");
 const eventBus = require("../eventBus");
 const isDateInPast = requireFunction("isDateInPast");
 const table = "users";
@@ -307,19 +304,23 @@ const generateOTPForLogin = async (payload) => {
       uuid: verification.uuid,
     });
 
-    // Todo: Process via Event Bus
-    await loginWithOtpEvent({
-      user_uuid: verificationObject.user_uuid,
-      token: verificationObject.token,
-      type: verificationObject.attribute_type,
-      value: verificationObject.attribute_value,
-      contact_infos: [
-        {
-          type: payload.type,
-          value: verificationObject.attribute_value,
-        },
-      ],
+    await eventBus("user_requested_login_otp", {
+      verificationObject: verificationObject,
     });
+
+    // Todo: Process via Event Bus
+    // await loginWithOtpEvent({
+    //   user_uuid: verificationObject.user_uuid,
+    //   token: verificationObject.token,
+    //   type: verificationObject.attribute_type,
+    //   value: verificationObject.attribute_value,
+    //   contact_infos: [
+    //     {
+    //       type: payload.type,
+    //       value: verificationObject.attribute_value,
+    //     },
+    //   ],
+    // });
   } else {
     let attribute = await attributesRepo.first({
       type: payload.type,
@@ -336,17 +337,8 @@ const generateOTPForLogin = async (payload) => {
 
     // Todo: Process via Event Bus
 
-    await loginWithOtpEvent({
-      user_uuid: verificationObject.user_uuid,
-      token: verificationObject.token,
-      type: verificationObject.attribute_type,
-      value: verificationObject.attribute_value,
-      contact_infos: [
-        {
-          type: payload.type,
-          value: verificationObject.attribute_value,
-        },
-      ],
+    await eventBus("user_requested_login_otp", {
+      verificationObject: verificationObject,
     });
   }
 };
@@ -618,8 +610,6 @@ const verifyAttributeForUpdate = async (payload) => {
             attributeObject: updatedAttribute,
           });
         }
-
-        // Todo: Use Event Bus
 
         await verificationsRepo.removeVerification({
           uuid: verification.uuid,

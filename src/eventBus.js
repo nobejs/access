@@ -202,6 +202,39 @@ const processUserAddedNewAttribute = async (eventData) => {
   );
 };
 
+const processUserRequestLoginOTP = async (eventData) => {
+  const verificationObject = eventData.verificationObject;
+
+  let eventType = `request_otp_to_login_through_${verificationObject.attribute_type}`;
+  const eventObject = {
+    user_uuid: verificationObject.user_uuid,
+    token: verificationObject.token,
+    type: verificationObject.attribute_type,
+    value: verificationObject.attribute_value,
+    contact_infos: [
+      {
+        type: verificationObject.attribute_type,
+        value: verificationObject.attribute_value,
+      },
+    ],
+  };
+
+  let data = {
+    token: eventObject.token,
+    type: eventObject.type,
+    value: eventObject.value,
+  };
+
+  let neptuneData = {
+    tags: [],
+    user_id: eventObject.user_uuid,
+    client: contextClassRef.client,
+    contact_infos: eventObject.contact_infos || [],
+  };
+
+  await fireEventToExternalEntity(eventType, data, neptuneData);
+};
+
 const eventBus = async (event, data) => {
   try {
     console.log("eventBus....", event);
@@ -228,11 +261,14 @@ const eventBus = async (event, data) => {
 
       case "user_added_new_attribute":
         await processUserAddedNewAttribute(data);
-
         break;
 
       case "user_updated_profile":
         await processUserUpdatedProfile(data);
+        break;
+
+      case "user_requested_login_otp":
+        await processUserRequestLoginOTP(data);
         break;
     }
   } catch (error) {
