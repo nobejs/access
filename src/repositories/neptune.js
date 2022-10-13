@@ -10,15 +10,42 @@ const getUserFromNeptune = async (uuid) => {
   }
 };
 
-const addUserToNeptune = async (uuid) => {
+const addUserToNeptune = async (uuid, payload = {}) => {
   let neptuneData = {
     user_id: uuid,
+    meta: payload.meta || {},
   };
   try {
     await neptune.createUser(neptuneData);
   } catch (error) {
     debugLogger(error);
     throw error;
+  }
+};
+
+const updateUser = async (user_uuid, payload = {}) => {
+  let neptuneData = {
+    meta: payload.meta || {},
+  };
+
+  try {
+    await getUserFromNeptune(user_uuid);
+    let updatedUser = await neptune.updateUser(user_uuid, neptuneData);
+  } catch (error) {
+    try {
+      if (error.response.status === 404) {
+        await neptune.addUserToNeptune(user_uuid, payload.meta);
+        await neptune.updateUser(neptuneData);
+      }
+
+      if (error.response.status === 422) {
+        debugLogger("Validation error", error.response.data);
+        return error.response.data;
+      }
+    } catch (error) {
+      debugLogger(error);
+      throw error;
+    }
   }
 };
 
@@ -31,18 +58,21 @@ const prepareUserContactInfoPayload = async (payload) => {
   return neptuneData;
 };
 
-const addUserContactInfoToNeptune = async (uuid, payload) => {
-  let user_id = uuid;
+const addUserContactInfoToNeptune = async (user_uuid, payload) => {
+  let neptuneData = {
+    type: payload.type,
+    value: payload.value,
+    ...(payload.purpose && { filterable: payload.purpose }),
+  };
+
   try {
-    await getUserFromNeptune(uuid);
-    let neptuneData = await prepareUserContactInfoPayload(payload);
-    return await neptune.addUserContactInfo(user_id, neptuneData);
+    await getUserFromNeptune(user_uuid);
+    return await neptune.addUserContactInfo(user_uuid, neptuneData);
   } catch (error) {
     try {
       if (error.response.status === 404) {
-        await addUserToNeptune(user_id);
-        let neptuneData = await prepareUserContactInfoPayload(payload);
-        return await neptune.addUserContactInfo(user_id, neptuneData);
+        await neptune.addUserToNeptune(user_uuid, payload.meta);
+        return await neptune.addUserContactInfo(user_uuid, neptuneData);
       }
 
       if (error.response.status === 422) {
@@ -66,17 +96,31 @@ const updateUserContactInfo = async (uuid, payload) => {
   }
 };
 
-const deleteUserContactInfo = async (uuid, payload) => {
-  let user_id = uuid;
-  try {
-    let neptuneData = await prepareUserContactInfoPayload(payload);
-    return await neptune.deleteUserContactInfo(user_id, { data: neptuneData });
-  } catch (error) {
-    if (error.response.status === 422) {
-      return error.response.data;
-    }
+const deleteUserContactInfo = async (user_uuid, payload) => {
+  let neptuneData = {
+    type: payload.type,
+    value: payload.value,
+    ...(payload.purpose && { filterable: payload.purpose }),
+  };
 
-    throw error;
+  console.log("deleteUserContactInfo", neptuneData);
+
+  try {
+    await getUserFromNeptune(user_uuid);
+    return await neptune.deleteUserContactInfo(user_uuid, neptuneData);
+  } catch (error) {
+    try {
+      if (error.response.status === 404) {
+        await neptune.addUserToNeptune(user_uuid, payload.meta);
+      }
+
+      if (error.response.status === 422) {
+        return error.response.data;
+      }
+    } catch (error) {
+      debugLogger(error);
+      throw error;
+    }
   }
 };
 
@@ -90,6 +134,7 @@ const fireEvent = async (eventType, data, neptuneData) => {
 };
 
 module.exports = {
+  updateUser,
   addUserToNeptune,
   addUserContactInfoToNeptune,
   updateUserContactInfo,

@@ -59,7 +59,7 @@ describe("Test API Users/Verify", () => {
 
     expect(respondResult.statusCode).toBe(200);
     expect(respondResult.json()).toMatchObject({
-      message: "Verification Successful",
+      access_token: expect.any(String),
     });
     expect(attributeCount).toBe(1);
     expect(verification).toBeUndefined();

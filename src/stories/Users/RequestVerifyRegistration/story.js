@@ -4,7 +4,16 @@ const verificationsRepo = requireRepo("verifications");
 const usersRepo = requireRepo("users");
 
 const prepare = ({ req }) => {
-  const payload = findKeysFromRequest(req, ["type", "value"]);
+  const payload = findKeysFromRequest(req, [
+    "type",
+    "value",
+    "verification_method",
+    "success_redirect",
+    "failure_redirect",
+  ]);
+  payload["verification_method"] = payload["verification_method"]
+    ? payload["verification_method"]
+    : "otp";
   return payload;
 };
 
@@ -15,6 +24,16 @@ const authorize = ({ prepareResult }) => {
 
 const validateInput = async (payload) => {
   const constraints = {
+    verification_method: {
+      presence: {
+        allowEmpty: false,
+        message: "^Please choose verification_method",
+      },
+      inclusion: {
+        within: usersRepo.getAllowedVerificationMethods(),
+        message: "^Please choose valid type",
+      },
+    },
     type: {
       presence: {
         allowEmpty: false,
@@ -46,6 +65,27 @@ const validateInput = async (payload) => {
       },
     },
   };
+
+  if (payload.verification_method && payload.verification_method === "link") {
+    const success_redirect = {
+      presence: {
+        allowEmpty: true,
+        message: "^Please enter success_redirect",
+      },
+      url: true,
+    };
+
+    const failure_redirect = {
+      presence: {
+        allowEmpty: true,
+        message: "^Please enter failure_redirect",
+      },
+      url: true,
+    };
+
+    constraints["success_redirect"] = success_redirect;
+    constraints["failure_redirect"] = failure_redirect;
+  }
 
   return validator(payload, constraints);
 };

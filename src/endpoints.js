@@ -67,13 +67,16 @@ module.exports = (app) => {
           ["post", "/verify-registration", "Users/VerifyRegistration"],
 
           [
-            "post",
-            "/verify-attribute-with-link/:user_uuid/:verification_code",
+            "get",
+            "/verify-registration-attribute-with-link/:user_uuid/:verification_code",
             "Users/VerifyAttributeWithLink",
           ],
 
           ["post", "/request-reset-password", "Users/RequestResetPassword"],
           ["post", "/reset-password", "Users/ResetPassword"],
+
+          ["post", "/reset-password-with-link", "Users/ResetPasswordWithLink"],
+
           ["post", "/update-password", "Users/UpdatePassword"],
 
           ["post", "/update-attribute", "Users/UpdateAttribute"],
@@ -98,7 +101,11 @@ module.exports = (app) => {
 
           /* Firebase Token */
           ["post", "/register-firebase-token", "Users/RegisterFirebaseToken"],
-          ["post", "/de-register-firebase-token", "Users/DeRegisterFirebaseToken"],
+          [
+            "post",
+            "/de-register-firebase-token",
+            "Users/DeRegisterFirebaseToken",
+          ],
 
           //admins
 

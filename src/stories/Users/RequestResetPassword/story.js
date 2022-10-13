@@ -4,7 +4,15 @@ const attributesRepo = requireRepo("attributes");
 const usersRepo = requireRepo("users");
 
 const prepare = ({ req }) => {
-  const payload = findKeysFromRequest(req, ["type", "value"]);
+  const payload = findKeysFromRequest(req, [
+    "type",
+    "value",
+    "verification_method",
+    "prefix_url",
+  ]);
+  payload["verification_method"] = payload["verification_method"]
+    ? payload["verification_method"]
+    : "otp";
   return payload;
 };
 
@@ -15,6 +23,16 @@ const authorize = ({ prepareResult }) => {
 
 const validateInput = async (payload) => {
   const constraints = {
+    verification_method: {
+      presence: {
+        allowEmpty: false,
+        message: "^Please choose verification_method",
+      },
+      inclusion: {
+        within: usersRepo.getAllowedVerificationMethods(),
+        message: "^Please choose valid type",
+      },
+    },
     type: {
       presence: {
         allowEmpty: false,
@@ -46,6 +64,18 @@ const validateInput = async (payload) => {
       },
     },
   };
+
+  if (payload.verification_method && payload.verification_method === "link") {
+    const prefix_url = {
+      presence: {
+        allowEmpty: true,
+        message: "^Please enter prefix_url",
+      },
+      url: true,
+    };
+
+    constraints["prefix_url"] = prefix_url;
+  }
 
   return validator(payload, constraints);
 };
