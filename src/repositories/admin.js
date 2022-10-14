@@ -141,6 +141,33 @@ const updateAdminPassword = async (uuid, password) => {
   );
 };
 
+const isSuperUser = async (uuid) => {
+  let admin = await baseRepo.first(table, {
+    uuid: uuid,
+  });
+  if ("superuser" in admin.permissions) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+const createAdmin = async (payload) => {
+  let admin = await baseRepo.first(table, {
+    email: payload.email,
+  });
+  if (admin === undefined) {
+    return await baseRepo.create(table, {
+      email: payload.email,
+      password: bcrypt.hashSync(payload.password, 5),
+    });
+  } else {
+    throw {
+      message: "Admin already exists",
+    };
+  }
+};
+
 module.exports = {
   authenticateWithPassword,
   requestAttributeVerificationForResetPassword,
@@ -148,4 +175,6 @@ module.exports = {
   findUserByValue,
   first,
   updateAdminPassword,
+  isSuperUser,
+  createAdmin,
 };

@@ -4,18 +4,8 @@ const attributesRepo = requireRepo("attributes");
 const verificationsRepo = requireRepo("verifications");
 const tokensRepo = requireRepo("tokens");
 const neptune = requireRepo("neptune");
-<<<<<<< HEAD
-const {
-  registrationVerificationEvent,
-  updateVerificationEvent,
-  resetPasswordVerificationEvent,
-  loginWithOtpEvent,
-  addOrUpdateUserContactInfoToNeptune,
-} = require("../events");
-=======
 const { resetPasswordVerificationEvent } = require("../events");
 const eventBus = require("../eventBus");
->>>>>>> 034c82b39d54b6fc0adb6adf86520120f75317f3
 const isDateInPast = requireFunction("isDateInPast");
 const table = "users";
 
