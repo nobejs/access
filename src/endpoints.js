@@ -117,6 +117,7 @@ module.exports = (app) => {
           ],
           ["post", "/admin/reset-password", "Admin/ResetPassword"],
           ["post", "/admin/", "Admin/CanCreateAdmin"],
+          ["delete", "/admin/:admin_uuid", "Admin/CanDeleteAdmin"],
 
           /* delete account */
           ["get", "/user/delete", "Users/CanDeleteAccount"],

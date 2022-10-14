@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "db4cb57e-1483-4d74-900d-3110de84b1d7",
+		"_postman_id": "9ca82f7c-30eb-4cb5-9fa6-9469689dc492",
 		"name": "Access",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "3370577"
+		"_exporter_id": "20404470"
 	},
 	"item": [
 		{
@@ -1203,7 +1203,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"rajiv@betalectic.com\",\n    \"password\": \"kissmiss9\"\n}",
+							"raw": "{\n    \"email\": \"test@test.com\",\n    \"password\": \"12345\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1218,6 +1218,58 @@
 							"path": [
 								"admin",
 								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin/CanCreateAdmin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (responseCode.code === 200)",
+									"{",
+									"    var jsonData = JSON.parse(responseBody);",
+									"",
+									"    pm.environment.set(\"access_token\", jsonData.access_token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJFZERTQSJ9.eyJleHAiOjE2OTcyMDg5MjIsInN1YiI6ImM4OGVjOGFhLWM4YjAtNDc1Ny04NTQ3LTg4MTUwMmI5MzczZSIsImlzcyI6ImFkbWluIiwianRpIjoiYzkzMjEzNWEtZGVkMi00YjUyLThmMjgtYWViN2MyZjhhNmIzIn0.OOtG8j9RHWNob2v_4KMg0rOYSzxhJysx71dGlgipybDEhl5LjMLunzVAs5Lebueh6kLWEHYbY8Ep7G0ppFCvDQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"rajiv@betalectic.com\",\n    \"password\": \"kissmiss9\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/admin",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"admin"
 							]
 						}
 					},
@@ -1409,6 +1461,13 @@
 					""
 				]
 			}
+		}
+	],
+	"variable": [
+		{
+			"key": "access_endpoint",
+			"value": "localhost:3000",
+			"type": "string"
 		}
 	]
 }
