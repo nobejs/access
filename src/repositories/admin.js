@@ -20,14 +20,13 @@ const authenticateWithPassword = async (payload) => {
   });
 
   if (admin === undefined) {
-		throw {
-			statusCode: 422,
-			message: "NotRegistered",
-		};
-	}
+    throw {
+      statusCode: 422,
+      message: "NotRegistered",
+    };
+  }
 
   let result = bcrypt.compareSync(payload.password, admin.password);
-
 
   if (result) {
     let token = await tokensRepo.createTokenForAdmin(admin);
@@ -142,6 +141,51 @@ const updateAdminPassword = async (uuid, password) => {
   );
 };
 
+const isSuperUser = async (uuid) => {
+  let admin = await baseRepo.first(table, {
+    uuid: uuid,
+  });
+
+  if (admin.permissions && "superuser" in admin.permissions) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+const createAdmin = async (payload) => {
+  let admin = await baseRepo.first(table, {
+    email: payload.email,
+  });
+  if (admin === undefined) {
+    return await baseRepo.create(table, {
+      email: payload.email,
+      password: bcrypt.hashSync(payload.password, 5),
+    });
+  } else {
+    throw {
+      message: "Admin already exists",
+    };
+  }
+};
+
+const deleteAdmin = async (uuid) => {
+  let adminUuid = uuid;
+  let superUser = await isSuperUser(adminUuid);
+  if (superUser) {
+    throw {
+      message: "You are not allowed to delete this user",
+    };
+  } else {
+    await baseRepo.remove(table, {
+      uuid: adminUuid,
+    });
+    return {
+      message: "Admin user deleted successfully",
+    };
+  }
+};
+
 module.exports = {
   authenticateWithPassword,
   requestAttributeVerificationForResetPassword,
@@ -149,4 +193,7 @@ module.exports = {
   findUserByValue,
   first,
   updateAdminPassword,
+  isSuperUser,
+  createAdmin,
+  deleteAdmin,
 };
