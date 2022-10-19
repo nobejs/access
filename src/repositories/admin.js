@@ -190,7 +190,7 @@ const deleteAdmin = async (payload) => {
         });
         if (admin !== undefined) {
           await tokensRepo.deleteTokenByConstraints({
-            uuid: deletingAdmin,
+            sub: deletingAdmin,
           });
           await baseRepo.remove(table, {
             uuid: deletingAdmin,
