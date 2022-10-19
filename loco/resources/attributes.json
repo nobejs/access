@@ -1,0 +1,38 @@
+{
+  "name": "attributes",
+  "label": "Attributes",
+  "primary": ["uuid"],
+  "softDelete": true,
+  "meta": {
+    "table": "attributes"
+  },
+  "mixins": ["datetime-in-resource.json"],
+  "attributes": {
+    "uuid": {
+      "label": "UUID",
+      "operations": {
+        "create": {
+          "generate": "uuid",
+          "validate": [{ "type": "uuid" }]
+        }
+      },
+      "ui": {
+        "detail": {
+          "display": true
+        }
+      }
+    },
+    "user_uuid": {
+      "label": "user_uuid",
+      "operations": {}
+    },
+    "type": {
+      "label": "type",
+      "operations": {}
+    },
+    "value": {
+      "label": "value",
+      "operations": {}
+    }
+  }
+}

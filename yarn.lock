@@ -501,10 +501,10 @@
     "@types/yargs" "^16.0.0"
     chalk "^4.0.0"
 
-"@locospec/engine@^0.0.16":
-  version "0.0.16"
-  resolved "https://registry.yarnpkg.com/@locospec/engine/-/engine-0.0.16.tgz#3c01a67b48cd642d979dc27a54e3206c604e3986"
-  integrity sha512-2R9SaLswB5To8+URKq1oTA85ncnHZTYwg+DW13w3I1EruCYoW9oYcd8bp3rnNN88aNWpLnhzX3rlBTbkzPyryw==
+"@locospec/engine@^0.0.20":
+  version "0.0.20"
+  resolved "https://registry.yarnpkg.com/@locospec/engine/-/engine-0.0.20.tgz#791d3cda89ca76d14fc3d9eb0b69a77a08c0c6db"
+  integrity sha512-H2yyjMnIM+lIGxQcijvsVvh1StPSy8a+YMu1OwY9SVf1NzFVzt93syxp7OKQ5aPtCYX4pbpSID+869vSYQBDeA==
   dependencies:
     fs-extra "^10.1.0"
     uuid "^9.0.0"

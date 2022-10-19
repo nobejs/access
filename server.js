@@ -2,6 +2,7 @@ const Config = require("./config")();
 const httpServer = requireHttpServer();
 const rabbitSendMessage = requireUtil("rabbitSendMessage");
 const contextClassRef = requireUtil("contextHelper");
+const bootstrapLoco = require("./loco/bootstrap");
 
 const server = httpServer({
   trustProxy: true,
@@ -25,6 +26,8 @@ server.addHook("onRequest", async (req, reply) => {
 server.register(require("@fastify/formbody", {}));
 
 // server.register(require('@fastify/url-data'));
+
+bootstrapLoco(server);
 
 server.listen(process.env.PORT || 3000, "0.0.0.0", (err, address) => {
   if (err) {

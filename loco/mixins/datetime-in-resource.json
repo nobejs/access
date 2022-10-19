@@ -1,0 +1,31 @@
+{
+  "attributes": {
+    "created_at": {
+      "identifier": "created_at",
+      "label": "Created At",
+      "operations": {
+        "create": {
+          "generate": "datetime"
+        }
+      }
+    },
+    "updated_at": {
+      "identifier": "updated_at",
+      "label": "Updated At",
+      "operations": {
+        "create": {
+          "generate": "datetime"
+        }
+      }
+    },
+    "deleted_at": {
+      "identifier": "deleted_at",
+      "label": "Deleted At",
+      "operations": {
+        "delete": {
+          "generate": "datetime"
+        }
+      }
+    }
+  }
+}
