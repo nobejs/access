@@ -146,7 +146,7 @@ const isSuperUser = async (uuid) => {
     uuid: uuid,
   });
 
-  if (admin.permissions && "superuser" in admin.permissions) {
+  if (admin && admin.permissions && "superuser" in admin.permissions) {
     return true;
   } else {
     return false;
@@ -169,20 +169,44 @@ const createAdmin = async (payload) => {
   }
 };
 
-const deleteAdmin = async (uuid) => {
-  let adminUuid = uuid;
-  let superUser = await isSuperUser(adminUuid);
-  if (superUser) {
-    throw {
-      message: "You are not allowed to delete this user",
-    };
-  } else {
-    await baseRepo.remove(table, {
-      uuid: adminUuid,
-    });
-    return {
-      message: "Admin user deleted successfully",
-    };
+const deleteAdmin = async (payload) => {
+  try {
+    let loggedInAdmin = payload.logedAdminUuid;
+    let deletingAdmin = payload.deleteAdminUuid;
+
+    if (loggedInAdmin === deletingAdmin) {
+      throw {
+        message: "This operation is not allowed",
+      };
+    } else {
+      let superUser = await isSuperUser(deletingAdmin);
+      if (superUser) {
+        throw {
+          message: "You are not allowed to delete this user",
+        };
+      } else {
+        let admin = await baseRepo.first(table, {
+          uuid: deletingAdmin,
+        });
+        if (admin !== undefined) {
+          await tokensRepo.deleteTokenByConstraints({
+            sub: deletingAdmin,
+          });
+          await baseRepo.remove(table, {
+            uuid: deletingAdmin,
+          });
+          return {
+            message: "Admin user deleted successfully",
+          };
+        } else {
+          throw {
+            message: "Admin user not found",
+          };
+        }
+      }
+    }
+  } catch (err) {
+    throw err;
   }
 };
 
