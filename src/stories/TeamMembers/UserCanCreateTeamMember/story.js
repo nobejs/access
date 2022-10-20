@@ -15,6 +15,7 @@ const prepare = async ({ req }) => {
     "role_uuid",
     "permissions",
   ]);
+  payload["issuer"] = req.issuer;
   payload["invoking_user_uuid"] = req.sub;
   return payload;
 };
@@ -57,12 +58,15 @@ const authorize = async ({ prepareResult, augmentPrepareResult }) => {
   // }
 
   try {
-    let permissions = await getTeamMemberPermissions({
-      team_uuid: prepareResult.team_uuid,
-      user_uuid: prepareResult.invoking_user_uuid,
-    });
+    if (prepareResult.issuer === "admin") {
+    } else {
+      let permissions = await getTeamMemberPermissions({
+        team_uuid: prepareResult.team_uuid,
+        user_uuid: prepareResult.invoking_user_uuid,
+      });
 
-    await checkPermission(permissions, ["admin"]);
+      await checkPermission(permissions, ["admin"]);
+    }
   } catch (error) {
     throw error;
   }
