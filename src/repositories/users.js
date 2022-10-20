@@ -754,6 +754,28 @@ const verifyAttributeForResetPasswordWithLink = async (payload) => {
 
 /** Reset Password - End */
 
+const verifyOldPasswordAndResetPassword = async (user_uuid, payload) => {
+  try {
+    let user = await baseRepo.first(table, {
+      uuid: user_uuid,
+    });
+
+    let result = bcrypt.compareSync(payload.old_password, user.password);
+
+    if (result) {
+      await updateUserPassword(user_uuid, payload.password);
+      return result;
+    } else {
+      throw {};
+    }
+  } catch (error) {
+    throw {
+      statusCode: 422,
+      message: "Invalid Username or Password",
+    };
+  }
+};
+
 const updateUserPassword = async (uuid, password) => {
   return await baseRepo.update(
     table,
@@ -847,4 +869,5 @@ module.exports = {
   registerFirebaseToken,
   deRegisterFirebaseToken,
   verifyAttributeForResetPasswordWithLink,
+  verifyOldPasswordAndResetPassword,
 };
