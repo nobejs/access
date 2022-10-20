@@ -55,6 +55,7 @@
     "openpgp": "^5.0.1",
     "path-to-regexp": "^6.2.0",
     "pg": "^8.7.1",
+    "slugify": "^1.6.5",
     "supertest": "^6.1.6",
     "uuid": "^8.3.2",
     "validate.js": "^0.13.1"
