@@ -1,9 +1,9 @@
 {
 	"info": {
-		"_postman_id": "9ca82f7c-30eb-4cb5-9fa6-9469689dc492",
+		"_postman_id": "a62e57e2-0098-4aff-95f7-b2efc88c6987",
 		"name": "Access",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "20404470"
+		"_exporter_id": "3370577"
 	},
 	"item": [
 		{
@@ -193,7 +193,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"type\": \"mobile_number\",\n    \"value\": \"+918897587657\",\n    \"password\": \"Kissmiss9!\"\n}",
+							"raw": "{\n    \"type\": \"mobile_number\",\n    \"value\": \"+918897587657\",\n    \"password\": \"Kissmiss11!\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -456,7 +456,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"tenant\": \"neptune-2\",\n    \"name\": \"Test Team 1\",\n    \"slug\": \"test-team-1\"\n}",
+							"raw": "{\n    \"tenant\": \"bank-branch\",\n    \"name\": \"bank-branch-d38d9fd5-35c3-474f-b7dc-6ebbef20d249\",\n    \"slug\": \"bank-branch-d38d9fd5-35c3-474f-b7dc-6ebbef20d249\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -508,18 +508,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{access_endpoint}}/teams?tenant=neptune",
+							"raw": "{{access_endpoint}}/teams",
 							"host": [
 								"{{access_endpoint}}"
 							],
 							"path": [
 								"teams"
-							],
-							"query": [
-								{
-									"key": "tenant",
-									"value": "neptune"
-								}
 							]
 						}
 					},
@@ -545,6 +539,162 @@
 									"value": "neptune",
 									"disabled": true
 								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Teams/AdminCanCreateTeam",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"tenant\": \"bank-branch\",\n    \"name\": \"bank-branch-d38d9fd5-35c3-474f-b7dc-6ebbef20d249\",\n    \"slug\": \"bank-branch-d38d9fd5-35c3-474f-b7dc-6ebbef20d249\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/loco/resource/admin-teams/_create",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"loco",
+								"resource",
+								"admin-teams",
+								"_create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Teams/AdminCanUpdateTeam",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"uuid\": \"f6bbbfd5-df88-435a-b213-f68b8c6f64e6\",\n    \"creator_user_uuid\": \"f6bbbfd5-df88-435a-b213-f68b8c6f64e6\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/loco/resource/admin-teams/_update",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"loco",
+								"resource",
+								"admin-teams",
+								"_update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Teams/AdminCanPatchTeam",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"uuid\": \"f6bbbfd5-df88-435a-b213-f68b8c6f64e6\",\n    \"creator_user_uuid\": \"f6bbbfd5-df88-435a-b213-f68b8c6f64e6\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/loco/resource/admin-teams/_patch",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"loco",
+								"resource",
+								"admin-teams",
+								"_patch"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Teams/AdminCanViewTeam",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"filterBy\": [\n        {\"attribute\":\"name\", \"op\": \"eq\", \"value\": \"bank-branch-d38d9fd5-35c3-474f-b7dc-6ebbef20d249\"}\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/loco/resource/admin-teams/_read",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"loco",
+								"resource",
+								"admin-teams",
+								"_read"
 							]
 						}
 					},
@@ -873,6 +1023,44 @@
 					"response": []
 				},
 				{
+					"name": "TeamMembers/AdminCanCreateTeamMember",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"attribute_type\": \"email\",\n    \"attribute_value\": \"rajesh+3@betalectic.com\",\n    \"permissions\": {\n        \"approver\": true\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/teams/f6bbbfd5-df88-435a-b213-f68b8c6f64e6/members",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"teams",
+								"f6bbbfd5-df88-435a-b213-f68b8c6f64e6",
+								"members"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "TeamMembers/UserCanAcceptTeamMembership",
 					"request": {
 						"method": "POST",
@@ -893,7 +1081,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{access_endpoint}}/teams/{{team_uuid}}/members/670a75c3-fef5-42c4-bd0f-8f0ba7f2a6fe/accept",
+							"raw": "{{access_endpoint}}/teams/{{team_uuid}}/members/8a224522-7fbe-4632-9719-d72d2a7386e1/accept",
 							"host": [
 								"{{access_endpoint}}"
 							],
@@ -901,7 +1089,7 @@
 								"teams",
 								"{{team_uuid}}",
 								"members",
-								"670a75c3-fef5-42c4-bd0f-8f0ba7f2a6fe",
+								"8a224522-7fbe-4632-9719-d72d2a7386e1",
 								"accept"
 							]
 						}
@@ -1091,6 +1279,32 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Users/UpdatePasswordWithOldPassword",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"old_password\": \"Kissmiss11!\",\n    \"password\": \"Kissmiss11!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/update-password-with-old-password",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"update-password-with-old-password"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -1191,7 +1405,7 @@
 									"{",
 									"    var jsonData = JSON.parse(responseBody);",
 									"",
-									"    pm.environment.set(\"access_token\", jsonData.access_token);",
+									"    pm.environment.set(\"admin_access_token\", jsonData.access_token);",
 									"}"
 								],
 								"type": "text/javascript"
@@ -1203,7 +1417,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"test@test.com\",\n    \"password\": \"12345\"\n}",
+							"raw": "{\n    \"email\": \"rajiv@betalectic.com\",\n    \"password\": \"Password@123\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1253,6 +1467,58 @@
 							]
 						},
 						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"rajiv@betalectic.com\",\n    \"password\": \"kissmiss9\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{access_endpoint}}/admin",
+							"host": [
+								"{{access_endpoint}}"
+							],
+							"path": [
+								"admin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin/CanDeleteAdmin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (responseCode.code === 200)",
+									"{",
+									"    var jsonData = JSON.parse(responseBody);",
+									"",
+									"    pm.environment.set(\"access_token\", jsonData.access_token);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJFZERTQSJ9.eyJleHAiOjE2OTcyMDg5MjIsInN1YiI6ImM4OGVjOGFhLWM4YjAtNDc1Ny04NTQ3LTg4MTUwMmI5MzczZSIsImlzcyI6ImFkbWluIiwianRpIjoiYzkzMjEzNWEtZGVkMi00YjUyLThmMjgtYWViN2MyZjhhNmIzIn0.OOtG8j9RHWNob2v_4KMg0rOYSzxhJysx71dGlgipybDEhl5LjMLunzVAs5Lebueh6kLWEHYbY8Ep7G0ppFCvDQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
 						"header": [],
 						"body": {
 							"mode": "raw",
@@ -1327,6 +1593,108 @@
 							],
 							"path": [
 								"de-register-firebase-token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"limitBy\": {\n        \"page\": 1\n    },\n    \"apiConfig\":{\n        \"includeRelations\": [\"attributes\"]\n    },\n    \"filterBy\": [\n        {\"attribute\": \"attribute\", \"value\": \"rajiv\"}\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/loco/resource/users/_read",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"loco",
+								"resource",
+								"users",
+								"_read"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Attributes",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"limitBy\": {\n        \"page\": 2\n    },\n    \"apiConfig\":{\n        \"includeRelations\": [\"attributes\"]\n    }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/loco/resource/attributes/_read",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"loco",
+								"resource",
+								"attributes",
+								"_read"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User By UUID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{admin_access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"limitBy\": {\n        \"page\": 1\n    },\n    \"apiConfig\":{\n        \"includeRelations\": [\"attributes\"]\n    },\n    \"filterBy\": [\n        {\"attribute\": \"uuid\", \"op\": \"eq\",\"value\": \"d38d9fd5-35c3-474f-b7dc-6ebbef20d249\"}\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/loco/resource/users/_read",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"loco",
+								"resource",
+								"users",
+								"_read"
 							]
 						}
 					},

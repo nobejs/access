@@ -1,5 +1,5 @@
 const resolveUser = async (locoRoute, frameworkData) => {
-  if (locoRoute.resource === "users" && locoRoute.action === "read") {
+  if (locoRoute.resource === "admin-users") {
     if (frameworkData.req.issuer === "admin") {
       return "*";
     } else {

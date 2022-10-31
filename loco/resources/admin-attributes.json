@@ -1,5 +1,5 @@
 {
-  "name": "attributes",
+  "name": "admin-attributes",
   "label": "Attributes",
   "primary": ["uuid"],
   "softDelete": true,
@@ -28,10 +28,35 @@
     },
     "type": {
       "label": "type",
-      "operations": {}
+      "operations": {
+        "create": {
+          "validate": [{ "type": "required" }]
+        }
+      }
     },
     "value": {
       "label": "value",
+      "operations": {
+        "create": {
+          "validate": [
+            { "type": "required" },
+            {
+              "type": "unique",
+              "table": "attributes",
+              "column": "value",
+              "includeAttributes": ["type"],
+              "excludeAttributes": []
+            }
+          ]
+        }
+      }
+    },
+    "verified_at": {
+      "label": "verified_at",
+      "operations": {}
+    },
+    "purpose": {
+      "label": "purpose",
       "operations": {}
     }
   }

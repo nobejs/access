@@ -1,5 +1,5 @@
 {
-  "name": "users",
+  "name": "admin-users",
   "label": "Users",
   "primary": ["uuid"],
   "softDelete": true,
@@ -32,6 +32,15 @@
         }
       }
     },
+    "password": {
+      "label": "Password",
+      "operations": {
+        "create": {
+          "validate": [{ "type": "required" }]
+        }
+      },
+      "ui": {}
+    },
     "profile": {
       "label": "Profile",
       "operations": {},
@@ -47,7 +56,7 @@
         "localKey": "uuid",
         "foreignKey": "user_uuid",
         "type": "has_many",
-        "resource": "attributes"
+        "resource": "admin-attributes"
       }
     }
   },
