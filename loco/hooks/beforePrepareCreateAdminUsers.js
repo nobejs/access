@@ -9,7 +9,7 @@ module.exports = async (context) => {
       resource: "admin-attributes",
       action: "create",
     },
-    locoAction.payload
+    { ...locoAction.payload, stop_after_phase: "validate" }
   );
 
   context["originalPayload"] = JSON.parse(JSON.stringify(locoAction.payload));
