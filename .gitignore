@@ -6,3 +6,4 @@ upgrade-nobejs/
 .env.jest
 private.pem
 public.pem
+.env_ab_staging

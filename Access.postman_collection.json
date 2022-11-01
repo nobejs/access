@@ -1475,9 +1475,9 @@
 									}
 								},
 								"url": {
-									"raw": "{{base_url}}/loco/resource/admin-users/_read",
+									"raw": "{{access_endpoint}}/loco/resource/admin-users/_read",
 									"host": [
-										"{{base_url}}"
+										"{{access_endpoint}}"
 									],
 									"path": [
 										"loco",
@@ -1504,9 +1504,9 @@
 									}
 								},
 								"url": {
-									"raw": "{{base_url}}/loco/resource/attributes/_read",
+									"raw": "{{access_endpoint}}/loco/resource/attributes/_read",
 									"host": [
-										"{{base_url}}"
+										"{{access_endpoint}}"
 									],
 									"path": [
 										"loco",
@@ -1543,9 +1543,9 @@
 									}
 								},
 								"url": {
-									"raw": "{{base_url}}/loco/resource/admin-users/_read",
+									"raw": "{{access_endpoint}}/loco/resource/admin-users/_read",
 									"host": [
-										"{{base_url}}"
+										"{{access_endpoint}}"
 									],
 									"path": [
 										"loco",
@@ -1574,7 +1574,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"stop_after_phase\": \"validate\",\n    \"apiConfig\":{\n        \"includeRelations\": [\"attributes\"]\n    },\n    \"type\": \"email\",\n    \"value\": \"rajiv@betalectic.com\",\n    \"password\": \"kissmiss\"\n}",
+									"raw": "{\n    \"apiConfig\":{\n        \"includeRelations\": [\"attributes\"]\n    },\n    \"type\": \"email\",\n    \"value\": \"rajiv+2@betalectic.com\",\n    \"password\": \"kissmiss\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1582,15 +1582,54 @@
 									}
 								},
 								"url": {
-									"raw": "{{base_url}}/loco/resource/admin-users/_create",
+									"raw": "{{access_endpoint}}/loco/resource/admin-users/_create",
 									"host": [
-										"{{base_url}}"
+										"{{access_endpoint}}"
 									],
 									"path": [
 										"loco",
 										"resource",
 										"admin-users",
 										"_create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get User By Email",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{admin_access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"limitBy\": {\n        \"page\": 1\n    },\n    \"apiConfig\":{\n        \"includeRelations\": [\"attributes\"]\n    },\n    \"filterBy\": [\n        {\"attribute\": \"attribute_value\", \"value\": \"rajiv\"}\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{access_endpoint}}/loco/resource/admin-users/_read",
+									"host": [
+										"{{access_endpoint}}"
+									],
+									"path": [
+										"loco",
+										"resource",
+										"admin-users",
+										"_read"
 									]
 								}
 							},
@@ -1857,7 +1896,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"team_uuid\": \"3ce1b3c8-f218-4314-80dd-9e3ec27f0e73\",\n    \"user_uuid\": \"da8dc5ff-1d0c-404c-96ae-b37717ec2127\",\n    \"status\": \"approved\",\n    \"permissions\": {\n        \"approver\": true\n    }\n}",
+									"raw": "{\n    \"team_uuid\": \"f3063e44-cc3f-4554-b990-ef14519cf9d1\",\n    \"user_uuid\": \"3ce95ca2-4459-4e2d-9018-50c7758090ff\",\n    \"status\": \"approved\",\n    \"permissions\": {\n        \"approver\": true\n    }\n}",
 									"options": {
 										"raw": {
 											"language": "json"
