@@ -9,8 +9,6 @@ module.exports = async (context) => {
       ? [context.locoAction["opResult"]]
       : context.locoAction["opResult"]["data"];
 
-  console.log("currentData", currentData, context["originalPayload"]);
-
   for (let index = 0; index < currentData.length; index++) {
     const element = currentData[index];
 

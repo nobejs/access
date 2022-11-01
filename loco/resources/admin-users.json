@@ -61,15 +61,15 @@
     }
   },
   "filterBy": {
-    "attribute": {
+    "attribute_value": {
       "localKey": "users.uuid",
       "operation": "in",
       "transformations": [
         {
           "operation": "like",
-          "resource": "attributes",
+          "resource": "admin-attributes",
           "findByKey": "value",
-          "findByValue": "attribute",
+          "findByValue": "attribute_value",
           "extract": "user_uuid"
         }
       ]
