@@ -193,7 +193,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"type\": \"mobile_number\",\n    \"value\": \"+918897587657\",\n    \"password\": \"Kissmiss11!\"\n}",
+							"raw": "{\n    \"type\": \"email\",\n    \"value\": \"rajiv@betalectic.com\",\n    \"password\": \"kissmiss\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -525,13 +525,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{access_endpoint}}/teams/2176b8ec-d2b3-4a2e-bb35-7d3e150fe8c0",
+							"raw": "{{access_endpoint}}/teams/f3063e44-cc3f-4554-b990-ef14519cf9d1",
 							"host": [
 								"{{access_endpoint}}"
 							],
 							"path": [
 								"teams",
-								"2176b8ec-d2b3-4a2e-bb35-7d3e150fe8c0"
+								"f3063e44-cc3f-4554-b990-ef14519cf9d1"
 							],
 							"query": [
 								{
@@ -539,162 +539,6 @@
 									"value": "neptune",
 									"disabled": true
 								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Teams/AdminCanCreateTeam",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{admin_access_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"tenant\": \"bank-branch\",\n    \"name\": \"bank-branch-d38d9fd5-35c3-474f-b7dc-6ebbef20d249\",\n    \"slug\": \"bank-branch-d38d9fd5-35c3-474f-b7dc-6ebbef20d249\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{access_endpoint}}/loco/resource/admin-teams/_create",
-							"host": [
-								"{{access_endpoint}}"
-							],
-							"path": [
-								"loco",
-								"resource",
-								"admin-teams",
-								"_create"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Teams/AdminCanUpdateTeam",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{admin_access_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"uuid\": \"f6bbbfd5-df88-435a-b213-f68b8c6f64e6\",\n    \"creator_user_uuid\": \"f6bbbfd5-df88-435a-b213-f68b8c6f64e6\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{access_endpoint}}/loco/resource/admin-teams/_update",
-							"host": [
-								"{{access_endpoint}}"
-							],
-							"path": [
-								"loco",
-								"resource",
-								"admin-teams",
-								"_update"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Teams/AdminCanPatchTeam",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{admin_access_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"uuid\": \"f6bbbfd5-df88-435a-b213-f68b8c6f64e6\",\n    \"creator_user_uuid\": \"f6bbbfd5-df88-435a-b213-f68b8c6f64e6\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{access_endpoint}}/loco/resource/admin-teams/_patch",
-							"host": [
-								"{{access_endpoint}}"
-							],
-							"path": [
-								"loco",
-								"resource",
-								"admin-teams",
-								"_patch"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Teams/AdminCanViewTeam",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{admin_access_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"filterBy\": [\n        {\"attribute\":\"name\", \"op\": \"eq\", \"value\": \"bank-branch-d38d9fd5-35c3-474f-b7dc-6ebbef20d249\"}\n    ]\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{access_endpoint}}/loco/resource/admin-teams/_read",
-							"host": [
-								"{{access_endpoint}}"
-							],
-							"path": [
-								"loco",
-								"resource",
-								"admin-teams",
-								"_read"
 							]
 						}
 					},
@@ -1601,104 +1445,519 @@
 			]
 		},
 		{
-			"name": "Users",
+			"name": "Admin",
 			"item": [
 				{
-					"name": "Get All Users",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"limitBy\": {\n        \"page\": 1\n    },\n    \"apiConfig\":{\n        \"includeRelations\": [\"attributes\"]\n    },\n    \"filterBy\": [\n        {\"attribute\": \"attribute\", \"value\": \"rajiv\"}\n    ]\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+					"name": "Users",
+					"item": [
+						{
+							"name": "Get All Users",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{admin_access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"limitBy\": {\n        \"page\": 1\n    },\n    \"apiConfig\":{\n        \"includeRelations\": [\"attributes\"]\n    },\n    \"filterBy\": [\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/loco/resource/admin-users/_read",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"loco",
+										"resource",
+										"admin-users",
+										"_read"
+									]
 								}
-							}
+							},
+							"response": []
 						},
-						"url": {
-							"raw": "{{base_url}}/loco/resource/users/_read",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"loco",
-								"resource",
-								"users",
-								"_read"
-							]
+						{
+							"name": "Get All Attributes",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"limitBy\": {\n        \"page\": 2\n    },\n    \"apiConfig\":{\n        \"includeRelations\": [\"attributes\"]\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/loco/resource/attributes/_read",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"loco",
+										"resource",
+										"attributes",
+										"_read"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get User By UUID",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{admin_access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"limitBy\": {\n        \"page\": 1\n    },\n    \"apiConfig\":{\n        \"includeRelations\": [\"attributes\"]\n    },\n    \"filterBy\": [\n        {\"attribute\": \"uuid\", \"op\": \"eq\",\"value\": \"b6709896-4a6c-4834-ba0f-8572a9a05490\"}\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/loco/resource/admin-users/_read",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"loco",
+										"resource",
+										"admin-users",
+										"_read"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create User",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{admin_access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"stop_after_phase\": \"validate\",\n    \"apiConfig\":{\n        \"includeRelations\": [\"attributes\"]\n    },\n    \"type\": \"email\",\n    \"value\": \"rajiv@betalectic.com\",\n    \"password\": \"kissmiss\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/loco/resource/admin-users/_create",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"loco",
+										"resource",
+										"admin-users",
+										"_create"
+									]
+								}
+							},
+							"response": []
 						}
-					},
-					"response": []
+					]
 				},
 				{
-					"name": "Get All Attributes",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"limitBy\": {\n        \"page\": 2\n    },\n    \"apiConfig\":{\n        \"includeRelations\": [\"attributes\"]\n    }\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+					"name": "Teams",
+					"item": [
+						{
+							"name": "Teams/AdminCanUpdateTeam",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{admin_access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"uuid\": \"f6bbbfd5-df88-435a-b213-f68b8c6f64e6\",\n    \"creator_user_uuid\": \"f6bbbfd5-df88-435a-b213-f68b8c6f64e6\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{access_endpoint}}/loco/resource/admin-teams/_update",
+									"host": [
+										"{{access_endpoint}}"
+									],
+									"path": [
+										"loco",
+										"resource",
+										"admin-teams",
+										"_update"
+									]
 								}
-							}
+							},
+							"response": []
 						},
-						"url": {
-							"raw": "{{base_url}}/loco/resource/attributes/_read",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"loco",
-								"resource",
-								"attributes",
-								"_read"
-							]
+						{
+							"name": "Teams/AdminCanPatchTeam",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{admin_access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"uuid\": \"f6bbbfd5-df88-435a-b213-f68b8c6f64e6\",\n    \"creator_user_uuid\": \"f6bbbfd5-df88-435a-b213-f68b8c6f64e6\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{access_endpoint}}/loco/resource/admin-teams/_patch",
+									"host": [
+										"{{access_endpoint}}"
+									],
+									"path": [
+										"loco",
+										"resource",
+										"admin-teams",
+										"_patch"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Teams/AdminCanCreateTeam",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{admin_access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"tenant\": \"bank-branch\",\n    \"name\": \"d38d9fd5-35c3-474f-b7dc-6ebbef20d249\",\n    \"slug\": \"d38d9fd5-35c3-474f-b7dc-6ebbef20d249\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{access_endpoint}}/loco/resource/admin-teams/_create",
+									"host": [
+										"{{access_endpoint}}"
+									],
+									"path": [
+										"loco",
+										"resource",
+										"admin-teams",
+										"_create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Teams/AdminCanViewTeam",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{admin_access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"filterBy\": [\n        {\"attribute\":\"name\", \"op\": \"eq\", \"value\": \"bank-branch-d38d9fd5-35c3-474f-b7dc-6ebbef20d249\"}\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{access_endpoint}}/loco/resource/admin-teams/_read",
+									"host": [
+										"{{access_endpoint}}"
+									],
+									"path": [
+										"loco",
+										"resource",
+										"admin-teams",
+										"_read"
+									]
+								}
+							},
+							"response": []
 						}
-					},
-					"response": []
+					]
 				},
 				{
-					"name": "Get User By UUID",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{admin_access_token}}",
-									"type": "string"
+					"name": "Team Members",
+					"item": [
+						{
+							"name": "Teams/AdminCanUpdateTeamMember",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{admin_access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"uuid\": \"f6bbbfd5-df88-435a-b213-f68b8c6f64e6\",\n    \"creator_user_uuid\": \"f6bbbfd5-df88-435a-b213-f68b8c6f64e6\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{access_endpoint}}/loco/resource/admin-team-members/_update",
+									"host": [
+										"{{access_endpoint}}"
+									],
+									"path": [
+										"loco",
+										"resource",
+										"admin-team-members",
+										"_update"
+									]
 								}
-							]
+							},
+							"response": []
 						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"limitBy\": {\n        \"page\": 1\n    },\n    \"apiConfig\":{\n        \"includeRelations\": [\"attributes\"]\n    },\n    \"filterBy\": [\n        {\"attribute\": \"uuid\", \"op\": \"eq\",\"value\": \"d38d9fd5-35c3-474f-b7dc-6ebbef20d249\"}\n    ]\n}",
-							"options": {
-								"raw": {
-									"language": "json"
+						{
+							"name": "Teams/AdminCanPatchTeamMember",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{admin_access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"uuid\": \"345d9d17-8dbc-4e66-a441-af06d57b88d8\",\n    \"permissions\": {\n        \"approver\": true,\n        \"member\": false\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{access_endpoint}}/loco/resource/admin-team-members/_patch",
+									"host": [
+										"{{access_endpoint}}"
+									],
+									"path": [
+										"loco",
+										"resource",
+										"admin-team-members",
+										"_patch"
+									]
 								}
-							}
+							},
+							"response": []
 						},
-						"url": {
-							"raw": "{{base_url}}/loco/resource/users/_read",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"loco",
-								"resource",
-								"users",
-								"_read"
-							]
+						{
+							"name": "Teams/AdminCanCreateTeamMember",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{admin_access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"team_uuid\": \"3ce1b3c8-f218-4314-80dd-9e3ec27f0e73\",\n    \"user_uuid\": \"da8dc5ff-1d0c-404c-96ae-b37717ec2127\",\n    \"status\": \"approved\",\n    \"permissions\": {\n        \"approver\": true\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{access_endpoint}}/loco/resource/admin-team-members/_create",
+									"host": [
+										"{{access_endpoint}}"
+									],
+									"path": [
+										"loco",
+										"resource",
+										"admin-team-members",
+										"_create"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Teams/AdminCanViewTeam",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{admin_access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"filterBy\": [\n        {\"attribute\":\"name\", \"op\": \"eq\", \"value\": \"bank-branch-d38d9fd5-35c3-474f-b7dc-6ebbef20d249\"}\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{access_endpoint}}/loco/resource/admin-teams/_read",
+									"host": [
+										"{{access_endpoint}}"
+									],
+									"path": [
+										"loco",
+										"resource",
+										"admin-teams",
+										"_read"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Teams/AdminCanDeleteTeamMember",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{admin_access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"filterBy\": [\n        {\n            \"attribute\": \"uuid\",\n            \"op\": \"eq\",\n            \"value\": \"d332bdac-ed13-4910-99d3-c39b3c17d264\"\n        }\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{access_endpoint}}/loco/resource/admin-team-members/_delete",
+									"host": [
+										"{{access_endpoint}}"
+									],
+									"path": [
+										"loco",
+										"resource",
+										"admin-team-members",
+										"_delete"
+									]
+								}
+							},
+							"response": []
 						}
-					},
-					"response": []
+					]
 				}
 			]
 		},

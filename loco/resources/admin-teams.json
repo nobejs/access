@@ -106,6 +106,15 @@
     },
     "tenant": {
       "label": "Tenant"
+    },
+    "team-members": {
+      "label": "Team Members",
+      "relation": {
+        "localKey": "uuid",
+        "foreignKey": "team_uuid",
+        "type": "has_many",
+        "resource": "admin-team-members"
+      }
     }
   },
   "filterBy": {}
