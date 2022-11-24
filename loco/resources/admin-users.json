@@ -73,6 +73,19 @@
           "extract": "user_uuid"
         }
       ]
+    },
+    "attribute_value_like": {
+      "localKey": "users.uuid",
+      "operation": "in",
+      "transformations": [
+        {
+          "operation": "like",
+          "resource": "admin-attributes",
+          "findByKey": "value",
+          "findByValue": "attribute_value_like",
+          "extract": "user_uuid"
+        }
+      ]
     }
   }
 }
