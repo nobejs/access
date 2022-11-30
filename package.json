@@ -31,7 +31,7 @@
   "devDependencies": {},
   "dependencies": {
     "@fastify/formbody": "^6.0.1",
-    "@locospec/engine": "^0.0.24",
+    "@locospec/engine": "^0.0.31",
     "@locospec/operator-knexjs": "^0.0.10",
     "@sentry/node": "^6.16.1",
     "@sentry/tracing": "^6.16.1",

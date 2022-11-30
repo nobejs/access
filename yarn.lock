@@ -501,12 +501,13 @@
     "@types/yargs" "^16.0.0"
     chalk "^4.0.0"
 
-"@locospec/engine@^0.0.24":
-  version "0.0.24"
-  resolved "https://registry.yarnpkg.com/@locospec/engine/-/engine-0.0.24.tgz#3d144b1afedf242245c2478a76ceca3645fa554b"
-  integrity sha512-YX72u6YXfJ+7qS87W+XhTlvMHgk9ysVO3rTYz2ztAnsFCx+CmxI99gTA5fMw1pv63NEyV3C6uSczQM+2RZDWlQ==
+"@locospec/engine@^0.0.31":
+  version "0.0.31"
+  resolved "https://registry.yarnpkg.com/@locospec/engine/-/engine-0.0.31.tgz#7ba0a927e503d375d0323f50ccc65ee4e1febca4"
+  integrity sha512-DbhF0qLNXg2OA71Q8haRnbZs1JBoLEarqUMPQx1q9f2PMkiSOPB9dFplva4IJEy2GAJ0pcqATSrloC4kPYI5Qw==
   dependencies:
     fs-extra "^10.1.0"
+    typescript "^4.8.4"
     uuid "^9.0.0"
     validate.js "^0.13.1"
 
@@ -4197,6 +4198,11 @@ typedarray-to-buffer@^3.1.5:
   integrity sha512-zdu8XMNEDepKKR+XYOXAVPtWui0ly0NtohUscw+UmaHiAWT8hrV1rr//H6V+0DvJ3OQ19S979M0laLfX8rm82Q==
   dependencies:
     is-typedarray "^1.0.0"
+
+typescript@^4.8.4:
+  version "4.9.3"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.9.3.tgz#3aea307c1746b8c384435d8ac36b8a2e580d85db"
+  integrity sha512-CIfGzTelbKNEnLpLdGFgdyKhG23CKdKgQPOBc+OUNrkJ2vr+KSzsSV5kq5iWhEQbok+quxgGzrAtGWCyU7tHnA==
 
 undefsafe@^2.0.5:
   version "2.0.5"
