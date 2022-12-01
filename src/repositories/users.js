@@ -771,7 +771,7 @@ const verifyOldPasswordAndResetPassword = async (user_uuid, payload) => {
   } catch (error) {
     throw {
       statusCode: 422,
-      message: "Invalid Username or Password",
+      message: "Invalid Old Password",
     };
   }
 };
