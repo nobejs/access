@@ -1,0 +1,84 @@
+{
+  "name": "admin-admins",
+  "label": "Admins",
+  "primary": ["uuid"],
+  "softDelete": true,
+  "meta": {
+    "table": "admins"
+  },
+  "mixins": ["datetime-in-resource.json"],
+  "attributes": {
+    "uuid": {
+      "label": "UUID",
+      "operations": {
+        "create": {
+          "generate": "uuid",
+          "validate": [{ "type": "uuid" }]
+        },
+        "patch,update": {
+          "validate": [
+            { "type": "required" },
+            {
+              "type": "exists",
+              "table": "admins",
+              "column": "uuid"
+            }
+          ]
+        }
+      },
+      "ui": {
+        "detail": {
+          "display": true
+        }
+      }
+    },
+    "email": {
+      "label": "Email",
+      "operations": {
+        "create": {
+          "validate": [
+            { "type": "required" },
+            {
+              "type": "unique",
+              "table": "admins",
+              "column": "email",
+              "includeAttributes": [],
+              "excludeAttributes": []
+            }
+          ]
+        },
+        "update": {
+          "validate": [
+            {
+              "type": "unique",
+              "table": "admins",
+              "column": "email",
+              "includeAttributes": ["uuid"],
+              "excludeAttributes": []
+            }
+          ]
+        }
+      },
+      "ui": {}
+    },
+    "password": {
+      "label": "Password",
+      "operations": {
+        "create": {
+          "validate": [{ "type": "required" }]
+        }
+      },
+      "ui": {}
+    },
+    "permissions": {
+      "label": "Permissions",
+      "operations": {},
+      "ui": {
+        "detail": {
+          "display": true
+        }
+      }
+    }
+  },
+  "filterBy": {}
+}
