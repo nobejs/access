@@ -58,6 +58,18 @@
         "type": "has_many",
         "resource": "admin-attributes"
       }
+    },
+    "tokens": {
+      "label": "Tokens",
+      "relation": {
+        "localKey": "uuid",
+        "foreignKey": "sub",
+        "type": "has_many",
+        "resource": "admin-tokens",
+        "filter": {
+          "issuer": "sub"
+        }
+      }
     }
   },
   "filterBy": {

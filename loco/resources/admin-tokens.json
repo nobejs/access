@@ -1,0 +1,20 @@
+{
+  "name": "admin-tokens",
+  "label": "Tokens",
+  "primary": ["uuid"],
+  "softDelete": false,
+  "meta": {
+    "table": "tokens"
+  },
+  "mixins": ["datetime-in-resource.json"],
+  "attributes": {
+    "sub": {
+      "label": "sub",
+      "operations": {}
+    },
+    "issuer": {
+      "label": "issuer",
+      "operations": {}
+    }
+  }
+}
