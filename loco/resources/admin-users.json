@@ -67,7 +67,7 @@
         "type": "has_many",
         "resource": "admin-tokens",
         "filter": {
-          "issuer": "sub"
+          "issuer": "user"
         }
       }
     }

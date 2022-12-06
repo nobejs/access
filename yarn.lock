@@ -501,20 +501,20 @@
     "@types/yargs" "^16.0.0"
     chalk "^4.0.0"
 
-"@locospec/engine@^0.0.32":
-  version "0.0.32"
-  resolved "https://registry.yarnpkg.com/@locospec/engine/-/engine-0.0.32.tgz#7e530d2101e3ad7c16fabe2552c59cd55f1d34b7"
-  integrity sha512-/9qGAoc6F++JaJP2/oYZskVsyvoqVf3LB92v3IH8zW2hDKy+0BMibDO5iocjfVekKVVW67pdAOaSz8rRJjyrIg==
+"@locospec/engine@^0.0.33":
+  version "0.0.33"
+  resolved "https://registry.yarnpkg.com/@locospec/engine/-/engine-0.0.33.tgz#ecf09b5db6ed0040cb7487c1cfb04057a779805b"
+  integrity sha512-8jID6qVp3GKg9RD41d2JppTDU0vSxUGzhr6pQxptO19aZ/UGVFtmX8Yk/IisBsFpDs2jbFyCT55jXhXvdz1BnQ==
   dependencies:
     fs-extra "^10.1.0"
     typescript "^4.8.4"
     uuid "^9.0.0"
     validate.js "^0.13.1"
 
-"@locospec/operator-knexjs@^0.0.12":
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/@locospec/operator-knexjs/-/operator-knexjs-0.0.12.tgz#aca87096a4e47e5bf0266ae726e355d95ab41650"
-  integrity sha512-V1WIvutlgJvf+Kx2dq6Lg0fzH+VGpyQOAO0NNuuz14oI6/4WtdyIIS1p9xyVdGrcC26zwP1QuCYx85IJdEj/4w==
+"@locospec/operator-knexjs@^0.0.13":
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/@locospec/operator-knexjs/-/operator-knexjs-0.0.13.tgz#29a421ea0add1e1504511bc1b5d09e48b3ee3432"
+  integrity sha512-BP5Feh9rEsLgxxSRerKnw2+5FG0RvbLYkakqv2iWhVceZVqxkiNyGAcZmwYdv4PlPac15xSN6X/D7XHlbePxxQ==
   dependencies:
     knex "^2.3.0"
     pg "^8.8.0"
