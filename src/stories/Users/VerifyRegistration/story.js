@@ -5,7 +5,12 @@ const usersRepo = requireRepo("users");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
 
 const prepare = ({ req }) => {
-  const payload = findKeysFromRequest(req, ["type", "value", "token"]);
+  const payload = findKeysFromRequest(req, [
+    "type",
+    "value",
+    "token",
+    "after_verification",
+  ]);
   return payload;
 };
 
@@ -23,8 +28,14 @@ const handle = async ({ prepareResult }) => {
   }
 };
 
-const respond = ({ handleResult }) => {
-  return { access_token: handleResult };
+const respond = ({ prepareResult, handleResult }) => {
+  if (prepareResult.after_verification === "respond_with_token") {
+    return { access_token: handleResult };
+  }
+
+  return {
+    message: "Verification Successful",
+  };
 };
 
 module.exports = {
