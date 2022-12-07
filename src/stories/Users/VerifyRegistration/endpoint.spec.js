@@ -39,6 +39,7 @@ describe("Test API Users/Verify", () => {
           type: "email",
           value: "rajiv@betalectic.com",
           token: verification.token,
+          after_verification: "respond_with_token",
         },
       });
 
