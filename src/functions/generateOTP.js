@@ -1,8 +1,7 @@
-module.exports = async (length = 6) => {
-  var digits = "0123456789";
-  let OTP = "";
-  for (let i = 0; i < length; i++) {
-    OTP += digits[Math.floor(Math.random() * 10)];
-  }
-  return OTP;
+const generateRandomNumber = require("./generateRandomNumber");
+
+module.exports = function generateOTP() {
+  const otpLength = process.env.OTP_LENGTH || 6;
+  const randomOTP = generateRandomNumber(otpLength);
+  return randomOTP;
 };
