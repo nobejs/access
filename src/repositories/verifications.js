@@ -32,8 +32,9 @@ const createVerificationForType = async (data, purpose) => {
   let tokenExpiry = process.env.TOKEN_EXPIRY_TIME
     ? process.env.TOKEN_EXPIRY_TIME
     : 10;
+  const tokenLength = process.env.TOKEN_LENGTH ? process.env.TOKEN_LENGTH : 6;
   let payload = { ...data, ...{ purpose } };
-  payload["token"] = generateOTP();
+  payload["token"] = generateOTP(tokenLength);
   payload["expires_at"] = getMinutesFromNow(tokenExpiry);
   return await baseRepo.create(table, payload);
 };
@@ -63,7 +64,8 @@ const createVerificationForUpdate = async (data) => {
 };
 
 const updateVerification = async (where, payload = {}) => {
-  payload["token"] = generateOTP();
+  const tokenLength = process.env.TOKEN_LENGTH ? process.env.TOKEN_LENGTH : 6;
+  payload["token"] = generateOTP(tokenLength);
   payload["expires_at"] = getMinutesFromNow(10);
   return await baseRepo.update(table, where, payload);
 };
