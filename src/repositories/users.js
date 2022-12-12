@@ -236,6 +236,10 @@ const registerUserFromGoogle = async (payload) => {
         true
       );
 
+      let userObject = await baseRepo.first(table, {
+        uuid: user.uuid,
+      });
+
       // Todo: Test Login with Google
       await eventBus("user_registered", {
         verificationObject: {
@@ -257,7 +261,10 @@ const registerUserFromGoogle = async (payload) => {
       let token = await tokensRepo.createTokenForUser(user);
       return token;
     }
-  } catch (error) {}
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 };
 
 /**  Registration - End */

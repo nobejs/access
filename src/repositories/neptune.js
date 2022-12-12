@@ -71,7 +71,7 @@ const addUserContactInfoToNeptune = async (user_uuid, payload) => {
   } catch (error) {
     try {
       if (error.response.status === 404) {
-        await neptune.addUserToNeptune(user_uuid, payload.meta);
+        await addUserToNeptune(user_uuid, payload.meta);
         return await neptune.addUserContactInfo(user_uuid, neptuneData);
       }
 
