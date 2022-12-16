@@ -1,6 +1,6 @@
 const jose = require("jose");
 
-module.exports = async (jti, sub, issuer, payload = {}, expiry = "1y") => {
+module.exports = async (jti, sub, issuer, payload = {}, expiry = "90d") => {
   try {
     // console.log("process.env.PRIVATE_KEY", process.env.PRIVATE_KEY);
 
