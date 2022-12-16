@@ -3,6 +3,7 @@ const attributesRepo = requireRepo("attributes");
 const verificationsRepo = requireRepo("verifications");
 const usersRepo = requireRepo("users");
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
+const pickKeysFromObject = requireUtil("pickKeysFromObject");
 
 const prepare = ({ req }) => {
   const payload = findKeysFromRequest(req, [
@@ -12,6 +13,7 @@ const prepare = ({ req }) => {
     "verification_method",
     "success_redirect",
     "failure_redirect",
+    "meta",
   ]);
   payload["verification_method"] = payload["verification_method"]
     ? payload["verification_method"]
@@ -102,7 +104,8 @@ const handle = async ({ prepareResult }) => {
   try {
     let inputPayload = { ...prepareResult };
     await validateInput(inputPayload);
-    return await usersRepo.registerWithPassword(prepareResult);
+    const userProfile = pickKeysFromObject(prepareResult, ["meta"]);
+    return await usersRepo.registerWithPassword(prepareResult, userProfile);
   } catch (error) {
     throw error;
   }

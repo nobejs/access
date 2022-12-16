@@ -44,7 +44,7 @@ const first = async (payload) => {
 
 // When user registers with any attribute_type we use this method
 // We also send verification code or link based on method via events
-const registerWithPassword = async (payload) => {
+const registerWithPassword = async (payload, userProfile) => {
   // Find if there is already a registration in process
 
   let verification = await verificationsRepo.findVerificationForRegistration({
@@ -57,7 +57,7 @@ const registerWithPassword = async (payload) => {
 
   if (verification === undefined) {
     // If no, create a user and also verification for them
-    user = await createUserWithPassword(payload.password);
+    user = await createUserWithPassword(payload.password, userProfile);
     verificationObject =
       await verificationsRepo.createVerificationForRegistration({
         user_uuid: user.uuid,
@@ -793,9 +793,10 @@ const updateUserPassword = async (uuid, password) => {
   );
 };
 
-const createUserWithPassword = async (password) => {
+const createUserWithPassword = async (password, profile = {}) => {
   return await baseRepo.create(table, {
     password: bcrypt.hashSync(password, 5),
+    profile: profile,
   });
 };
 
