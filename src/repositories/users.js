@@ -526,6 +526,8 @@ const updateAttribute = async (payload) => {
     attribute_value: payload.value,
   });
 
+  // console.log("updateAttribute payload", payload);
+
   let verificationObject = null;
 
   if (verification === undefined) {

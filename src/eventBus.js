@@ -52,9 +52,11 @@ const preparePayloadFromVerificationObject = async (
       data.link = urlLink;
     }
   }
+  // neptuneData["ignore_user_contacts"] = "true";
 
   let neptuneData = {
     tags: [],
+    ignore_user_contacts: "true",
     user_id: eventObject.user_uuid,
     client: contextClassRef.client,
     contact_infos: eventObject.contact_infos || [],

@@ -123,6 +123,7 @@ const validateInput = async (payload) => {
 
 const handle = async ({ prepareResult, authorizeResult }) => {
   try {
+    // console.log("authorizeResult", authorizeResult);
     let inputPayload = { ...prepareResult, ...authorizeResult };
     await validateInput(inputPayload);
     return await usersRepo.updateAttribute(inputPayload);
