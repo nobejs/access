@@ -94,6 +94,22 @@
           "validate": []
         }
       }
+    },
+    "attribute_type": {
+      "label": "Attribute Type",
+      "operations": {
+        "create,update": {
+          "validate": []
+        }
+      }
+    },
+    "attribute_value": {
+      "label": "Attribute Value",
+      "operations": {
+        "create,update": {
+          "validate": []
+        }
+      }
     }
   },
   "filterBy": {}
