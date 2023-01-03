@@ -1,6 +1,6 @@
 const jose = require("jose");
 
-const jwtExpiry = process.env.JWT_EXPIRY_TIME || "1Y";
+const jwtExpiry = process.env.JWT_EXPIRY_TIME || "1y";
 
 module.exports = async (jti, sub, issuer, payload = {}, expiry = jwtExpiry) => {
   try {
