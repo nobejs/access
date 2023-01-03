@@ -42,9 +42,31 @@ const resolveUser = async (locoRoute, frameworkData) => {
     }
   }
 
-  if (locoRoute.resource === "teams") {
-    console.log("Framework,", frameworkData.req);
+  if (locoRoute.resource === "team-members") {
+    let invoking_user_uuid = frameworkData.req.sub;
 
+    let currentUserTeams = await teamMembersRepo.findAllWithConstraints({
+      user_uuid: invoking_user_uuid,
+    });
+
+    currentUserTeams = currentUserTeams.map((m) => {
+      return m.team_uuid;
+    });
+
+    let filterBy = frameworkData.reqBody?.filterBy || [];
+    let teamFilterByUuid = filterBy.find((f) => {
+      return f.attribute === "team_uuid";
+    });
+
+    if (
+      teamFilterByUuid !== undefined &&
+      currentUserTeams.includes(teamFilterByUuid.value)
+    ) {
+      return "*";
+    }
+  }
+
+  if (locoRoute.resource === "teams") {
     let invoking_user_uuid = frameworkData.req.sub;
 
     let currentUserTeams = await teamMembersRepo.findAllWithConstraints({

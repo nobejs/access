@@ -94,6 +94,15 @@
           "validate": []
         }
       }
+    },
+    "attributes": {
+      "label": "Attributes",
+      "relation": {
+        "localKey": "user_uuid",
+        "foreignKey": "user_uuid",
+        "type": "has_many",
+        "resource": "admin-attributes"
+      }
     }
   },
   "filterBy": {}
