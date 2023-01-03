@@ -1,6 +1,8 @@
 const jose = require("jose");
 
-module.exports = async (jti, sub, issuer, payload = {}, expiry = "1y") => {
+const jwtExpiry = process.env.JWT_EXPIRY_TIME || "1y";
+
+module.exports = async (jti, sub, issuer, payload = {}, expiry = jwtExpiry) => {
   try {
     // console.log("process.env.PRIVATE_KEY", process.env.PRIVATE_KEY);
 
