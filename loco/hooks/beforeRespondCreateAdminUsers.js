@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const { executeActionInternally } = require("@locospec/engine");
+const eventBus = require("../../src/eventBus");
 
 module.exports = async (context) => {
   const { locoAction } = context;
@@ -26,6 +27,11 @@ module.exports = async (context) => {
         purpose: context["originalPayload"]["purpose"] || "na",
       }
     );
+
+    await eventBus("user_created_by_admin", {
+      user: element,
+      payload: context["originalPayload"],
+    });
   }
 
   return context;

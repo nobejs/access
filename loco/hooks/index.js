@@ -6,6 +6,7 @@ const afterPreparePatchAdminUsers = require("./afterPreparePatchAdminUsers");
 const afterValidateCreateAdminAdmins = require("./afterValidateCreateAdminAdmins");
 const afterPreparePatchAdminAdmins = require("./afterPreparePatchAdminAdmins");
 const afterPrepareUpdateAdminAdmins = require("./afterPrepareUpdateAdminAdmins");
+const beforeRespondCreateAdminTeamMembers = require("./beforeRespondCreateAdminTeamMembers");
 
 module.exports = {
   beforeValidateCreateAdminUsers,
@@ -16,4 +17,5 @@ module.exports = {
   afterValidateCreateAdminAdmins,
   afterPreparePatchAdminAdmins,
   afterPrepareUpdateAdminAdmins,
+  beforeRespondCreateAdminTeamMembers,
 };

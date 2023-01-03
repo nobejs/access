@@ -86,6 +86,78 @@ const processUserCreated = async (eventData) => {
   );
 };
 
+const processUserCreatedByAdmin = async (eventData) => {
+  const payload = eventData.payload;
+  const user = eventData.user;
+  let eventType = null;
+  eventType = "user_created_by_admin";
+
+  const eventObject = {
+    user_uuid: user.uuid,
+    type: payload.type,
+    password: payload.password,
+    value: payload.value,
+    contact_infos: [
+      {
+        type: payload.type,
+        value: payload.value,
+      },
+    ],
+  };
+
+  let neptuneData = {
+    tags: [],
+    ignore_user_contacts: "true",
+    user_id: eventObject.user_uuid,
+    client: contextClassRef.client,
+    contact_infos: eventObject.contact_infos || [],
+  };
+
+  let data = {
+    user_id: eventObject.user_uuid,
+    type: eventObject.type,
+    value: eventObject.value,
+  };
+
+  await fireEventToExternalEntity(eventType, data, neptuneData);
+};
+
+const processUserAddedToTeamByAdmin = async (eventData) => {
+  const member = eventData.member;
+  const attributes = eventData.attributes;
+  let eventType = null;
+  eventType = "user_added_to_team_by_admin";
+
+  let contact_infos = attributes.map((a) => {
+    return {
+      type: a.type,
+      value: a.value,
+    };
+  });
+
+  const eventObject = {
+    user_uuid: member.user_uuid,
+    contact_infos: contact_infos,
+  };
+
+  let neptuneData = {
+    tags: [],
+    ignore_user_contacts: "true",
+    user_id: eventObject.user_uuid,
+    client: contextClassRef.client,
+    contact_infos: eventObject.contact_infos || [],
+  };
+
+  let data = {
+    member: member,
+    team: member.team,
+    user: member.user,
+    attributes: attributes,
+  };
+
+  await fireEventToExternalEntity(eventType, data, neptuneData);
+};
+
 const processVerificationRequestedDuringRegistration = async (eventData) => {
   const payload = eventData.payload;
   const verification_method = payload.verification_method;
@@ -309,6 +381,14 @@ const eventBus = async (event, data) => {
 
       case "user_requested_reset_password":
         await processUserRequestedResetPassword(data);
+        break;
+
+      case "user_created_by_admin":
+        await processUserCreatedByAdmin(data);
+        break;
+
+      case "user_added_to_team_by_admin":
+        await processUserAddedToTeamByAdmin(data);
         break;
     }
   } catch (error) {

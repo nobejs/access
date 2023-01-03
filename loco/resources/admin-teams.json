@@ -115,6 +115,15 @@
         "type": "has_many",
         "resource": "admin-team-members"
       }
+    },
+    "meta": {
+      "label": "Meta",
+      "operations": {},
+      "ui": {
+        "detail": {
+          "display": true
+        }
+      }
     }
   },
   "filterBy": {}
