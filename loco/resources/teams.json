@@ -1,0 +1,121 @@
+{
+  "name": "teams",
+  "label": "Teams",
+  "primary": ["uuid"],
+  "softDelete": true,
+  "meta": {
+    "table": "teams"
+  },
+  "mixins": ["datetime-in-resource.json"],
+  "attributes": {
+    "uuid": {
+      "label": "UUID",
+      "operations": {
+        "create": {
+          "generate": "uuid",
+          "validate": [{ "type": "uuid" }]
+        },
+        "update": {
+          "validate": [
+            { "type": "required" },
+            {
+              "type": "exists",
+              "table": "teams",
+              "column": "uuid"
+            }
+          ]
+        }
+      },
+      "ui": {
+        "detail": {
+          "display": true
+        }
+      }
+    },
+    "name": {
+      "label": "Name",
+      "operations": {
+        "create,update": {
+          "validate": [{ "type": "required" }]
+        },
+        "create": {
+          "validate": [
+            {
+              "type": "unique",
+              "table": "teams",
+              "includeAttributes": [],
+              "excludeAttributes": []
+            }
+          ]
+        },
+        "update": {
+          "validate": [
+            {
+              "type": "unique",
+              "table": "teams",
+              "includeAttributes": [],
+              "excludeAttributes": ["uuid"]
+            }
+          ]
+        }
+      }
+    },
+    "slug": {
+      "label": "Slug",
+      "operations": {
+        "create": {
+          "generate": [
+            {
+              "type": "custom_generator",
+              "value": "generateSlug",
+              "source": "name"
+            }
+          ],
+          "validate": [
+            {
+              "type": "unique",
+              "table": "teams",
+              "includeAttributes": [],
+              "excludeAttributes": []
+            },
+            {
+              "type": "custom_validator",
+              "value": "noWhiteSpace"
+            }
+          ]
+        },
+        "update": {
+          "validate": [
+            { "type": "required" },
+            {
+              "type": "unique",
+              "table": "teams",
+              "includeAttributes": [],
+              "excludeAttributes": ["uuid"]
+            },
+            {
+              "type": "custom_validator",
+              "value": "noWhiteSpace"
+            }
+          ]
+        }
+      }
+    },
+    "creator_user_uuid": {
+      "label": "Owner"
+    },
+    "tenant": {
+      "label": "Tenant"
+    },
+    "team-members": {
+      "label": "Team Members",
+      "relation": {
+        "localKey": "uuid",
+        "foreignKey": "team_uuid",
+        "type": "has_many",
+        "resource": "team-members"
+      }
+    }
+  },
+  "filterBy": {}
+}

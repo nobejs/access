@@ -60,6 +60,18 @@ const getTeamsAndMembers = async (where = {}) => {
   }
 };
 
+const findAllWithConstraints = async (where = {}) => {
+  try {
+    let team_members = await knex("team_members")
+      .where(where)
+      .whereNull("deleted_at")
+      .returning("*");
+    return team_members;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const findWithConstraints = async (where = {}) => {
   try {
     let team_members = await knex("team_members")
@@ -202,6 +214,7 @@ module.exports = {
   createTeamMember,
   update,
   findWithConstraints,
+  findAllWithConstraints,
   countWithConstraints,
   findAll,
   del,
