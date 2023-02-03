@@ -343,6 +343,29 @@ const processUserRequestedResetPassword = async (eventData) => {
   );
 };
 
+const processSetPasswordForNewUser = async (eventData) => {
+  const verificationObject = eventData.verification;
+  const payload = eventData.payload;
+  let eventType = "set_password_for_new_user_by_admin";
+
+  let data = {
+    user_id: verificationObject.user_uuid,
+    token: verificationObject.token,
+    type: verificationObject.attribute_type,
+    value: verificationObject.attribute_value,
+    prefixUrl: payload.prefixUrl,
+  };
+
+  let neptuneData = {
+    tags: [],
+    user_id: verificationObject.user_uuid,
+    client: contextClassRef.client,
+    contact_infos: verificationObject.attribute_value || [],
+  };
+
+  await fireEventToExternalEntity(eventType, data, neptuneData);
+};
+
 const eventBus = async (event, data) => {
   try {
     // console.log("eventBus....", event);
@@ -389,6 +412,10 @@ const eventBus = async (event, data) => {
 
       case "user_added_to_team_by_admin":
         await processUserAddedToTeamByAdmin(data);
+        break;
+
+      case "set_password_for_new_user_by_admin":
+        await processSetPasswordForNewUser(data);
         break;
     }
   } catch (error) {
