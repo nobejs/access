@@ -346,7 +346,7 @@ const processUserRequestedResetPassword = async (eventData) => {
 const processSetPasswordForNewUser = async (eventData) => {
   const verificationObject = eventData.verification;
   const payload = eventData.payload;
-  let eventType = "set_password_for_new_user_by_admin";
+  let eventType = "admin_request_user_to_set_password";
 
   let data = {
     user_id: verificationObject.user_uuid,
@@ -414,7 +414,7 @@ const eventBus = async (event, data) => {
         await processUserAddedToTeamByAdmin(data);
         break;
 
-      case "set_password_for_new_user_by_admin":
+      case "admin_request_user_to_set_password":
         await processSetPasswordForNewUser(data);
         break;
     }

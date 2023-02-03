@@ -27,7 +27,7 @@ module.exports = async (context) => {
         purpose: context["originalPayload"]["purpose"] || "na",
       }
     );
-    if (context["originalPayload"]["setPassword"] == true) {
+    if (context["originalPayload"]["adminRequestUserToSetPassword"] == true) {
       const payload = context["originalPayload"];
       let data = {
         user_uuid: element.uuid,
@@ -37,7 +37,7 @@ module.exports = async (context) => {
       const verification =
         await verificationRepo.createVerificationForResetPassword(data);
 
-      await eventBus("set_password_for_new_user_by_admin", {
+      await eventBus("admin_request_user_to_set_password", {
         payload: payload,
         verification: verification,
       });
