@@ -360,7 +360,12 @@ const processSetPasswordForNewUser = async (eventData) => {
     tags: [],
     user_id: verificationObject.user_uuid,
     client: contextClassRef.client,
-    contact_infos: verificationObject.attribute_value || [],
+    contact_infos: [
+      {
+        type: verificationObject.attribute_type,
+        value: verificationObject.attribute_value,
+      },
+    ],
   };
 
   await fireEventToExternalEntity(eventType, data, neptuneData);
