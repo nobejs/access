@@ -1,10 +1,10 @@
 const bcrypt = require("bcrypt");
 const { executeActionInternally } = require("@locospec/engine");
 const eventBus = require("../../src/eventBus");
+const verificationRepo = require("../../src/repositories/verifications");
 
 module.exports = async (context) => {
   const { locoAction } = context;
-
   let currentData =
     context.locoAction["opResult"]["data"] === undefined
       ? [context.locoAction["opResult"]]
@@ -27,11 +27,26 @@ module.exports = async (context) => {
         purpose: context["originalPayload"]["purpose"] || "na",
       }
     );
+    if (context["originalPayload"]["adminRequestUserToSetPassword"] == true) {
+      const payload = context["originalPayload"];
+      let data = {
+        user_uuid: element.uuid,
+        attribute_type: payload.type,
+        attribute_value: payload.value,
+      };
+      const verification =
+        await verificationRepo.createVerificationForResetPassword(data);
 
-    await eventBus("user_created_by_admin", {
-      user: element,
-      payload: context["originalPayload"],
-    });
+      await eventBus("admin_request_user_to_set_password", {
+        payload: payload,
+        verification: verification,
+      });
+    } else {
+      await eventBus("user_created_by_admin", {
+        user: element,
+        payload: context["originalPayload"],
+      });
+    }
   }
 
   return context;
