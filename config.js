@@ -63,6 +63,7 @@ module.exports = () => {
       "POST /login/otp",
       "POST /login/google",
       "GET /login/google",
+      "GET /login/google-with-token",
       "POST /verify-registration",
       "POST /request-verify-registration",
       "POST /request-reset-password",
