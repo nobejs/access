@@ -186,3 +186,16 @@ value is not validated, but value should be unique
 **token** required
 
 The OTP delivered to email or mobile of user.
+
+### Setup static OTP for User
+
+If user need to be logged in with a static otp, we can set it by env variable in env file.
+
+**Add the below key to env file**
+
+TEST_USER_ACCOUNTS=ffa9f868-bf21-47e9-8cb5-5055655a95a7
+TEST_USER_PASSWORD=123456
+
+The key `TEST_USER_ACCOUNTS` accepts the uuid of users for which we want to set the static OTP, You can add multiple uuids as it accepts comma separated values
+
+The key `TEST_USER_PASSWORD` used for setting the static OTP
