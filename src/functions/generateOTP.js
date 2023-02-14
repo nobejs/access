@@ -1,3 +1,7 @@
-module.exports = (length = 6) => {
-    return Math.floor(100000 + Math.random() * 900000);
-}
+const generateRandomNumber = require("./generateRandomNumber");
+
+module.exports = function generateOTP() {
+  const otpLength = process.env.OTP_LENGTH || 6;
+  const randomOTP = generateRandomNumber(otpLength);
+  return randomOTP;
+};
