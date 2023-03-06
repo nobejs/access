@@ -18,6 +18,7 @@ module.exports = async (jti, sub, issuer, payload = {}, expiry = jwtExpiry) => {
       .setProtectedHeader({ alg: "EdDSA" })
       .setExpirationTime(expiry)
       .setSubject(sub)
+      .setAudience("access")
       .setIssuer(issuer)
       .setJti(jti)
       .sign(ecPrivateKey);
