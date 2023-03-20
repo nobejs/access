@@ -31,8 +31,11 @@
   "devDependencies": {},
   "dependencies": {
     "@fastify/formbody": "^6.0.1",
+    "@honeycombio/opentelemetry-node": "^0.3.2",
     "@locospec/engine": "^0.0.33",
     "@locospec/operator-knexjs": "^0.0.13",
+    "@opentelemetry/api": "^1.4.1",
+    "@opentelemetry/auto-instrumentations-node": "^0.36.4",
     "@sentry/node": "^6.16.1",
     "@sentry/tracing": "^6.16.1",
     "@teurons/neptune-nodejs": "^1.1.11",
