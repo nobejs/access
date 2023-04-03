@@ -29,12 +29,14 @@ const handle = async ({ prepareResult }) => {
 };
 
 const respond = ({ prepareResult, handleResult }) => {
+  // return handleResult;
   if (prepareResult.after_verification === "respond_with_token") {
-    return { access_token: handleResult };
+    return handleResult;
   }
 
   return {
     message: "Verification Successful",
+    qrCodeUrl: handleResult.qrCodeUrl,
   };
 };
 

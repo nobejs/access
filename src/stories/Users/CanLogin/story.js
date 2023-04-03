@@ -53,7 +53,10 @@ const handle = async ({ prepareResult }) => {
 };
 
 const respond = ({ handleResult }) => {
-  return { access_token: handleResult };
+  return {
+    access_token: handleResult.token,
+    mfa_enabled: handleResult.mfa_enabled,
+  };
 };
 
 module.exports = {

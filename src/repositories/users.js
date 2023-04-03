@@ -8,7 +8,8 @@ const { resetPasswordVerificationEvent } = require("../events");
 const eventBus = require("../eventBus");
 const isDateInPast = requireFunction("isDateInPast");
 const table = "users";
-
+const { async } = require("validate.js");
+const mfsRepo = requireRepo("mfa");
 const getAllowedTypes = () => {
   return ["email", "mobile_number"];
 };
@@ -144,9 +145,23 @@ const verifyAttributeForRegistrationUsingOTP = async (payload) => {
         await verificationsRepo.removeVerification({
           uuid: verification.uuid,
         });
-
         let token = await tokensRepo.createTokenForUser(userObject);
-        return token;
+
+        if (!process.env.ENABLE_2FA) {
+          return token;
+        } else {
+          if (process.env.MANDATORY_2FA) {
+            const qrData = await mfsRepo.gennerateQrCodeUrl(
+              verification.user_uuid
+            );
+
+            return {
+              token: token,
+              qrCodeUrl: qrData.qrCodeUrl,
+            };
+          } else {
+          }
+        }
       } else {
         throw "err";
       }
@@ -160,6 +175,8 @@ const verifyAttributeForRegistrationUsingOTP = async (payload) => {
     };
   }
 };
+
+const veryfyMfaToken = async (payload) => {};
 
 // The following method is verify user using a Link
 const verifyAttributeForRegistrationUsingLink = async (payload) => {
@@ -476,6 +493,10 @@ const authenticateWithPassword = async (payload) => {
 
   if (result) {
     let token = await tokensRepo.createTokenForUser(user);
+    return {
+      token: token,
+      mfa_enabled: user.profile.mfa_enabled,
+    };
     return token;
   } else {
     throw {
