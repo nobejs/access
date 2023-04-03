@@ -1,11 +1,10 @@
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
 const mfaRepo = requireRepo("mfa");
+const tokensRepo = requireRepo("tokens");
 
 const prepare = ({ reqQuery, reqBody, reqParams, req }) => {
   const payload = findKeysFromRequest(req, ["enableMfa"]);
-  console.log(req["jti"]);
-  console.log(payload);
-
+  payload.jti = req["jti"];
   return payload;
 };
 
@@ -35,7 +34,7 @@ const authorize = async ({ prepareResult }) => {
 
 const handle = async ({ prepareResult, authorizeResult }) => {
   try {
-    const qrData = mfaRepo.gennerateQrCodeUrl(authorizeResult.sub);
+    const qrData = await mfaRepo.gennerateQrCodeUrl(authorizeResult.sub);
     return { qrCodeUrl: qrData.qrCodeUrl };
   } catch (error) {
     throw error;

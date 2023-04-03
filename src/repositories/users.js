@@ -159,7 +159,6 @@ const verifyAttributeForRegistrationUsingOTP = async (payload) => {
               token: token,
               qrCodeUrl: qrData.qrCodeUrl,
             };
-          } else {
           }
         }
       } else {
