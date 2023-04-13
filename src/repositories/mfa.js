@@ -19,11 +19,28 @@ const gennerateQrCodeUrl = async (userUuid) => {
     qrCodeUrl: qrCodeUrl,
   };
 
-  await attributesRepo.createAttributeForUUID(
-    userUuid,
-    qrData.mfaPayload,
-    true
-  );
+  mfaCount = await attributesRepo.countAll({
+    type: "mfa-secret",
+    user_uuid: userUuid,
+  });
+
+  if (!mfaCount) {
+    await attributesRepo.createAttributeForUUID(
+      userUuid,
+      qrData.mfaPayload,
+      true
+    );
+  } else {
+    await attributesRepo.update(
+      {
+        user_uuid: userUuid,
+      },
+      {
+        type: "mfa-secret",
+        value: secret.ascii,
+      }
+    );
+  }
 
   return qrData;
 };
