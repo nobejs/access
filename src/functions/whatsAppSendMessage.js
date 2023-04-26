@@ -1,9 +1,9 @@
 var axios = require("axios");
-http: module.exports = async (payload) => {
+module.exports = async (payload) => {
   var data = JSON.stringify({
     messaging_product: "whatsapp",
     to: payload.mobile,
-    // enable template if template approves
+    // enable template if
     // type: "template",
     // template: {
     //   name: "redirect_with_token",
