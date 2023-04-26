@@ -145,6 +145,10 @@ module.exports = (app) => {
           ["post", "/login/facebook", "Users/RedirectForLoginWithFacebook"],
           ["get", "/login/facebook", "Users/LoginWithFacebook"],
 
+          ["get", "/login/whatsapp", "Users/RedirectForLoginWithWhatsApp"],
+          ["get", "/login/whatsapp-login", "Users/WhatsAppWebhook"],
+          ["post", "/login/whatsapp-login", "Users/LoginWithWhatsApp"],
+
           // Teams
           ["get", "/teams", "Teams/UserCanViewTeams"],
           ["post", "/teams", "Teams/UserCanCreateTeam"],

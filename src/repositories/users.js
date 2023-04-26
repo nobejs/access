@@ -853,6 +853,59 @@ const deRegisterFirebaseToken = async (userUuid, payload) => {
   }
 };
 
+const registerUserFromWhatsApp = async (payload) => {
+  try {
+    const findUserWithAttribute = await attributesRepo.first({
+      type: "mobile_number",
+      value: payload.mobile,
+    });
+
+    if (findUserWithAttribute === undefined) {
+      const user = await baseRepo.create(table, {
+        profile: {
+          name: payload.name,
+        },
+      });
+
+      await attributesRepo.createAttributeForUUID(
+        user.uuid,
+        {
+          type: "mobile_number",
+          value: payload.mobile,
+        },
+        true
+      );
+
+      let userObject = await baseRepo.first(table, {
+        uuid: user.uuid,
+      });
+
+      await eventBus("user_registered", {
+        verificationObject: {
+          user_uuid: user.uuid,
+          attribute_type: "mobile_number",
+          attribute_value: payload.mobile,
+        },
+        userObject: userObject,
+        payload: payload,
+      });
+
+      let token = await tokensRepo.createTokenForUser(user);
+      return token;
+    } else {
+      let user = await baseRepo.first(table, {
+        uuid: findUserWithAttribute.user_uuid,
+      });
+
+      let token = await tokensRepo.createTokenForUser(user);
+      return token;
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 module.exports = {
   getAllowedTypes,
   getAllowedVerificationMethods,
@@ -880,4 +933,5 @@ module.exports = {
   deRegisterFirebaseToken,
   verifyAttributeForResetPasswordWithLink,
   verifyOldPasswordAndResetPassword,
+  registerUserFromWhatsApp,
 };
