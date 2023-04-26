@@ -35,7 +35,7 @@ module.exports = async (payload) => {
     type: "text",
     preview_url: true,
     text: {
-      body: `Please click the link to login: https://watesting.pages.dev/watesting?token=${payload.token}`,
+      body: `Please click the link to login: ${process.env.WHATSAPP_REDIRECT_URL}?access_token=${payload.token}`,
     },
   });
 
