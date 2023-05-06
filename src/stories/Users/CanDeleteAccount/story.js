@@ -1,5 +1,7 @@
 const attributesRepo = requireRepo("attributes");
 const tokensRepo = requireRepo("tokens");
+const verificationsRepo = requireRepo("verifications");
+const usersRepo = requireRepo("users");
 
 const prepare = ({ reqQuery, reqBody, reqParams, req }) => {
   return {
@@ -38,6 +40,14 @@ const handle = async ({ prepareResult, authorizeResult }) => {
     await tokensRepo.deleteTokenByConstraints({
       sub: authorizeResult.sub,
       issuer: "user",
+    });
+
+    await verificationsRepo.removeVerification({
+      user_uuid: authorizeResult.sub,
+    });
+
+    await usersRepo.removeUser({
+      uuid: authorizeResult.sub,
     });
   } catch (error) {
     throw error;
