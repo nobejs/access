@@ -78,6 +78,7 @@ module.exports = () => {
       "GET /login/whatsapp",
       "GET /login/whatsapp-login",
       "POST /login/whatsapp-login",
+      "GET /login/whatsapp-redirection",
       "GET /verify-registration-attribute-with-link/:user_uuid/:verification_code",
       "POST /reset-password-with-link",
       "POST /admin/login",
