@@ -40,6 +40,7 @@ const handle = async ({ prepareResult, authorizeResult, res }) => {
           // const phone_number_id =
           //   prepareResult.entry[0].changes[0].value.metadata.phone_number_id;
           const from = prepareResult.entry[0].changes[0].value.messages[0].from;
+          console.log('loginWithWhatsApp_prepareResult__from===>: ', from);
           const userContact = contacts.filter((item) => item.wa_id === from);
           const user_name = userContact[0].profile.name;
 
@@ -48,7 +49,7 @@ const handle = async ({ prepareResult, authorizeResult, res }) => {
             userObject["name"] = user_name;
           }
           if (from) {
-            userObject["mobile"] = from;
+            userObject["mobile"] = `+${from}`;
           }
 
           let token = await usersRepo.registerUserFromWhatsApp(userObject);

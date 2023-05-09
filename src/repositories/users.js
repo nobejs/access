@@ -906,6 +906,10 @@ const registerUserFromWhatsApp = async (payload) => {
   }
 };
 
+const removeUser = async (payload) => {
+  return await baseRepo.remove(table, payload, "hard");
+};
+
 module.exports = {
   getAllowedTypes,
   getAllowedVerificationMethods,
@@ -934,4 +938,5 @@ module.exports = {
   verifyAttributeForResetPasswordWithLink,
   verifyOldPasswordAndResetPassword,
   registerUserFromWhatsApp,
+  removeUser,
 };
