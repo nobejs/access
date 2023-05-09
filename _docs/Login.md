@@ -281,4 +281,4 @@ The key `TEST_USER_PASSWORD` used for setting the static OTP
 - Create a template:
   - Template language should be english
   - Template should have CTA where link should be `${process.env.WHATSAPP_REDIRECT_URL}?state=redirect_with_token&code={{1}}`
-- Example template: ![WhatsApp Template Example](/WhatsApp_template_example.png "WhatsApp Template Example")
+- Example template: ![WhatsApp Template Example](WhatsApp_template_example.png "WhatsApp Template Example")
