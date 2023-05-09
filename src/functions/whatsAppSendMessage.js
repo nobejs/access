@@ -8,7 +8,7 @@ module.exports = async (payload) => {
       to: payload.mobile,
       type: "template",
       template: {
-        name: process.env.WHATSAPP_TEMPLATE_NAME,
+        name: process.env.WHATSAPP_LOGIN_LINK_TEMPLATE_NAME,
         language: {
           code: "en",
         },

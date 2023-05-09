@@ -227,7 +227,7 @@ The key `TEST_USER_PASSWORD` used for setting the static OTP
 - `WHATSAPP_ENDPOINT_VERIFICATION_CODE`: This value can be anything, But this value
 - `WHATSAPP_REDIRECT_URL`: full url of endpoint with `/login/whatsapp-redirection`
 - `WHATSAPP_TEMPLATE`: Default value is `false`, After you have created template in whatsapp business platform and template is approved make this value `true`,
-- `WHATSAPP_TEMPLATE_NAME`: Name of the template
+- `WHATSAPP_LOGIN_LINK_TEMPLATE_NAME`: Name of the template
 - `WHATSAPP_APP_NAME`: App name is needed for the template.
 
 ### WhatsApp Messages:
@@ -247,7 +247,7 @@ The key `TEST_USER_PASSWORD` used for setting the static OTP
 ```
   type: "template",
       template: {
-        name: process.env.WHATSAPP_TEMPLATE_NAME,
+        name: process.env.WHATSAPP_LOGIN_LINK_TEMPLATE_NAME,
         language: {
           code: "en",
         },
