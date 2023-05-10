@@ -8,7 +8,7 @@ module.exports = async (payload) => {
       to: payload.mobile,
       type: "template",
       template: {
-        name: "redirect_with_token",
+        name: process.env.WHATSAPP_LOGIN_LINK_TEMPLATE_NAME,
         language: {
           code: "en",
         },

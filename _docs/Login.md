@@ -199,3 +199,86 @@ TEST_USER_PASSWORD=123456
 The key `TEST_USER_ACCOUNTS` accepts the uuid of users for which we want to set the static OTP, You can add multiple uuids as it accepts comma separated values
 
 The key `TEST_USER_PASSWORD` used for setting the static OTP
+
+## Whatsapp login
+
+| Story                              | Endpoint                        |
+| ---------------------------------- | ------------------------------- |
+| Users/RedirectForLoginWithWhatsApp | GET /login/whatsapp             |
+| Users/WhatsAppWebhook              | GET /login/whatsapp-login       |
+| Users/LoginWithWhatsApp            | POST /login/whatsapp-login      |
+| Users/WhatsappRedirection          | GET /login/whatsapp-redirection |
+
+### To login with whatsapp:
+
+- Prerequisits: We have to verify this endpoint `GET /login/whatsapp-login` in whatsapp with the `WHATSAPP_ENDPOINT_VERIFICATION_CODE`(this variable is added in the env)
+- Step 1: Call `GET /login/whatsapp` API
+- Step 2: You will get a url in response, redirect user to that url
+- Step 3: You will be redirected to the whatsapp, click on send
+- Step 4: User will be authorized (`POST /login/whatsapp-login`)
+- Step 4: You will recieve a link in the whatsapp (`GET /login/whatsapp-redirection`), on clicking the url user will redirect to app
+- Step 5: Till here you are able to login with whatsapp, Now if you want to send the interactive message(redirection link message) to users, You have to create a template in whatsapp business platform
+
+### ENV Variable:
+
+- `WHATSAPP_NUMBER_ID`: This the id of the phone number, it can be obtained from the whatsapp business platform
+- `WHATSAPP_PHONE_NUMBER`: WhatsApp mobile number added in the whatsapp business platform
+- `WHATSAPP_TOKEN`: This the token can be obtained from the whatsapp business platform
+- `WHATSAPP_ENDPOINT_VERIFICATION_CODE`: This value can be anything, But this value
+- `WHATSAPP_REDIRECT_URL`: full url of endpoint with `/login/whatsapp-redirection`
+- `WHATSAPP_TEMPLATE`: Default value is `false`, After you have created template in whatsapp business platform and template is approved make this value `true`,
+- `WHATSAPP_LOGIN_LINK_TEMPLATE_NAME`: Name of the template
+- `WHATSAPP_APP_NAME`: App name is needed for the template.
+
+### WhatsApp Messages:
+
+- text message: If you dont have template this the message goes to user
+
+```
+    type: "text",
+    text: {
+        preview_url: true,
+        body: `Click the link to continue: ${process.env.WHATSAPP_REDIRECT_URL}?code=${payload.token}&state=redirect_with_token`,
+    },
+```
+
+- Template message: If you have template this the message goes to the user
+
+```
+  type: "template",
+      template: {
+        name: process.env.WHATSAPP_LOGIN_LINK_TEMPLATE_NAME,
+        language: {
+          code: "en",
+        },
+        components: [
+          {
+            type: "header",
+            parameters: [{ type: "text", text: process.env.WHATSAPP_APP_NAME }],
+          },
+          {
+            type: "body",
+            parameters: [{ type: "text", text: process.env.WHATSAPP_APP_NAME }],
+          },
+          {
+            type: "button",
+            sub_type: "url",
+            index: "0",
+            parameters: [
+              {
+                type: "text",
+                text: payload.token,
+              },
+            ],
+          },
+        ],
+      },
+```
+
+### WhatsApp Template
+
+- Go to whatsapp business platform: `https://business.facebook.com/wa/manage/message-templates/`
+- Create a template:
+  - Template language should be english
+  - Template should have CTA where link should be `${process.env.WHATSAPP_REDIRECT_URL}?state=redirect_with_token&code={{1}}`
+- Example template: ![WhatsApp Template Example](WhatsApp_template_example.png "WhatsApp Template Example")
