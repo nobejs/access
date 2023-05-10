@@ -84,6 +84,7 @@ module.exports = () => {
       "POST /admin/login",
       "POST /admin/request-reset-password",
       "POST /admin/reset-password",
+      "POST /verify-mfa-code",
     ],
     responseKey: "respondResult",
     enableCORS: true,

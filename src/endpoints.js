@@ -66,6 +66,9 @@ module.exports = (app) => {
           ],
           ["post", "/verify-registration", "Users/VerifyRegistration"],
 
+          ["post", "/verify-mfa-code", "Users/VerifyMfa"],
+          ["post", "/enable-mfa", "Users/EnableMfa"],
+
           [
             "get",
             "/verify-registration-attribute-with-link/:user_uuid/:verification_code",

@@ -16,7 +16,7 @@
     "serve:nodebug": "ENVFILE=.env nodemon server.js",
     "migrate-and-start": "knex migrate:latest && node server.js",
     "start": "node server.js",
-    "start:nodemon": "nodemon server.js",
+    "start:nodemon": "ENVFILE=.env nodemon server.js",
     "nobe:update": "node ./update && yarn nobe:version",
     "db": "knex",
     "db:migrate": "ENVFILE=.env knex migrate:latest",
@@ -55,7 +55,9 @@
     "openpgp": "^5.0.1",
     "path-to-regexp": "^6.2.0",
     "pg": "^8.7.1",
+    "qrcode": "^1.5.1",
     "slugify": "^1.6.5",
+    "speakeasy": "^2.0.0",
     "supertest": "^6.1.6",
     "uuid": "^8.3.2",
     "validate.js": "^0.13.1"
