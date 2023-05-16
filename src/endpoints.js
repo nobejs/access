@@ -146,8 +146,10 @@ module.exports = (app) => {
           ["get", "/login/facebook", "Users/LoginWithFacebook"],
 
           ["get", "/login/whatsapp", "Users/RedirectForLoginWithWhatsApp"],
-          ["get", "/login/whatsapp-login", "Users/WhatsAppWebhook"],
-          ["post", "/login/whatsapp-login", "Users/LoginWithWhatsApp"],
+          // Todo: Verify Whatsapp Hub, below api is for verification
+          ["get", "/login/whatsapp-callback", "Users/WhatsAppWebhook"],
+          // Handle Whatsapp Callback: callback and verified url should be same, below api is to get message from whatsapp
+          ["post", "/login/whatsapp-callback", "Users/LoginWithWhatsApp"],
           ["get", "/login/whatsapp-redirection", "Users/WhatsappRedirection"],
 
           // Teams

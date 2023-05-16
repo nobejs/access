@@ -1,7 +1,8 @@
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
+const encryptData = requireFunction("Encryption/encryptData");
 
 const prepare = ({ reqQuery, reqBody, reqParams, req, res }) => {
-  const payload = findKeysFromRequest(req, []);
+  const payload = findKeysFromRequest(req, ["user_uuid"]);
   return payload;
 };
 
@@ -22,9 +23,20 @@ const authorize = async ({ prepareResult }) => {
 
 const handle = async ({ prepareResult, authorizeResult, res }) => {
   try {
-    const redirect_link = `https://wa.me/${
-      process.env.WHATSAPP_PHONE_NUMBER
-    }?text=${encodeURI("Login with WhatsApp")}`;
+    let redirect_link;
+    if (prepareResult.user_uuid) {
+      const encryptedData = await encryptData(prepareResult.user_uuid);
+
+      redirect_link = `https://wa.me/${
+        process.env.WHATSAPP_PHONE_NUMBER
+      }?text=${encodeURI(
+        `Link mobile for user: ${encryptedData} (This is encrypted for security purposes)`
+      )}`;
+    } else {
+      redirect_link = `https://wa.me/${
+        process.env.WHATSAPP_PHONE_NUMBER
+      }?text=${encodeURI("Login with WhatsApp")}`;
+    }
 
     return { redirect_to: redirect_link };
   } catch (error) {

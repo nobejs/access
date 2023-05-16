@@ -205,17 +205,17 @@ The key `TEST_USER_PASSWORD` used for setting the static OTP
 | Story                              | Endpoint                        |
 | ---------------------------------- | ------------------------------- |
 | Users/RedirectForLoginWithWhatsApp | GET /login/whatsapp             |
-| Users/WhatsAppWebhook              | GET /login/whatsapp-login       |
-| Users/LoginWithWhatsApp            | POST /login/whatsapp-login      |
+| Users/WhatsAppWebhook              | GET /login/whatsapp-callback    |
+| Users/LoginWithWhatsApp            | POST /login/whatsapp-callback   |
 | Users/WhatsappRedirection          | GET /login/whatsapp-redirection |
 
 ### To login with whatsapp:
 
-- Prerequisits: We have to verify this endpoint `GET /login/whatsapp-login` in whatsapp with the `WHATSAPP_ENDPOINT_VERIFICATION_CODE`(this variable is added in the env)
+- Prerequisits: We have to verify this endpoint `GET /login/whatsapp-callback` in whatsapp with the `WHATSAPP_ENDPOINT_VERIFICATION_CODE`(this variable is added in the env)
 - Step 1: Call `GET /login/whatsapp` API
 - Step 2: You will get a url in response, redirect user to that url
 - Step 3: You will be redirected to the whatsapp, click on send
-- Step 4: User will be authorized (`POST /login/whatsapp-login`)
+- Step 4: User will be authorized (`POST /login/whatsapp-callback`)
 - Step 4: You will recieve a link in the whatsapp (`GET /login/whatsapp-redirection`), on clicking the url user will redirect to app
 - Step 5: Till here you are able to login with whatsapp, Now if you want to send the interactive message(redirection link message) to users, You have to create a template in whatsapp business platform
 
@@ -282,3 +282,11 @@ The key `TEST_USER_PASSWORD` used for setting the static OTP
   - Template language should be english
   - Template should have CTA where link should be `${process.env.WHATSAPP_REDIRECT_URL}?state=redirect_with_token&code={{1}}`
 - Example template: ![WhatsApp Template Example](WhatsApp_template_example.png "WhatsApp Template Example")
+
+### WhatsApp Update and Verify Mobile Number
+
+- to verify the mobile number in whatsapp call the api `GET /login/whatsapp` with param `user_uuid`
+  - `GET /login/whatsapp?user_uuid=123456`
+- You will get redirect link to whatsapp,(user_uuid will be encrypted)
+- Mobile number will be added for the `user_uuid`
+- You will get redirection link in whatsapp on clicking it you will redirect to app

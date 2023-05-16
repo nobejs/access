@@ -1,6 +1,8 @@
 const findKeysFromRequest = requireUtil("findKeysFromRequest");
 const usersRepo = requireRepo("users");
 const sendMessage = require("../../../functions/whatsAppSendMessage");
+const attributesRepo = requireRepo("attributes");
+const decryptData = requireFunction("Encryption/decryptData");
 
 const prepare = ({ reqQuery, reqBody, reqParams, req, res }) => {
   const payload = findKeysFromRequest(req, ["object", "entry"]);
@@ -40,7 +42,7 @@ const handle = async ({ prepareResult, authorizeResult, res }) => {
           // const phone_number_id =
           //   prepareResult.entry[0].changes[0].value.metadata.phone_number_id;
           const from = prepareResult.entry[0].changes[0].value.messages[0].from;
-          console.log('loginWithWhatsApp_prepareResult__from===>: ', from);
+          console.log("loginWithWhatsApp_prepareResult__from===>: ", from);
           const userContact = contacts.filter((item) => item.wa_id === from);
           const user_name = userContact[0].profile.name;
 
@@ -53,7 +55,112 @@ const handle = async ({ prepareResult, authorizeResult, res }) => {
           }
 
           let token = await usersRepo.registerUserFromWhatsApp(userObject);
-          await sendMessage({ mobile: from, token: token });
+          // create payload for send message:
+          let payload;
+          if (process.env.WHATSAPP_TEMPLATE === "true") {
+            payload = {
+              to: from,
+              type: "template",
+              template: {
+                name: process.env.WHATSAPP_LOGIN_LINK_TEMPLATE_NAME,
+                language: {
+                  code: "en",
+                },
+                components: [
+                  {
+                    type: "header",
+                    parameters: [
+                      { type: "text", text: process.env.WHATSAPP_APP_NAME },
+                    ],
+                  },
+                  {
+                    type: "body",
+                    parameters: [
+                      { type: "text", text: process.env.WHATSAPP_APP_NAME },
+                    ],
+                  },
+                  {
+                    type: "button",
+                    sub_type: "url",
+                    index: "0",
+                    parameters: [
+                      {
+                        type: "text",
+                        text: token,
+                      },
+                    ],
+                  },
+                ],
+              },
+            };
+          } else {
+            payload = {
+              to: from,
+              type: "text",
+              text: {
+                preview_url: true,
+                body: `Click the link to continue: ${process.env.WHATSAPP_REDIRECT_URL}?code=${token}&purpose=login`,
+              },
+            };
+          }
+
+          await sendMessage(payload);
+        } else if (msg_body.match("Link mobile for user: ")) {
+          const encryptedData = msg_body.split(" ")[4];
+          const from = prepareResult.entry[0].changes[0].value.messages[0].from;
+          const userContact = contacts.filter((item) => item.wa_id === from);
+          const user_name = userContact[0].profile.name;
+          // decrypt data and get the user uuid
+          let decodedData = await decryptData(encryptedData);
+
+          const user_uuid = decodedData;
+
+          if (user_uuid) {
+            // check if already exists
+            const existingAttribute = await attributesRepo.first({
+              user_uuid: user_uuid,
+              type: "mobile_number",
+            });
+
+            console.log("existingAttribute", existingAttribute);
+            if (existingAttribute) {
+              let updatedAttribute = await attributesRepo.update(
+                {
+                  uuid: existingAttribute.uuid,
+                },
+                {
+                  type: "mobile_number",
+                  value: `+${from}`,
+                }
+              );
+            } else {
+              let createAttribute = await attributesRepo.createAttributeForUUID(
+                user_uuid,
+                { type: "mobile_number", value: `+${from}` },
+                true
+              );
+            }
+          }
+
+          console.log(
+            "message::",
+            user_name,
+            userContact,
+            encryptedData,
+            decodedData
+          );
+
+          //mobile number is added for the user_uuid, send message to user
+          let payload = {
+            to: from,
+            type: "text",
+            text: {
+              preview_url: true,
+              body: `Click the link to continue: ${process.env.WHATSAPP_REDIRECT_URL}?&purpose=verify`,
+            },
+          };
+
+          await sendMessage(payload);
         }
       }
       res.code(200);

@@ -32,13 +32,13 @@ const handle = async ({ prepareResult, authorizeResult }) => {
 
 const respond = async ({ prepareResult, handleResult, res }) => {
   try {
-    if (prepareResult.state === "redirect_with_token") {
+    if (prepareResult.purpose === "verify") {
+      const redirectWithTokenUrl = `${process.env.REDIRECT_WITH_TOKEN_ENDPOINT}?purpose=verify&platform=whatsapp`;
+      return res.redirect(redirectWithTokenUrl);
+    } else {
       const redirectWithTokenUrl = `${process.env.REDIRECT_WITH_TOKEN_ENDPOINT}?access_token=${handleResult}&platform=whatsapp`;
-      console.log("check here url::>", redirectWithTokenUrl);
       return res.redirect(redirectWithTokenUrl);
     }
-
-    return { access_token: handleResult };
   } catch (error) {
     throw error;
   }
