@@ -38,6 +38,22 @@ const handle = async ({ prepareResult, authorizeResult, res }) => {
         let msg_body =
           prepareResult.entry[0].changes[0].value.messages[0].text.body;
 
+        const escapedStartingString = "Link mobile for user: ".replace(
+          /[.*+?^${}()|[\]\\]/g,
+          "\\$&"
+        );
+        const escapedEndingString =
+          " (This is encrypted for security purposes)".replace(
+            /[.*+?^${}()|[\]\\]/g,
+            "\\$&"
+          );
+
+        const pattern = new RegExp(
+          `^${escapedStartingString}.*${escapedEndingString}$`
+        );
+
+        console.log("check:", pattern.test(msg_body));
+
         if (msg_body === "Login with WhatsApp") {
           // const phone_number_id =
           //   prepareResult.entry[0].changes[0].value.metadata.phone_number_id;
@@ -105,28 +121,68 @@ const handle = async ({ prepareResult, authorizeResult, res }) => {
           }
 
           await sendMessage(payload);
-        } else if (msg_body.match("Link mobile for user: ")) {
+        } else if (pattern.test(msg_body)) {
           const encryptedData = msg_body.split(" ")[4];
           const from = prepareResult.entry[0].changes[0].value.messages[0].from;
-          const userContact = contacts.filter((item) => item.wa_id === from);
-          const user_name = userContact[0].profile.name;
           // decrypt data and get the user uuid
           let decodedData = await decryptData(encryptedData);
 
           const user_uuid = decodedData;
 
-          if (user_uuid) {
-            // check if already exists
-            const existingAttribute = await attributesRepo.first({
-              user_uuid: user_uuid,
-              type: "mobile_number",
-            });
-
-            console.log("existingAttribute", existingAttribute);
-            if (existingAttribute) {
+          const existingAttribute = await attributesRepo.first({
+            type: "mobile_number",
+            value: `+${from}`,
+          });
+          // check if mobile number is already registered to some other account
+          if (existingAttribute) {
+            console.log("existingAttribute:1:>");
+            if (existingAttribute.user_uuid === user_uuid) {
+              // updated attribute
               let updatedAttribute = await attributesRepo.update(
                 {
                   uuid: existingAttribute.uuid,
+                },
+                {
+                  type: "mobile_number",
+                  value: `+${from}`,
+                }
+              );
+
+              let payload = {
+                to: from,
+                type: "text",
+                text: {
+                  preview_url: true,
+                  body: `Your mobile number is added successfuly. Click the link to continue: ${process.env.WHATSAPP_REDIRECT_URL}?purpose=verify&status=mobile_number_added`,
+                },
+              };
+
+              await sendMessage(payload);
+            } else {
+              // mobile number is already registered with other account
+              let payload = {
+                to: from,
+                type: "text",
+                text: {
+                  preview_url: true,
+                  body: `Your mobile number is already added with other account. Click the link to go back to app: ${process.env.WHATSAPP_REDIRECT_URL}?purpose=verify&status=mobile_number_already_exist`,
+                },
+              };
+
+              await sendMessage(payload);
+            }
+          } else {
+            console.log("existingAttribute_else:1:>");
+            // check if user already have mobile number
+            const existingAttributeForUser = await attributesRepo.first({
+              user_uuid: user_uuid,
+              type: "mobile_number",
+            });
+            console.log("existingAttribute", existingAttribute);
+            if (existingAttributeForUser) {
+              let updatedAttribute = await attributesRepo.update(
+                {
+                  uuid: existingAttributeForUser.uuid,
                 },
                 {
                   type: "mobile_number",
@@ -140,27 +196,18 @@ const handle = async ({ prepareResult, authorizeResult, res }) => {
                 true
               );
             }
+            //mobile number is added for the user_uuid, send message to user that number linked successfully
+            let payload = {
+              to: from,
+              type: "text",
+              text: {
+                preview_url: true,
+                body: `Your mobile number is added successfuly. Click the link to continue: ${process.env.WHATSAPP_REDIRECT_URL}?purpose=verify&status=mobile_number_added`,
+              },
+            };
+
+            await sendMessage(payload);
           }
-
-          console.log(
-            "message::",
-            user_name,
-            userContact,
-            encryptedData,
-            decodedData
-          );
-
-          //mobile number is added for the user_uuid, send message to user
-          let payload = {
-            to: from,
-            type: "text",
-            text: {
-              preview_url: true,
-              body: `Click the link to continue: ${process.env.WHATSAPP_REDIRECT_URL}?&purpose=verify`,
-            },
-          };
-
-          await sendMessage(payload);
         }
       }
       res.code(200);
