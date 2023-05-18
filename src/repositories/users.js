@@ -907,7 +907,7 @@ const registerUserFromWhatsApp = async (payload) => {
 };
 
 const removeUser = async (payload) => {
-  return await baseRepo.remove(table, payload, "hard");
+  return await baseRepo.remove(table, payload, "soft");
 };
 
 module.exports = {

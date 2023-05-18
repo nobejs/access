@@ -37,7 +37,7 @@ const getAttributesForUUID = async (uuid) => {
 
 const deleteAccount = async (where = {}) => {
   try {
-    return await baseRepo.remove(table, where, 'hard');
+    return await baseRepo.remove(table, where, 'soft');
   } catch (error) {
     throw error;
   }
