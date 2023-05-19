@@ -25,7 +25,7 @@ const handle = async ({ prepareResult, authorizeResult }) => {
   try {
     const authorizeUrl = await getAuthorizationUrl(prepareResult);
 
-    return { redirect_to: authorizeUrl };
+    return { okta_authorization_url: authorizeUrl };
   } catch (error) {
     throw error;
   }
