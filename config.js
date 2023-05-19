@@ -84,6 +84,8 @@ module.exports = () => {
       "POST /admin/login",
       "POST /admin/request-reset-password",
       "POST /admin/reset-password",
+      "GET /login/okta",
+      "POST /login/okta",
     ],
     responseKey: "respondResult",
     enableCORS: true,
