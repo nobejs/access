@@ -152,6 +152,9 @@ module.exports = (app) => {
           ["post", "/login/whatsapp-callback", "Users/LoginWithWhatsApp"],
           ["get", "/login/whatsapp-redirection", "Users/WhatsappRedirection"],
 
+          ["post", "/login/okta", "Users/RedirectForLoginWithOkta"],
+          ["get", "/login/okta", "Users/LoginWithOkta"],
+
           // Teams
           ["get", "/teams", "Teams/UserCanViewTeams"],
           ["post", "/teams", "Teams/UserCanCreateTeam"],

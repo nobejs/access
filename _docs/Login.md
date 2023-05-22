@@ -290,3 +290,82 @@ The key `TEST_USER_PASSWORD` used for setting the static OTP
 - You will get redirect link to whatsapp,(user_uuid will be encrypted)
 - Mobile number will be added for the `user_uuid`
 - You will get redirection link in whatsapp on clicking it you will redirect to app
+
+## OKTA LOGIN
+
+| Story                          | Endpoint              |
+| ------------------------------ | --------------------- |
+| Users/RedirectForLoginWithOkta | POST /login/okta      |
+| Users/LoginWithOkta            | GET /login/okta?code= |
+
+### Prerequisits:
+
+`OKTA_CLIENT_ID`= Your Okta client Id
+`OKTA_CLIENT_SECRET`= Your Okta client Secret
+`OKTA_DOMAIN`= Your Okta Domain(ex: dev-55033060.okta.com)
+`OKTA_REDIRECT_URL`= Your redirect url (ex: http://localhost:3000/authsuccess)
+`OKTA_SCOPES`=openid,email,profile
+
+### To login with okta:
+
+- Step 1: Call `POST /login/okta` API
+- Step 2: You will get a url in response, redirect user to that url
+- Step 3: After user has authorized, Okta will redirected user back to "redirect url" you have configured
+- Step 4: Take the code from url sent by Okta and then call `GET /login/okta?code=`
+- Step 5: Store the authorization token
+
+## Users/RedirectForLoginWithOkta
+
+This API responds with the url to which user should be redirected to, so that they can authenticate with Google.
+
+`POST /login/okta`
+
+The flow usually
+
+Sample Request Payload
+
+To directly get the access token, This is default, so you needn't pass it.
+
+```
+{
+    "state" : "respond_with_token"
+}
+```
+
+To get the token along with redirection to an url
+
+```
+{
+    "state" : "redirect_with_token"
+}
+```
+
+## Users/LoginWithOkta
+
+Login with Okta
+
+`GET /login/okta?code=`
+
+### Parameters
+
+**code** required
+
+Code given by Okta to login.
+
+The response of this api depends on "state" passed in RedirectForLoginWithOkta story.
+
+State: respond_with_token
+
+You will directly get an access token as part of json response
+
+State: redirect_with_token
+
+You will be redirected to the URL you mentioned in `OKTA_REDIRECT_URL` environment variable. It would redirect to:
+
+Ex 1: If `OKTA_REDIRECT_URL=https://teurons.com`
+
+The final redirection would be to: `https://teurons.com?access_token=<access_token>`
+
+Ex 1: If `OKTA_REDIRECT_URL=teurons://login_screen`
+
+The final redirection would be to: `teurons://login_screen?access_token=<access_token>`
