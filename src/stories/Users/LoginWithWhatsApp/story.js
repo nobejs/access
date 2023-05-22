@@ -35,8 +35,11 @@ const handle = async ({ prepareResult, authorizeResult, res }) => {
         prepareResult.entry[0].changes[0].value.messages[0]
       ) {
         let contacts = prepareResult.entry[0].changes[0].value.contacts;
-        let msg_body =
-          prepareResult.entry[0].changes[0].value.messages[0].text.body;
+        let msg_body = prepareResult.entry[0].changes[0].value.messages[0].text
+          ? prepareResult.entry[0].changes[0].value.messages[0].text.body
+            ? prepareResult.entry[0].changes[0].value.messages[0].text.body
+            : ""
+          : "";
 
         const escapedStartingString = "Link mobile for user: ".replace(
           /[.*+?^${}()|[\]\\]/g,
