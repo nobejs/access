@@ -26,6 +26,12 @@ module.exports = (app) => {
           );
         }
 
+        console.log("env", process.env);
+
+        if (process.env.DEBUG === "true") {
+          console.log("env", process.env);
+        }
+
         if (numberOfMigrations === numberOfFilesInMigrationPath) {
           return res.code(200).send({
             status: "Access service is healthy",
