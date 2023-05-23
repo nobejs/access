@@ -15,7 +15,7 @@ const getAuthorizationUrl = async (payload) => {
     }&redirect_uri=${encodeURIComponent(
       payload.redirect_to || process.env.OKTA_REDIRECT_URL
     )}&scope=${encodeURIComponent(
-      process.env.OKTA_SCOPES.replaceAll(",", " ")
+      process.env.OKTA_SCOPES.split(",").join(" ")
     )}&state=${payload.state || "respond_with_token"}`;
 
     return authorizationUrl;
