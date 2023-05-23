@@ -1,6 +1,8 @@
 const axios = require("axios");
 
 const getAuthorizationUrl = async (payload) => {
+  console.log("process.env.OKTA_SCOPES", process.env.OKTA_SCOPES, payload);
+
   try {
     let authorizationUrl = `https://${
       process.env.OKTA_DOMAIN

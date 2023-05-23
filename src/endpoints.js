@@ -26,7 +26,11 @@ module.exports = (app) => {
           );
         }
 
-        console.log("env", process.env);
+        console.log(
+          "env",
+          process.env,
+          "openid,email,profile".replaceAll(",", " ")
+        );
 
         if (process.env.DEBUG === "true") {
           console.log("env", process.env);
