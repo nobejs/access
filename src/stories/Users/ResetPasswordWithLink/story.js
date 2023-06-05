@@ -4,7 +4,12 @@ const validator = requireValidator();
 const verificationsRepo = requireRepo("verifications");
 
 const prepare = ({ reqQuery, reqBody, reqParams, req }) => {
-  const payload = findKeysFromRequest(req, ["user_uuid", "token", "password"]);
+  const payload = findKeysFromRequest(req, [
+    "user_uuid",
+    "token",
+    "password",
+    "return_with_token",
+  ]);
   return payload;
 };
 

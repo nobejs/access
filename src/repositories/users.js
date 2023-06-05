@@ -743,10 +743,16 @@ const verifyAttributeForResetPasswordWithLink = async (payload) => {
         await verificationsRepo.removeVerification({
           uuid: verification.uuid,
         });
-
-        return {
-          success: true,
-        };
+        if (payload.return_with_token) {
+          let token = await tokensRepo.createTokenForUser({
+            uuid: verification.user_uuid,
+          });
+          return { access_token: token };
+        } else {
+          return {
+            success: true,
+          };
+        }
       } else {
         throw "err";
       }
