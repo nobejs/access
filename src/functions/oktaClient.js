@@ -10,7 +10,7 @@ const getAuthorizationUrl = async (payload) => {
   try {
     let authorizationUrl = `https://${
       process.env.OKTA_DOMAIN
-    }/oauth2/default/v1/authorize?response_type=code&client_id=${
+    }/v1/authorize?response_type=code&client_id=${
       process.env.OKTA_CLIENT_ID
     }&redirect_uri=${encodeURIComponent(
       payload.redirect_to || process.env.OKTA_REDIRECT_URL
@@ -29,7 +29,7 @@ const getAccessToken = async (payload) => {
     `${process.env.OKTA_CLIENT_ID}:${process.env.OKTA_CLIENT_SECRET}`
   ).toString("base64");
 
-  let oktaEndpoint = `https://${process.env.OKTA_DOMAIN}/oauth2/default/v1/token?grant_type=authorization_code&redirect_uri=${payload.redirect_to}&code=${payload.code}`;
+  let oktaEndpoint = `https://${process.env.OKTA_DOMAIN}/v1/token?grant_type=authorization_code&redirect_uri=${payload.redirect_to}&code=${payload.code}`;
 
   try {
     const res = await axios({
@@ -49,7 +49,7 @@ const getAccessToken = async (payload) => {
 };
 
 const getAuthenticatedUser = async (payload) => {
-  let oktaEndpoint = `https://${process.env.OKTA_DOMAIN}/oauth2/default/v1/userinfo`;
+  let oktaEndpoint = `https://${process.env.OKTA_DOMAIN}/v1/userinfo`;
 
   try {
     const profileRes = await axios({
