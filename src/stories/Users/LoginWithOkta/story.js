@@ -28,6 +28,7 @@ const handle = async ({ prepareResult, authorizeResult }) => {
     console.log("token:>", oktaAccessToken);
     const userInfo = await getAuthenticatedUser(oktaAccessToken);
     console.log("userifo:>", userInfo);
+    const oktaIdToken = oktaAccessToken.id_token;
 
     let userObject = {};
 
@@ -41,7 +42,7 @@ const handle = async ({ prepareResult, authorizeResult }) => {
 
     let token = await usersRepo.registerUserFromGoogle(userObject);
 
-    return token;
+    return { token, oktaIdToken };
   } catch (error) {
     throw error;
   }
@@ -50,11 +51,11 @@ const handle = async ({ prepareResult, authorizeResult }) => {
 const respond = async ({ prepareResult, handleResult, res }) => {
   try {
     if (prepareResult.state === "redirect_with_token") {
-      const redirectWithTokenUrl = `${process.env.OKTA_REDIRECT_URL}?access_token=${handleResult}&platform=okta`;
+      const redirectWithTokenUrl = `${process.env.OKTA_REDIRECT_URL}?access_token=${handleResult.token}&id_token=${oktaIdToken}&platform=okta`;
       return res.redirect(redirectWithTokenUrl);
     }
 
-    return { access_token: handleResult };
+    return { access_token: handleResult.token, id_token: oktaIdToken };
   } catch (error) {
     throw error;
   }
