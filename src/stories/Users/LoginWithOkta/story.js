@@ -28,7 +28,8 @@ const handle = async ({ prepareResult, authorizeResult }) => {
     console.log("token:>", oktaAccessToken);
     const userInfo = await getAuthenticatedUser(oktaAccessToken);
     console.log("userifo:>", userInfo);
-    const oktaIdToken = oktaAccessToken.id_token;
+    // const oktaIdToken = oktaAccessToken.id_token;
+    const oktaIdToken = "na";
 
     let userObject = {};
 
