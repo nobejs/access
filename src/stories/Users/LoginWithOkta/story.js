@@ -25,7 +25,7 @@ const authorize = async ({ prepareResult }) => {
 const handle = async ({ prepareResult, authorizeResult }) => {
   try {
     const oktaAccessToken = await getAccessToken(prepareResult);
-    console.log("token:>", oktaAccessToken.access_token);
+    console.log("token:>", oktaAccessToken);
     const userInfo = await getAuthenticatedUser(oktaAccessToken);
     console.log("userifo:>", userInfo);
 
