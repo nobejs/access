@@ -44,6 +44,7 @@ const handle = async ({ prepareResult, authorizeResult }) => {
 
     return { token, oktaIdToken };
   } catch (error) {
+    console.log("error1", error);
     throw error;
   }
 };
@@ -51,12 +52,16 @@ const handle = async ({ prepareResult, authorizeResult }) => {
 const respond = async ({ prepareResult, handleResult, res }) => {
   try {
     if (prepareResult.state === "redirect_with_token") {
-      const redirectWithTokenUrl = `${process.env.OKTA_REDIRECT_URL}?access_token=${handleResult.token}&id_token=${oktaIdToken}&platform=okta`;
+      const redirectWithTokenUrl = `${process.env.OKTA_REDIRECT_URL}?access_token=${handleResult.token}&id_token=${handleResult.oktaIdToken}&platform=okta`;
       return res.redirect(redirectWithTokenUrl);
     }
 
-    return { access_token: handleResult.token, id_token: oktaIdToken };
+    return {
+      access_token: handleResult.token,
+      id_token: handleResult.oktaIdToken,
+    };
   } catch (error) {
+    console.log("error2", error);
     throw error;
   }
 };
