@@ -50,7 +50,7 @@ server.addHook("onSend", function (request, reply, payload, next) {
           ip: request.ip,
           user_agent: request.headers["user-agent"],
         },
-        request_payload: request.body,
+        request_payload: JSON.stringify(request.body),
         response: payload,
         user_uuid: request.user,
         uuid: request.user ? request.user : "",
