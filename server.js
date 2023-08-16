@@ -15,7 +15,6 @@ const server = httpServer({
     }
   },
 });
-const timestamps = new Date().toISOString();
 
 server.addHook("onRequest", async (req, reply) => {
   contextClassRef.client = {
@@ -30,7 +29,7 @@ server.addHook("onSend", function (request, reply, payload, next) {
       // Handle if condition
     } else {
       let apiLog = {
-        timestamp: timestamps,
+        timestamp: new Date().toISOString(),
         status_code: reply.statusCode,
         http_method: request.method,
         url: `${request.hostname}${request.url}`,
@@ -50,7 +49,7 @@ server.addHook("onSend", function (request, reply, payload, next) {
       };
 
       console.log(
-        `${request.hostname}${request.url}-${timestamps}${
+        `${request.hostname}${request.url}-${new Date().toISOString()}${
           request.user ? `-${request.user}` : ""
         }`,
         JSON.stringify(apiLog, null, 2)
