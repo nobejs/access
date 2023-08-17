@@ -49,7 +49,7 @@ server.addHook("onSend", function (request, reply, payload, next) {
       };
 
       console.log(
-        `REQUEST_ACCESS_LOG_PREFIX_${request.hostname}${
+        `ACCESS_API_LOG_${request.hostname}${
           request.url
         }-${new Date().toISOString()}${request.user ? `-${request.user}` : ""}`,
         JSON.stringify(apiLog)
