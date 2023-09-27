@@ -239,6 +239,8 @@ const processUserRegistered = async (eventData) => {
       value: verificationObject.attribute_value,
       meta: userObject.profile || {},
     });
+
+    await fireEventToExternalEntity(eventType, data, neptuneData);
   }
 
   if (process.env.SEND_TO_SQS === "true") {
@@ -256,11 +258,9 @@ const processUserRegistered = async (eventData) => {
         },
       };
 
-      await sendJob(job);
+      await fireEventToExternalEntity(eventType, job, null, "sqs");
     }
   }
-
-  await fireEventToExternalEntity(eventType, data, neptuneData);
 };
 
 const processUserUpdatedProfile = async (eventData) => {
@@ -448,9 +448,20 @@ const eventBus = async (event, data) => {
   }
 };
 
-const fireEventToExternalEntity = async (eventType, data, neptuneData) => {
-  if (process.env.SEND_EVENTS === "neptune") {
-    await neptuneRepo.fireEvent(eventType, data, neptuneData);
+const fireEventToExternalEntity = async (
+  eventType,
+  data,
+  neptuneData,
+  externalEntity = null
+) => {
+  if (externalEntity && externalEntity.toLowerCase() === "sqs") {
+    if (process.env.SEND_TO_SQS === "true") {
+      await sendJob(data);
+    }
+  } else {
+    if (process.env.SEND_EVENTS === "neptune") {
+      await neptuneRepo.fireEvent(eventType, data, neptuneData);
+    }
   }
 };
 
