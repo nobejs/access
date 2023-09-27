@@ -1,6 +1,7 @@
 const neptuneRepo = requireRepo("neptune");
 const contextClassRef = requireUtil("contextHelper");
 const debugLogger = requireUtil("debugLogger");
+const { sendJob } = requireFunction("EventHandlers/SQS/fireEventToPushToSqs");
 
 const preparePayloadFromVerificationObject = async (
   eventType,
@@ -238,9 +239,28 @@ const processUserRegistered = async (eventData) => {
       value: verificationObject.attribute_value,
       meta: userObject.profile || {},
     });
+
+    await fireEventToExternalEntity(eventType, data, neptuneData);
   }
 
-  await fireEventToExternalEntity(eventType, data, neptuneData);
+  if (process.env.SEND_TO_SQS === "true") {
+    if (payload.type === "email" || payload.email) {
+      let email =
+        payload.type && payload.type === "email"
+          ? payload.value
+          : payload.email;
+
+      let job = {
+        type: "trigger.welcome_email",
+        payload: {
+          email: email,
+          user_uuid: userObject.uuid,
+        },
+      };
+
+      await fireEventToExternalEntity(eventType, job, null, "sqs");
+    }
+  }
 };
 
 const processUserUpdatedProfile = async (eventData) => {
@@ -428,9 +448,20 @@ const eventBus = async (event, data) => {
   }
 };
 
-const fireEventToExternalEntity = async (eventType, data, neptuneData) => {
-  if (process.env.SEND_EVENTS === "neptune") {
-    await neptuneRepo.fireEvent(eventType, data, neptuneData);
+const fireEventToExternalEntity = async (
+  eventType,
+  data,
+  neptuneData,
+  externalEntity = null
+) => {
+  if (externalEntity && externalEntity.toLowerCase() === "sqs") {
+    if (process.env.SEND_TO_SQS === "true") {
+      await sendJob(data);
+    }
+  } else {
+    if (process.env.SEND_EVENTS === "neptune") {
+      await neptuneRepo.fireEvent(eventType, data, neptuneData);
+    }
   }
 };
 
