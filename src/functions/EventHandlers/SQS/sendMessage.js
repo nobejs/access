@@ -22,23 +22,3 @@ module.exports = async (queueUrl, params) => {
     });
   });
 };
-
-// Send messsage to queue
-// var params = {
-//   MessageBody: JSON.stringify({
-//     event_name: "ORDER_CREATED_2_4",
-//     tenant: "prueba",
-//     time: Date.now(),
-//     data: {
-//       id: 1,
-//       investor_id: 123,
-//       fund_scheme: "ILFS",
-//       units: 10,
-//       status: "SUCCESS",
-//     },
-//   }),
-//   MessageDeduplicationId: Date.now().toString(), // Required for FIFO queues
-//   MessageGroupId: "Group-1", // Required for FIFO queues
-//   QueueUrl:
-//     "https://sqs.ap-south-1.amazonaws.com/473674611069/fp-cybrilla-sandbox-events-consumer.fifo",
-// };
