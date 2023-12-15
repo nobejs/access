@@ -33,6 +33,12 @@ const authorize = async ({ prepareResult }) => {
 
 const handle = async ({ prepareResult, authorizeResult }) => {
   try {
+    if (
+      process.env.DISABLE_DELETE_ACCOUNT &&
+      process.env.DISABLE_DELETE_ACCOUNT.toString() === "true"
+    ) {
+      return;
+    }
     await attributesRepo.deleteAccount({
       user_uuid: authorizeResult.sub,
     });
