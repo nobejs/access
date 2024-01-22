@@ -258,7 +258,7 @@ const processUserRegistered = async (eventData) => {
         },
       };
 
-      await fireEventToExternalEntity(eventType, job, null, "sqs");
+      await fireEventToExternalEntity(eventType, job, null);
     }
   }
 };
@@ -448,20 +448,15 @@ const eventBus = async (event, data) => {
   }
 };
 
-const fireEventToExternalEntity = async (
-  eventType,
-  data,
-  neptuneData,
-  externalEntity = null
-) => {
-  if (externalEntity && externalEntity.toLowerCase() === "sqs") {
-    if (process.env.SEND_TO_SQS === "true") {
-      await sendJob(data);
-    }
-  } else {
-    if (process.env.SEND_EVENTS === "neptune") {
-      await neptuneRepo.fireEvent(eventType, data, neptuneData);
-    }
+const fireEventToExternalEntity = async (eventType, data, neptuneData) => {
+  if (process.env.SEND_TO_SQS === "true") {
+    data["service_tenant"] = process.env.SERVICE_TENANT || null;
+    data["type"] = eventType;
+    await sendJob(data);
+  }
+
+  if (process.env.SEND_EVENTS === "neptune") {
+    await neptuneRepo.fireEvent(eventType, data, neptuneData);
   }
 };
 
