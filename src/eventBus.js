@@ -452,10 +452,12 @@ const fireEventToExternalEntity = async (
   eventType,
   data,
   neptuneData,
-  externalEntity = null
+  externalEntity = process.env.DEFAULT_EXTERNAL_PROVIDER || null
 ) => {
   if (externalEntity && externalEntity.toLowerCase() === "sqs") {
     if (process.env.SEND_TO_SQS === "true") {
+      data["service_tenant"] = process.env.SERVICE_TENANT;
+      data["type"] = eventType;
       await sendJob(data);
     }
   } else {
