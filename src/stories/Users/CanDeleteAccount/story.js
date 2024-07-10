@@ -34,8 +34,8 @@ const authorize = async ({ prepareResult }) => {
 const handle = async ({ prepareResult, authorizeResult }) => {
   try {
     if (
-      process.env.DISABLE_DELETE_ACCOUNT &&
-      process.env.DISABLE_DELETE_ACCOUNT.toString() === "true"
+      process.env.ENVIRONMENT &&
+      process.env.ENVIRONMENT.toUpperCase() === "PRODUCTION"
     ) {
       return;
     }
