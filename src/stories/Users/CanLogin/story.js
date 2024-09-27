@@ -5,6 +5,9 @@ const getAllowedTypes = requireFunction("getAllowedTypes");
 
 const prepare = ({ req }) => {
   const payload = findKeysFromRequest(req, ["type", "value", "password"]);
+  if (payload.type === "email") {
+    payload["value"] = payload.value.trim().toLowerCase();
+  }
   return payload;
 };
 

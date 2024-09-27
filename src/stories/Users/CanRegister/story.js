@@ -15,6 +15,10 @@ const prepare = ({ req }) => {
     "failure_redirect",
     "meta",
   ]);
+
+  if (payload.type === "email") {
+    payload["value"] = payload.value.trim().toLowerCase();
+  }
   payload["verification_method"] = payload["verification_method"]
     ? payload["verification_method"]
     : "otp";
