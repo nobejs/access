@@ -36,6 +36,20 @@ It is built on and dependent on:
 - Use Github issues to raise issues
 - Use our discord or twitter to reach quickly to us (Visit: https://nobejs.org/)
 
+### How to release
+
+- Ensure the GitHub CLI is installed on your system.
+- Configure the GitHub CLI with your credentials.
+- To create a new release, run the command:
+  ```bash
+  yarn release
+  ```
+  or execute the script:
+  ```bash
+  ./release.sh
+  ```
+- Follow any prompts to finalize the release process.
+
 ### License
 
 Coming soon. Mostly MIT. We won't charge. You can fork the code, change it, sell it, use it as you see fit.
