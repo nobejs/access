@@ -45,7 +45,8 @@ const handle = async ({ prepareResult, authorizeResult }) => {
     }
 
     if (res.data.emailAddresses.length) {
-      userObject["email"] = res.data.emailAddresses[0]["value"];
+      const email = res.data.emailAddresses[0]["value"];
+      userObject["email"] = email.toLowerCase();
     }
 
     let token = await usersRepo.registerUserFromGoogle(userObject);
