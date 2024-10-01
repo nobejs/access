@@ -1,6 +1,9 @@
 if (process.env.ENVFILE) {
   var dotenv = require("dotenv");
   dotenv.config({ path: process.env.ENVFILE });
+} else {
+  var dotenv = require("dotenv");
+  dotenv.config({ path: ".env" });
 }
 
 const executeStrategy = require("./core/executeStrategy");
