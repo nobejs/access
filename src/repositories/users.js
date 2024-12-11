@@ -125,6 +125,23 @@ const verifyAttributeForRegistrationUsingOTP = async (payload) => {
 
     if (verification !== undefined && !isDateInPast(verification.expires_at)) {
       if (payload.token === verification.token) {
+        if (process.env.ATTRIBUTE_CHECK === "true") {
+          // This checks if attribute type and value exists in the attribute table
+          const existingAttributeByValue = await attributesRepo.first({
+            type: payload.type,
+            value: payload.value,
+          });
+
+          console.log("existingAttributeByValue", existingAttributeByValue);
+
+          if (existingAttributeByValue) {
+            await verificationsRepo.removeVerification({
+              uuid: verification.uuid,
+            });
+
+            throw "AttributeAlreadyExist";
+          }
+        }
         await attributesRepo.createAttributeForUUID(
           verification.user_uuid,
           payload,
@@ -156,7 +173,10 @@ const verifyAttributeForRegistrationUsingOTP = async (payload) => {
   } catch (error) {
     throw {
       statusCode: 422,
-      message: "Invalid Token",
+      message:
+        error === "AttributeAlreadyExist"
+          ? "AttributeAlreadyExist"
+          : "Invalid Token",
     };
   }
 };
@@ -569,14 +589,32 @@ const verifyAttributeForUpdate = async (payload) => {
     if (verification !== undefined && !isDateInPast(verification.expires_at)) {
       if (payload.token === verification.token) {
         // console.log("payload", payload);
+        if (process.env.ATTRIBUTE_CHECK === "true") {
+          // This checks if attribute type and value exists in the attribute table
+          const existingAttributeByValue = await attributesRepo.first({
+            type: payload.type,
+            value: payload.value,
+          });
 
+          console.log("existingAttributeByValue", existingAttributeByValue);
+
+          if (existingAttributeByValue) {
+            await verificationsRepo.removeVerification({
+              uuid: verification.uuid,
+            });
+
+            throw "AttributeAlreadyExist";
+          }
+        }
+
+        // This checks if attribute type exists for for logged in user in the attribute table
         const existingAttribute = await attributesRepo.first({
           user_uuid: payload.sub,
           type: payload.type,
           ...(payload.purpose && { purpose: payload.purpose }),
         });
 
-        // console.log("existingAttribute", existingAttribute);
+        console.log("existingAttribute", existingAttribute);
 
         if (existingAttribute === undefined) {
           let createdAttribute = await attributesRepo.createAttributeForUUID(
@@ -634,10 +672,12 @@ const verifyAttributeForUpdate = async (payload) => {
     }
   } catch (error) {
     console.log("Error", error);
-
     throw {
       statusCode: 422,
-      message: "Invalid Token",
+      message:
+        error === "AttributeAlreadyExist"
+          ? "AttributeAlreadyExist"
+          : "Invalid Token",
     };
   }
 };
