@@ -132,7 +132,7 @@ const verifyAttributeForRegistrationUsingOTP = async (payload) => {
             value: payload.value,
           });
 
-          console.log("existingAttributeByValue", existingAttributeByValue);
+          // console.log("existingAttributeByValue", existingAttributeByValue);
 
           if (existingAttributeByValue) {
             await verificationsRepo.removeVerification({
@@ -596,7 +596,7 @@ const verifyAttributeForUpdate = async (payload) => {
             value: payload.value,
           });
 
-          console.log("existingAttributeByValue", existingAttributeByValue);
+          // console.log("existingAttributeByValue", existingAttributeByValue);
 
           if (existingAttributeByValue) {
             await verificationsRepo.removeVerification({
