@@ -450,9 +450,16 @@ const eventBus = async (event, data) => {
 
 const fireEventToExternalEntity = async (eventType, data, neptuneData) => {
   if (process.env.SEND_TO_SQS === "true") {
-    data["service_tenant"] = process.env.SERVICE_TENANT || null;
-    data["type"] = eventType;
-    await sendJob(data);
+    const sqsPayload = {
+      ...data,
+      service_tenant: process.env.SERVICE_TENANT,
+      type: eventType,
+      contact_infos: neptuneData.contact_infos || [],
+      environment: process.env.ENVIRONMENT,
+      user_id: neptuneData.user_id || null,
+    };
+
+    await sendJob(sqsPayload);
   }
 
   if (process.env.SEND_EVENTS === "neptune") {
