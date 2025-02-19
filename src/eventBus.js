@@ -451,7 +451,7 @@ const eventBus = async (event, data) => {
 const fireEventToExternalEntity = async (eventType, data, neptuneData) => {
   if (process.env.SEND_TO_SQS === "true") {
     const sqsPayload = {
-      ...data,
+      data,
       service_tenant: process.env.SERVICE_TENANT,
       type: eventType,
       contact_infos: neptuneData.contact_infos || [],
