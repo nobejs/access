@@ -244,22 +244,7 @@ const processUserRegistered = async (eventData) => {
   }
 
   if (process.env.SEND_TO_SQS === "true") {
-    if (payload.type === "email" || payload.email) {
-      let email =
-        payload.type && payload.type === "email"
-          ? payload.value
-          : payload.email;
-
-      let job = {
-        type: "trigger.welcome_email",
-        payload: {
-          email: email,
-          user_uuid: userObject.uuid,
-        },
-      };
-
-      await fireEventToExternalEntity(eventType, job, null);
-    }
+    await fireEventToExternalEntity(eventType, data, neptuneData);
   }
 };
 
