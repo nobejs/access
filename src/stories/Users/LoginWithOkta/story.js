@@ -37,7 +37,7 @@ const handle = async ({ prepareResult, authorizeResult }) => {
     }
 
     if (userInfo.email) {
-      userObject["email"] = userInfo.email;
+      userObject["email"] = userInfo.email?.toLowerCase();
     }
 
     let token = await usersRepo.registerUserFromGoogle(userObject);
