@@ -43,7 +43,7 @@ const validateInput = async (payload) => {
           let verification =
             typeof payload.value === "string"
               ? await verificationsRepo.findVerificationForLogin({
-                  attribute_value: payload.value,
+                  attribute_value: payload.value?.toLowerCase(),
                   attribute_type: payload.type,
                 })
               : -1;
