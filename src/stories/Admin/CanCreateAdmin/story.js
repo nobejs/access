@@ -41,7 +41,7 @@ const authorize = async ({ prepareResult }) => {
 const handle = async ({ prepareResult, authorizeResult }) => {
   try {
     let payload = {
-      email: prepareResult.email,
+      email: prepareResult.email?.toLowerCase(),
       password: prepareResult.password,
     };
     return await adminRepo.createAdmin(payload);

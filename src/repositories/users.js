@@ -91,7 +91,8 @@ const requestAttributeVerificationForRegistration = async (payload) => {
     // Find if there is already an existing verification for this
     let verification = await verificationsRepo.findVerificationForRegistration({
       attribute_type: payload.type,
-      attribute_value: payload.value,
+      attribute_value:
+        payload.type === "email" ? payload.value?.toLowerCase() : payload.value,
     });
 
     // If verification is present already, we can update it
@@ -120,7 +121,8 @@ const verifyAttributeForRegistrationUsingOTP = async (payload) => {
   try {
     let verification = await verificationsRepo.findVerificationForRegistration({
       attribute_type: payload.type,
-      attribute_value: payload.value,
+      attribute_value:
+        payload.type === "email" ? payload.value?.toLowerCase() : payload.value,
     });
 
     if (verification !== undefined && !isDateInPast(verification.expires_at)) {
@@ -129,7 +131,10 @@ const verifyAttributeForRegistrationUsingOTP = async (payload) => {
           // This checks if attribute type and value exists in the attribute table
           const existingAttributeByValue = await attributesRepo.first({
             type: payload.type,
-            value: payload.value,
+            value:
+              payload.type === "email"
+                ? payload.value?.toLowerCase()
+                : payload.value,
           });
 
           // console.log("existingAttributeByValue", existingAttributeByValue);
@@ -235,7 +240,7 @@ const registerUserFromGoogle = async (payload) => {
   try {
     const findUserWithAttribute = await attributesRepo.first({
       type: "email",
-      value: payload.email,
+      value: payload.email?.toLowerCase(),
     });
 
     // console.log("findUserWithAttribute", findUserWithAttribute);
@@ -251,7 +256,7 @@ const registerUserFromGoogle = async (payload) => {
         user.uuid,
         {
           type: "email",
-          value: payload.email,
+          value: payload.email?.toLowerCase(),
         },
         true
       );
@@ -265,7 +270,7 @@ const registerUserFromGoogle = async (payload) => {
         verificationObject: {
           user_uuid: user.uuid,
           attribute_type: "email",
-          attribute_value: payload.email,
+          attribute_value: payload.email?.toLowerCase(),
         },
         userObject: userObject,
         payload: payload,
@@ -294,12 +299,14 @@ const registerUserFromGoogle = async (payload) => {
 const generateOTPForLogin = async (payload) => {
   let attribute = await attributesRepo.first({
     type: payload.type,
-    value: payload.value,
+    value:
+      payload.type === "email" ? payload.value?.toLowerCase() : payload.value,
   });
 
   let verification = await verificationsRepo.findVerificationForRegistration({
     attribute_type: payload.type,
-    attribute_value: payload.value,
+    attribute_value:
+      payload.type === "email" ? payload.value?.toLowerCase() : payload.value,
   });
 
   if (attribute === undefined && verification !== undefined) {
@@ -322,7 +329,8 @@ const generateOTPForLogin = async (payload) => {
 
   verification = await verificationsRepo.findVerificationForLogin({
     attribute_type: payload.type,
-    attribute_value: payload.value,
+    attribute_value:
+      payload.type === "email" ? payload.value?.toLowerCase() : payload.value,
   });
 
   if (verification !== undefined) {
@@ -350,14 +358,18 @@ const generateOTPForLogin = async (payload) => {
   } else {
     let attribute = await attributesRepo.first({
       type: payload.type,
-      value: payload.value,
+      value:
+        payload.type === "email" ? payload.value?.toLowerCase() : payload.value,
     });
 
     let verificationObject = await verificationsRepo.createVerificationForLogin(
       {
         user_uuid: attribute.user_uuid,
         attribute_type: payload.type,
-        attribute_value: payload.value,
+        attribute_value:
+          payload.type === "email"
+            ? payload.value?.toLowerCase()
+            : payload.value,
       }
     );
 
@@ -380,12 +392,14 @@ const authenticateWithOTP = async (payload) => {
 
     let attribute = await attributesRepo.first({
       type: payload.type,
-      value: payload.value,
+      value:
+        payload.type === "email" ? payload.value?.toLowerCase() : payload.value,
     });
 
     let verification = await verificationsRepo.findVerificationForRegistration({
       attribute_type: payload.type,
-      attribute_value: payload.value,
+      attribute_value:
+        payload.type === "email" ? payload.value?.toLowerCase() : payload.value,
     });
 
     if (attribute === undefined && verification !== undefined) {
@@ -404,7 +418,8 @@ const authenticateWithOTP = async (payload) => {
 
     verification = await verificationsRepo.findVerificationForLogin({
       attribute_type: payload.type,
-      attribute_value: payload.value,
+      attribute_value:
+        payload.type === "email" ? payload.value?.toLowerCase() : payload.value,
     });
 
     if (verification !== undefined && !isDateInPast(verification.expires_at)) {
@@ -514,7 +529,8 @@ const requestAttributeVerificationForUpdate = async (payload) => {
     // Find if there is already an existing verification for this
     let verification = await verificationsRepo.findVerificationForUpdate({
       attribute_type: payload.type,
-      attribute_value: payload.value,
+      attribute_value:
+        payload.type === "email" ? payload.value?.toLowerCase() : payload.value,
     });
 
     // If verification is present already, we can update it
@@ -543,7 +559,8 @@ const updateAttribute = async (payload) => {
 
   let verification = await verificationsRepo.findVerificationForUpdate({
     attribute_type: payload.type,
-    attribute_value: payload.value,
+    attribute_value:
+      payload.type === "email" ? payload.value?.toLowerCase() : payload.value,
   });
 
   // console.log("updateAttribute payload", payload);
@@ -581,7 +598,8 @@ const verifyAttributeForUpdate = async (payload) => {
   try {
     let verification = await verificationsRepo.findVerificationForUpdate({
       attribute_type: payload.type,
-      attribute_value: payload.value,
+      attribute_value:
+        payload.type === "email" ? payload.value?.toLowerCase() : payload.value,
     });
 
     // console.log("payload", payload.token === verification.token);
@@ -593,7 +611,10 @@ const verifyAttributeForUpdate = async (payload) => {
           // This checks if attribute type and value exists in the attribute table
           const existingAttributeByValue = await attributesRepo.first({
             type: payload.type,
-            value: payload.value,
+            value:
+              payload.type === "email"
+                ? payload.value?.toLowerCase()
+                : payload.value,
           });
 
           // console.log("existingAttributeByValue", existingAttributeByValue);
@@ -621,7 +642,10 @@ const verifyAttributeForUpdate = async (payload) => {
             verification.user_uuid,
             {
               type: payload.type,
-              value: payload.value,
+              value:
+                payload.type === "email"
+                  ? payload.value?.toLowerCase()
+                  : payload.value,
               ...(payload.purpose && {
                 purpose: payload.purpose,
               }),
@@ -644,7 +668,10 @@ const verifyAttributeForUpdate = async (payload) => {
             },
             {
               type: payload.type,
-              value: payload.value,
+              value:
+                payload.type === "email"
+                  ? payload.value?.toLowerCase()
+                  : payload.value,
               ...(payload.purpose && {
                 purpose: payload.purpose,
               }),
@@ -692,7 +719,10 @@ const requestAttributeVerificationForResetPassword = async (payload) => {
     let verification = await verificationsRepo.findVerificationForResetPassword(
       {
         attribute_type: payload.type,
-        attribute_value: payload.value,
+        attribute_value:
+          payload.type === "email"
+            ? payload.value?.toLowerCase()
+            : payload.value,
       }
     );
 
@@ -709,14 +739,20 @@ const requestAttributeVerificationForResetPassword = async (payload) => {
     } else {
       let attribute = await attributesRepo.first({
         type: payload.type,
-        value: payload.value,
+        value:
+          payload.type === "email"
+            ? payload.value?.toLowerCase()
+            : payload.value,
       });
 
       let verificationObject =
         await verificationsRepo.createVerificationForResetPassword({
           user_uuid: attribute.user_uuid,
           attribute_type: payload.type,
-          attribute_value: payload.value,
+          attribute_value:
+            payload.type === "email"
+              ? payload.value?.toLowerCase()
+              : payload.value,
         });
 
       await eventBus("user_requested_reset_password", {

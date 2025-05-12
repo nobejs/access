@@ -16,7 +16,7 @@ const first = async (payload) => {
 
 const authenticateWithPassword = async (payload) => {
   let admin = await baseRepo.first(table, {
-    email: payload.email,
+    email: payload.email?.toLowerCase(),
   });
 
   if (admin === undefined) {
@@ -102,7 +102,7 @@ const verifyAttributeForResetPassword = async (payload) => {
     let verification = await verificationsRepo.findVerificationForResetPassword(
       {
         attribute_type: "email",
-        attribute_value: payload.value,
+        attribute_value: payload.value?.toLowerCase(),
       }
     );
 

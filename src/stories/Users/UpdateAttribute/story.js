@@ -80,7 +80,7 @@ const validateInput = async (payload) => {
             typeof payload.value === "string"
               ? await usersRepo.findUserByTypeAndValue(
                   {
-                    value: payload.value,
+                    value: payload.value?.toLowerCase(),
                     type: payload.type,
                     // ...(payload.purpose && { purpose: payload.purpose }),
                   },

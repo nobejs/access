@@ -42,7 +42,7 @@ const handle = async ({ prepareResult, authorizeResult }) => {
     let userObject = {};
 
     if (res.email) {
-      userObject["email"] = res.email;
+      userObject["email"] = res.email?.toLowerCase();
     }
 
     if (res.name) {

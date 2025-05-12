@@ -25,7 +25,7 @@ const validateInput = async (payload) => {
           let userCount =
             typeof payload.value === "string"
               ? await adminRepo.findUserByValue({
-                  email: payload.value,
+                  email: payload.value?.toLowerCase(),
                 })
               : -1;
           return userCount > 0 ? true : false;
