@@ -1,4 +1,4 @@
-FROM node:12-alpine AS stage1
+FROM node:16-alpine AS stage1
 RUN apk add --update --no-cache postgresql-client
 RUN apk add --update --no-cache python3
 RUN apk --no-cache add --virtual builds-deps build-base python3
@@ -8,7 +8,7 @@ RUN yarn
 COPY . .
 
 
-FROM node:12-alpine
+FROM node:16-alpine
 COPY --from=stage1 /app /app
 WORKDIR /app
 EXPOSE 3000
