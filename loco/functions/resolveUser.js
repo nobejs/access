@@ -43,6 +43,9 @@ const resolveUser = async (locoRoute, frameworkData) => {
   }
 
   if (locoRoute.resource === "team-members") {
+    if (frameworkData.req.issuer === "admin") {
+      return "*";
+    }
     let invoking_user_uuid = frameworkData.req.sub;
 
     let currentUserTeams = await teamMembersRepo.findAllWithConstraints({
