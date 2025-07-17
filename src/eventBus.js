@@ -309,10 +309,18 @@ const processUserRequestLoginOTP = async (eventData) => {
     ],
   };
 
+  const now = new Date();
+  const formattedTime = `${String(now.getHours()).padStart(2, "0")}:${String(
+    now.getMinutes()
+  ).padStart(2, "0")}, ${String(now.getDate()).padStart(2, "0")}/${String(
+    now.getMonth() + 1
+  ).padStart(2, "0")}/${now.getFullYear()}`;
+
   let data = {
     token: eventObject.token,
     type: eventObject.type,
     value: eventObject.value,
+    time: formattedTime,
   };
 
   let neptuneData = {
