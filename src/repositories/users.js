@@ -337,24 +337,7 @@ const generateOTPForLogin = async (payload) => {
     let verificationObject = await verificationsRepo.updateVerification({
       uuid: verification.uuid,
     });
-
-    await eventBus("user_requested_login_otp", {
-      verificationObject: verificationObject,
-    });
-
-    // Todo: Process via Event Bus
-    // await loginWithOtpEvent({
-    //   user_uuid: verificationObject.user_uuid,
-    //   token: verificationObject.token,
-    //   type: verificationObject.attribute_type,
-    //   value: verificationObject.attribute_value,
-    //   contact_infos: [
-    //     {
-    //       type: payload.type,
-    //       value: verificationObject.attribute_value,
-    //     },
-    //   ],
-    // });
+    await sendLoginOtpEvents(verificationObject);
   } else {
     let attribute = await attributesRepo.first({
       type: payload.type,
@@ -372,9 +355,30 @@ const generateOTPForLogin = async (payload) => {
             : payload.value,
       }
     );
+    await sendLoginOtpEvents(verificationObject);
+  }
+};
 
-    // Todo: Process via Event Bus
-
+const sendLoginOtpEvents = async (verificationObject) => {
+  if (
+    process.env.ENABLE_USER_ALL_ATTRIBUTES_COMMUNICATION &&
+    process.env.ENABLE_USER_ALL_ATTRIBUTES_COMMUNICATION.toLowerCase() ===
+      "true"
+  ) {
+    let attributes = await attributesRepo.getAttributesForUUID(
+      verificationObject.user_uuid
+    );
+    for (const attr of attributes) {
+      await eventBus("user_requested_login_otp", {
+        verificationObject: {
+          user_uuid: verificationObject.user_uuid,
+          token: verificationObject.token,
+          attribute_type: attr.type,
+          attribute_value: attr.value,
+        },
+      });
+    }
+  } else {
     await eventBus("user_requested_login_otp", {
       verificationObject: verificationObject,
     });
