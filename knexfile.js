@@ -10,9 +10,13 @@ module.exports = {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     application_name: process.env.APP_NAME || "nobe-runner",
-    ssl: {
-      rejectUnauthorized: false,
-    },
+    ...(process.env.DB_SSL_MODE === "true"
+      ? {
+          ssl: {
+            rejectUnauthorized: false,
+          },
+        }
+      : {}),
   },
   migrations: {
     directory: "./database/migrations",
