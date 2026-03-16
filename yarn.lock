@@ -511,10 +511,10 @@
     uuid "^9.0.0"
     validate.js "^0.13.1"
 
-"@locospec/operator-knexjs@^0.0.13":
-  version "0.0.13"
-  resolved "https://registry.yarnpkg.com/@locospec/operator-knexjs/-/operator-knexjs-0.0.13.tgz#29a421ea0add1e1504511bc1b5d09e48b3ee3432"
-  integrity sha512-BP5Feh9rEsLgxxSRerKnw2+5FG0RvbLYkakqv2iWhVceZVqxkiNyGAcZmwYdv4PlPac15xSN6X/D7XHlbePxxQ==
+"@locospec/operator-knexjs@^0.0.17":
+  version "0.0.17"
+  resolved "https://registry.yarnpkg.com/@locospec/operator-knexjs/-/operator-knexjs-0.0.17.tgz#800853e59ccee00566470acc1913d34e8ee8a230"
+  integrity sha512-CE7vHzkprAcTjnfaI5EjEKsSuMohZXWyGZ8A0krjd7gZRAfS17cZej5fgqxlOAC3VJ/92sKeXVDoJEx814DwHQ==
   dependencies:
     knex "^2.3.0"
     pg "^8.8.0"
