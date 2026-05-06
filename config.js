@@ -67,6 +67,8 @@ module.exports = () => {
       "POST /login/google",
       "GET /login/google",
       "GET /login/google-with-token",
+      "POST /login/microsoft",
+      "GET /login/microsoft",
       "POST /verify-registration",
       "POST /request-verify-registration",
       "POST /request-reset-password",
