@@ -3,6 +3,7 @@ const usersRepo = requireRepo("users");
 const {
   exchangeCodeForTokens,
   getAuthenticatedUser,
+  enforceAllowedMicrosoftEmailDomain,
 } = requireFunction("microsoftClient");
 
 const prepare = ({ req }) => {
@@ -26,6 +27,7 @@ const handle = async ({ prepareResult }) => {
       access_token: microsoftTokens.access_token,
       id_token: microsoftTokens.id_token,
     });
+    enforceAllowedMicrosoftEmailDomain(userObject.email);
     const token = await usersRepo.registerUserFromGoogle(userObject);
 
     return { token, idToken: microsoftTokens.id_token };
