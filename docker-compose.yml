@@ -1,0 +1,16 @@
+# Start: docker compose up -d
+# Stop:  docker compose down
+# Withoutcache: docker compose build --no-cache app
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    entrypoint: ["npm", "run", "migrate-and-start"]
+    # For local DB from host: set DB_HOST=host.docker.internal in .env
+    env_file: .env
+    ports:
+      # Map the container port to the local port, I used 8004 for this example
+      - "3000:3000"
+    restart: unless-stopped
