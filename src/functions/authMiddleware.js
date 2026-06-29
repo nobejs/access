@@ -15,16 +15,16 @@ const exclude = Config["excludeFromAuth"];
 module.exports = async (req, reply) => {
   if (req.method !== "OPTIONS") {
     let needsAuth = true;
-    // console.log("req.routerPath", req.method, req.url);
+    // console.log("req.routeOptions.url", req.method, req.url);
 
-    if (req.routerPath === undefined) {
+    if (req.routeOptions.url === undefined) {
       return reply.code(404).send({ error: "Not Found" });
     }
 
     exclude.forEach((p) => {
       let [method, path] = p.split(" ");
       let regex = pathToRegexp(path);
-      if (method == req.method && regex.exec(req.routerPath) !== null) {
+      if (method == req.method && regex.exec(req.routeOptions.url) !== null) {
         needsAuth = false;
       }
     });
