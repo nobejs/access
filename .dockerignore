@@ -6,3 +6,6 @@ kube-manifests
 .github
 _docs
 node_modules/
+core/mental-js
+Access.postman_collection.json
+
