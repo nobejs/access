@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-sqs": "^3.1075.0",
-    "@fastify/formbody": "^6.0.1",
+    "@fastify/formbody": "^8.0.2",
     "@locospec/engine": "^0.0.36",
     "@locospec/operator-knexjs": "^0.0.17",
     "@sentry/node": "^10.62.0",
@@ -44,8 +44,7 @@
     "bcrypt": "^6.0.0",
     "dotenv": "^10.0.0",
     "extract-zip": "^2.0.1",
-    "fastify": "^3.21.6",
-    "fastify-cors": "^6.0.3",
+    "fastify": "^5.9.0",
     "fs-extra": "^10.0.0",
     "google-auth-library": "^7.11.0",
     "jest": "^30.4.2",
