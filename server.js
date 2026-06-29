@@ -1,6 +1,5 @@
 const Config = require("./config")();
 const httpServer = requireHttpServer();
-const rabbitSendMessage = requireUtil("rabbitSendMessage");
 const contextClassRef = requireUtil("contextHelper");
 const bootstrapLoco = require("./loco/bootstrap");
 
