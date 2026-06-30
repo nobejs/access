@@ -3,8 +3,6 @@ const baseRepo = requireUtil("baseRepo");
 const attributesRepo = requireRepo("attributes");
 const verificationsRepo = requireRepo("verifications");
 const tokensRepo = requireRepo("tokens");
-const neptune = requireRepo("neptune");
-const { resetPasswordVerificationEvent } = require("../events");
 const eventBus = require("../eventBus");
 const isDateInPast = requireFunction("isDateInPast");
 const table = "users";
@@ -918,25 +916,11 @@ const updateProfileOfUser = async (uuid, payload) => {
 };
 
 const registerFirebaseToken = async (userUuid, payload) => {
-  try {
-    return await neptune.addUserContactInfoToNeptune(userUuid, {
-      type: "firebase_token",
-      value: payload.value,
-    });
-  } catch (error) {
-    throw error;
-  }
+  return { userUuid, value: payload.value }; // return the id for now as we dont have any table to store these
 };
 
 const deRegisterFirebaseToken = async (userUuid, payload) => {
-  try {
-    return await neptune.deleteUserContactInfo(userUuid, {
-      type: "firebase_token",
-      value: payload.value,
-    });
-  } catch (error) {
-    throw error;
-  }
+  return { userUuid, value: payload.value }; // return the id for now as we dont have any table to store these
 };
 
 const registerUserFromWhatsApp = async (payload) => {

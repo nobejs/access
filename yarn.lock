@@ -1166,13 +1166,6 @@
     "@smithy/util-buffer-from" "^2.2.0"
     tslib "^2.6.2"
 
-"@teurons/neptune-nodejs@^1.1.11":
-  version "1.1.11"
-  resolved "https://registry.yarnpkg.com/@teurons/neptune-nodejs/-/neptune-nodejs-1.1.11.tgz#0a23f239af2658aa65abc3f2d2b4bcb29484fcb7"
-  integrity sha512-1BwGJBNDhADgg8Xu7j/SWPu01nnedJNvem+GiPZWsYRO/byNiXvThcvxcd3Go9Vh47W+w264nWcdR3+68NQ31Q==
-  dependencies:
-    axios "^0.21.1"
-
 "@tybys/wasm-util@^0.10.3":
   version "0.10.3"
   resolved "https://registry.yarnpkg.com/@tybys/wasm-util/-/wasm-util-0.10.3.tgz#015cba9e9dd47ce14d03d2a8c5d547bfb169665d"
@@ -1550,13 +1543,6 @@ avvio@^7.1.2:
     debug "^4.0.0"
     fastq "^1.6.1"
     queue-microtask "^1.1.2"
-
-axios@^0.21.1:
-  version "0.21.4"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.4.tgz#c67b90dc0568e5c1cf2b0b858c43ba28e2eda575"
-  integrity sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==
-  dependencies:
-    follow-redirects "^1.14.0"
 
 axios@^1.18.1:
   version "1.18.1"
@@ -2257,7 +2243,7 @@ flatstr@^1.0.12:
   resolved "https://registry.yarnpkg.com/flatstr/-/flatstr-1.0.12.tgz#c2ba6a08173edbb6c9640e3055b95e287ceb5931"
   integrity sha512-4zPxDyhCyiN2wIAtSLI6gc82/EjqZc1onI4Mz/l0pWrAlsSfYH/2ZIcU+e3oA2wDwbzIWNKwa23F8rh6+DRWkw==
 
-follow-redirects@^1.14.0, follow-redirects@^1.16.0:
+follow-redirects@^1.16.0:
   version "1.16.0"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.16.0.tgz#28474a159d3b9d11ef62050a14ed60e4df6d61bc"
   integrity sha512-y5rN/uOsadFT/JfYwhxRS5R7Qce+g3zG97+JrtFZlC9klX/W5hD7iiLzScI4nZqUS7DNUdhPgw4xI8W2LuXlUw==

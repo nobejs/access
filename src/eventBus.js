@@ -1,6 +1,4 @@
-const neptuneRepo = requireRepo("neptune");
 const contextClassRef = requireUtil("contextHelper");
-const debugLogger = requireUtil("debugLogger");
 const { sendJob } = requireFunction("EventHandlers/SQS/fireEventToPushToSqs");
 
 const preparePayloadFromVerificationObject = async (
@@ -53,9 +51,8 @@ const preparePayloadFromVerificationObject = async (
       data.link = urlLink;
     }
   }
-  // neptuneData["ignore_user_contacts"] = "true";
 
-  let neptuneData = {
+  let eventMeta = {
     tags: [],
     ignore_user_contacts: "true",
     user_id: eventObject.user_uuid,
@@ -63,9 +60,7 @@ const preparePayloadFromVerificationObject = async (
     contact_infos: eventObject.contact_infos || [],
   };
 
-  // console.log("neptuneData", eventObject);
-
-  await fireEventToExternalEntity(eventType, data, neptuneData);
+  await fireEventToExternalEntity(eventType, data, eventMeta);
 };
 
 const processUserCreated = async (eventData) => {
@@ -106,7 +101,7 @@ const processUserCreatedByAdmin = async (eventData) => {
     ],
   };
 
-  let neptuneData = {
+  let eventMeta = {
     tags: [],
     ignore_user_contacts: "true",
     user_id: eventObject.user_uuid,
@@ -120,7 +115,7 @@ const processUserCreatedByAdmin = async (eventData) => {
     value: eventObject.value,
   };
 
-  await fireEventToExternalEntity(eventType, data, neptuneData);
+  await fireEventToExternalEntity(eventType, data, eventMeta);
 };
 
 const processUserAddedToTeamByAdmin = async (eventData) => {
@@ -141,7 +136,7 @@ const processUserAddedToTeamByAdmin = async (eventData) => {
     contact_infos: contact_infos,
   };
 
-  let neptuneData = {
+  let eventMeta = {
     tags: [],
     ignore_user_contacts: "true",
     user_id: eventObject.user_uuid,
@@ -156,7 +151,26 @@ const processUserAddedToTeamByAdmin = async (eventData) => {
     attributes: attributes,
   };
 
-  await fireEventToExternalEntity(eventType, data, neptuneData);
+  await fireEventToExternalEntity(eventType, data, eventMeta);
+};
+
+const processInvitedToTeam = async (eventData) => {
+  const payload = eventData.payload;
+  const eventType = "invited_to_team";
+
+  let data = {
+    team_uuid: payload.team_uuid,
+    team_name: payload.team_name,
+    type: payload.type,
+    value: payload.value,
+  };
+
+  let eventMeta = {
+    client: contextClassRef.client,
+    contact_infos: payload.contact_infos || [],
+  };
+
+  await fireEventToExternalEntity(eventType, data, eventMeta);
 };
 
 const processVerificationRequestedDuringRegistration = async (eventData) => {
@@ -220,7 +234,7 @@ const processUserRegistered = async (eventData) => {
 
   eventType = `user_registered_using_${verificationObject.attribute_type}`;
 
-  let neptuneData = {
+  let eventMeta = {
     tags: [],
     user_id: eventObject.user_uuid,
     client: contextClassRef.client,
@@ -233,63 +247,7 @@ const processUserRegistered = async (eventData) => {
     value: verificationObject.attribute_value,
   };
 
-  if (process.env.SEND_EVENTS === "neptune") {
-    await neptuneRepo.addUserContactInfoToNeptune(eventObject.user_uuid, {
-      type: verificationObject.attribute_type,
-      value: verificationObject.attribute_value,
-      meta: userObject.profile || {},
-    });
-
-    await fireEventToExternalEntity(eventType, data, neptuneData);
-  }
-
-  if (process.env.SEND_TO_SQS === "true") {
-    await fireEventToExternalEntity(eventType, data, neptuneData);
-  }
-};
-
-const processUserUpdatedProfile = async (eventData) => {
-  const userObject = eventData.user;
-
-  if (process.env.SEND_EVENTS === "neptune") {
-    await neptuneRepo.updateUser(userObject.uuid, {
-      meta: userObject.profile || {},
-    });
-  }
-};
-
-const processUserUpdatedExistingAttribute = async (eventData) => {
-  const { attributeObject, existingAttribute } = eventData;
-  let deleteResult = await neptuneRepo.deleteUserContactInfo(
-    existingAttribute.user_uuid,
-    {
-      type: existingAttribute.type,
-      value: existingAttribute.value,
-      purpose: existingAttribute.purpose,
-    }
-  );
-
-  let addResult = await neptuneRepo.addUserContactInfoToNeptune(
-    attributeObject.user_uuid,
-    {
-      type: attributeObject.type,
-      value: attributeObject.value,
-      purpose: attributeObject.purpose,
-    }
-  );
-};
-
-const processUserAddedNewAttribute = async (eventData) => {
-  const { attributeObject } = eventData;
-
-  let addResult = await neptuneRepo.addUserContactInfoToNeptune(
-    attributeObject.user_uuid,
-    {
-      type: attributeObject.type,
-      value: attributeObject.value,
-      purpose: attributeObject.purpose,
-    }
-  );
+  await fireEventToExternalEntity(eventType, data, eventMeta);
 };
 
 const processUserRequestLoginOTP = async (eventData) => {
@@ -330,14 +288,14 @@ const processUserRequestLoginOTP = async (eventData) => {
     time: formattedTime,
   };
 
-  let neptuneData = {
+  let eventMeta = {
     tags: [],
     user_id: eventObject.user_uuid,
     client: contextClassRef.client,
     contact_infos: eventObject.contact_infos || [],
   };
 
-  await fireEventToExternalEntity(eventType, data, neptuneData);
+  await fireEventToExternalEntity(eventType, data, eventMeta);
 };
 
 const processUserRequestedResetPassword = async (eventData) => {
@@ -376,7 +334,7 @@ const processSetPasswordForNewUser = async (eventData) => {
     prefixUrl: payload.prefixUrl,
   };
 
-  let neptuneData = {
+  let eventMeta = {
     tags: [],
     user_id: verificationObject.user_uuid,
     client: contextClassRef.client,
@@ -388,12 +346,11 @@ const processSetPasswordForNewUser = async (eventData) => {
     ],
   };
 
-  await fireEventToExternalEntity(eventType, data, neptuneData);
+  await fireEventToExternalEntity(eventType, data, eventMeta);
 };
 
 const eventBus = async (event, data) => {
   try {
-    // console.log("eventBus....", event);
     switch (event) {
       case "user_created":
         await processUserCreated(data);
@@ -409,18 +366,6 @@ const eventBus = async (event, data) => {
 
       case "verification_requested_during_update":
         await processVerificationRequestedDuringUpdate(data);
-        break;
-
-      case "user_updated_existing_attribute":
-        await processUserUpdatedExistingAttribute(data);
-        break;
-
-      case "user_added_new_attribute":
-        await processUserAddedNewAttribute(data);
-        break;
-
-      case "user_updated_profile":
-        await processUserUpdatedProfile(data);
         break;
 
       case "user_requested_login_otp":
@@ -442,29 +387,27 @@ const eventBus = async (event, data) => {
       case "admin_request_user_to_set_password":
         await processSetPasswordForNewUser(data);
         break;
+
+      case "invited_to_team":
+        await processInvitedToTeam(data);
+        break;
     }
   } catch (error) {
     console.log("error", error);
   }
 };
 
-const fireEventToExternalEntity = async (eventType, data, neptuneData) => {
-  if (process.env.SEND_TO_SQS === "true") {
-    const sqsPayload = {
-      data,
-      service_tenant: process.env.SERVICE_TENANT,
-      type: eventType,
-      contact_infos: neptuneData.contact_infos || [],
-      environment: process.env.ENVIRONMENT,
-      user_id: neptuneData.user_id || null,
-    };
+const fireEventToExternalEntity = async (eventType, data, eventMeta) => {
+  const sqsPayload = {
+    data,
+    service_tenant: process.env.SERVICE_TENANT,
+    type: eventType,
+    contact_infos: eventMeta.contact_infos || [],
+    environment: process.env.ENVIRONMENT,
+    user_id: eventMeta.user_id || null,
+  };
 
-    await sendJob(sqsPayload);
-  }
-
-  if (process.env.SEND_EVENTS === "neptune") {
-    await neptuneRepo.fireEvent(eventType, data, neptuneData);
-  }
+  await sendJob(sqsPayload);
 };
 
 module.exports = eventBus;

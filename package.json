@@ -38,7 +38,6 @@
     "@locospec/operator-knexjs": "^0.0.17",
     "@sentry/node": "^10.62.0",
     "@sentry/tracing": "^7.120.4",
-    "@teurons/neptune-nodejs": "^1.1.11",
     "apple-signin-auth": "^1.7.4",
     "axios": "^1.18.1",
     "bcrypt": "^6.0.0",

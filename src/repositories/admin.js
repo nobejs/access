@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 const baseRepo = requireUtil("baseRepo");
 const verificationsRepo = requireRepo("verifications");
 const tokensRepo = requireRepo("tokens");
-const { resetPasswordVerificationEvent } = require("../events");
+const eventBus = require("../eventBus");
 const table = "admins";
 const isDateInPast = requireFunction("isDateInPast");
 
@@ -55,17 +55,13 @@ const requestAttributeVerificationForResetPassword = async (payload) => {
         uuid: verification.uuid,
       });
 
-      await resetPasswordVerificationEvent({
-        user_uuid: verificationObject.user_uuid,
-        token: verificationObject.token,
-        type: verificationObject.attribute_type,
-        value: verificationObject.attribute_value,
-        contact_infos: [
-          {
-            type: payload.type,
-            value: verificationObject.attribute_value,
-          },
-        ],
+      await eventBus("user_requested_reset_password", {
+        verificationObject: verificationObject,
+        payload: {
+          verification_method: "otp",
+          type: "email",
+          value: payload.value,
+        },
       });
     } else {
       let admin = await baseRepo.first(table, {
@@ -79,17 +75,13 @@ const requestAttributeVerificationForResetPassword = async (payload) => {
           attribute_value: payload.value,
         });
 
-      await resetPasswordVerificationEvent({
-        user_uuid: verificationObject.user_uuid,
-        token: verificationObject.token,
-        type: verificationObject.attribute_type,
-        value: verificationObject.attribute_value,
-        contact_infos: [
-          {
-            type: "email",
-            value: verificationObject.attribute_value,
-          },
-        ],
+      await eventBus("user_requested_reset_password", {
+        verificationObject: verificationObject,
+        payload: {
+          verification_method: "otp",
+          type: "email",
+          value: payload.value,
+        },
       });
     }
   } catch (error) {
