@@ -69,6 +69,8 @@ module.exports = () => {
       "GET /login/google-with-token",
       "POST /login/microsoft",
       "POST /login/microsoft-with-code",
+      "POST /login/pingfederate",
+      "POST /login/pingfederate-with-code",
       "POST /verify-registration",
       "POST /request-verify-registration",
       "POST /request-reset-password",

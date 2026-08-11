@@ -234,7 +234,7 @@ const verifyAttributeForRegistrationUsingLink = async (payload) => {
   }
 };
 
-const registerUserFromGoogle = async (payload) => {
+const registerUserFromSocialLogin = async (payload) => {
   try {
     const findUserWithAttribute = await attributesRepo.first({
       type: "email",
@@ -996,7 +996,8 @@ module.exports = {
   first,
   createTestUserWithVerifiedToken,
   updateProfileOfUser,
-  registerUserFromGoogle,
+  registerUserFromGoogle: registerUserFromSocialLogin,
+  registerUserFromPingFederate: registerUserFromSocialLogin,
   generateOTPForLogin,
   authenticateWithOTP,
   updateUserPassword,
