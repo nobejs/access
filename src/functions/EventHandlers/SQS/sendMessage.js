@@ -1,13 +1,18 @@
 const { SQSClient, SendMessageCommand } = require("@aws-sdk/client-sqs");
 
-const sqsClient = new SQSClient({
-  region: process.env.SQS_AWS_REGION,
-  credentials: {
-    accessKeyId: process.env.SQS_AWS_ACCESS_KEY,
-    secretAccessKey: process.env.SQS_AWS_SECRET_ACCESS_KEY,
-  },
+const sqsClientConfig = {
+  region: process.env.SQS_AWS_REGION || process.env.AWS_REGION,
   apiVersion: "2012-11-05",
-});
+};
+
+const accessKeyId = process.env.SQS_AWS_ACCESS_KEY;
+const secretAccessKey = process.env.SQS_AWS_SECRET_ACCESS_KEY;
+
+if (accessKeyId && secretAccessKey) {
+  sqsClientConfig.credentials = { accessKeyId, secretAccessKey };
+}
+
+const sqsClient = new SQSClient(sqsClientConfig);
 
 module.exports = async (queueUrl, params) => {
   try {
