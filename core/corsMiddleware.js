@@ -1,7 +1,21 @@
 module.exports = (request, reply, next) => {
   try {
     if (request.headers.origin) {
-      reply.header("Access-Control-Allow-Origin", request.headers.origin);
+      let allowOrigin = true;
+
+      if (process.env.CORS_RESTRICT_ORIGINS === "true") {
+        const allowedOrigins = (process.env.CORS_ALLOWED_ORIGINS || "")
+          .split(",")
+          .map((origin) => origin.trim());
+        allowOrigin =
+          request.headers.origin !== "null" &&
+          allowedOrigins.includes(request.headers.origin);
+      }
+
+      if (allowOrigin) {
+        reply.header("Access-Control-Allow-Origin", request.headers.origin);
+        reply.header("Vary", "Origin");
+      }
     }
 
     reply.header(
