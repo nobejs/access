@@ -4,12 +4,18 @@ module.exports = (request, reply, next) => {
       let allowOrigin = true;
 
       if (process.env.CORS_RESTRICT_ORIGINS === "true") {
-        const allowedOrigins = (process.env.CORS_ALLOWED_ORIGINS || "")
-          .split(",")
-          .map((origin) => origin.trim());
-        allowOrigin =
-          request.headers.origin !== "null" &&
-          allowedOrigins.includes(request.headers.origin);
+        allowOrigin = false;
+        try {
+          const hostname = new URL(request.headers.origin).hostname;
+          allowOrigin = (process.env.CORS_ALLOWED_ORIGINS || "")
+            .split(",")
+            .map((domain) => domain.trim())
+            .some(
+              (domain) =>
+                domain &&
+                (hostname === domain || hostname.endsWith("." + domain)),
+            );
+        } catch (e) {}
       }
 
       if (allowOrigin) {
