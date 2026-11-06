@@ -2,6 +2,7 @@ const Config = require("../config")();
 const endpoints = Config.load(Config["endpoints"]);
 const responseKey = Config["responseKey"];
 const generateApiPath = requireUtil("generateApiPath");
+const { getRouteLimiters } = requireFunction("rateLimits");
 
 module.exports = function (app) {
   const apis = endpoints(app);
@@ -41,7 +42,14 @@ module.exports = function (app) {
 
         // console.log("endpoint[0]", endpoint[0]);
 
-        app[endpoint[0]](apiPath, async (req, res, next) => {
+        // Per-account rate limits for sensitive routes (see src/functions/rateLimits.js)
+        let routeOptions = {};
+        const limiters = getRouteLimiters(`${endpoint[0].toUpperCase()} ${apiPath}`);
+        if (limiters.length > 0) {
+          routeOptions.preHandler = limiters;
+        }
+
+        app[endpoint[0]](apiPath, routeOptions, async (req, res, next) => {
           let result = await endpointStrategy(endpoint[2], {
             req,
             res,

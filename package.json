@@ -34,6 +34,7 @@
   "dependencies": {
     "@aws-sdk/client-sqs": "^3.1075.0",
     "@fastify/formbody": "^8.0.2",
+    "@fastify/rate-limit": "^11.2.2",
     "@locospec/engine": "^0.0.36",
     "@locospec/operator-knexjs": "^0.0.17",
     "@sentry/node": "^10.62.0",
