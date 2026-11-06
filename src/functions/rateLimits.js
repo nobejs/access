@@ -2,6 +2,7 @@ const envInt = (name, fallback) => {
   const parsed = parseInt(process.env[name], 10);
   return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
 };
+const rateLimitEnabled = () => process.env.RATE_LIMIT_ENABLED === "true";
 
 const tooManyRequests = (retryAfterMs) => ({
   statusCode: 429,
@@ -44,34 +45,20 @@ const accountKey = (req) => {
   return `ip:${req.ip}`;
 };
 
-// RATE_LIMIT_WINDOW_MINUTES (default 5)
-const createAccountLimiter = (max) => {
-  const windowMs = envInt("RATE_LIMIT_WINDOW_MINUTES", 5) * 60 * 1000;
-  const hits = new Map();
-  let nextSweepAt = 0;
+const createAccountLimiter = (app, max) => {
+  const checkLimit = app.createRateLimit({
+    max,
+    timeWindow: envInt("RATE_LIMIT_WINDOW_MINUTES", 5) * 60 * 1000,
+    cache: 50000,
+    keyGenerator: accountKey,
+  });
 
   return async (req, res) => {
-    const now = Date.now();
-    if (now >= nextSweepAt) {
-      for (const [key, entry] of hits) {
-        if (entry.resetAt <= now) hits.delete(key);
-      }
-      nextSweepAt = now + windowMs;
-    }
-
-    const key = accountKey(req);
-    let entry = hits.get(key);
-    if (entry === undefined || entry.resetAt <= now) {
-      entry = { count: 0, resetAt: now + windowMs };
-      hits.set(key, entry);
-    }
-    entry.count++;
-
-    if (entry.count > max) {
-      const error = tooManyRequests(entry.resetAt - now);
-      res.header("retry-after", error.retry_after_seconds);
-      throw error;
-    }
+    const limit = await checkLimit(req);
+    if (limit.isAllowed || !limit.isExceeded) return;
+    const error = tooManyRequests(limit.ttl);
+    res.header("retry-after", error.retry_after_seconds);
+    throw error;
   };
 };
 
@@ -85,13 +72,14 @@ const accountLimitedRoutes = {
   "POST /reset-password-with-link": 20,
 };
 
-const getRouteLimiters = (routeKey) => {
+const getRouteLimiters = (app, routeKey) => {
+  if (!rateLimitEnabled()) return [];
   if (!Object.hasOwn(accountLimitedRoutes, routeKey)) return [];
   const max = envInt(
     "RATE_LIMIT_PER_ATTRIBUTE",
     accountLimitedRoutes[routeKey]
   );
-  return [createAccountLimiter(max)];
+  return [createAccountLimiter(app, max)];
 };
 
-module.exports = { globalRateLimit, getRouteLimiters };
+module.exports = { rateLimitEnabled, globalRateLimit, getRouteLimiters };

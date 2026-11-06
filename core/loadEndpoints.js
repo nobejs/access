@@ -44,7 +44,10 @@ module.exports = function (app) {
 
         // Per-account rate limits for sensitive routes (see src/functions/rateLimits.js)
         let routeOptions = {};
-        const limiters = getRouteLimiters(`${endpoint[0].toUpperCase()} ${apiPath}`);
+        const limiters = getRouteLimiters(
+          app,
+          `${endpoint[0].toUpperCase()} ${apiPath}`
+        );
         if (limiters.length > 0) {
           routeOptions.preHandler = limiters;
         }

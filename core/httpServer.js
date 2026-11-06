@@ -6,7 +6,7 @@ const authMiddleware = Config.load(Config["authMiddleware"]);
 const loadEndpoints = Config.load(Config["loadEndpoints"]);
 const corsMiddleware = Config.load(Config["corsMiddleware"]);
 const enableCORS = Config["enableCORS"];
-const { globalRateLimit } = requireFunction("rateLimits");
+const { rateLimitEnabled, globalRateLimit } = requireFunction("rateLimits");
 
 function build(opts = {}) {
   const app = fastify(opts);
@@ -18,7 +18,9 @@ function build(opts = {}) {
   // Global rate limit runs after CORS and before auth; app.rateLimit exists only once the plugin loads
   app.register(require("@fastify/rate-limit"), { global: false });
   app.after(() => {
-    app.addHook("onRequest", app.rateLimit(globalRateLimit()));
+    if (rateLimitEnabled()) {
+      app.addHook("onRequest", app.rateLimit(globalRateLimit()));
+    }
     app.addHook("onRequest", authMiddleware);
     loadEndpoints(app);
   });
