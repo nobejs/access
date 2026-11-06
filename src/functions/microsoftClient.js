@@ -1,7 +1,7 @@
 const axios = require("axios");
 const jwtDecode = require("jwt-decode");
 
-const MICROSOFT_HTTP_TIMEOUT_MS = 3000;
+const MICROSOFT_HTTP_TIMEOUT_MS = 15000;
 const microsoftHttpClient = axios.create({
   timeout: MICROSOFT_HTTP_TIMEOUT_MS,
 });
@@ -62,8 +62,10 @@ const getAuthorizationUrl = async (payload = {}) => {
     state: payload.state || "respond_with_token",
   });
 
-  // return `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/authorize?${params.toString()}`;
-  return `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?${params.toString()}`;
+  // Single-tenant apps must use their tenant ID; /common only works for multi-tenant apps
+  return process.env.MICROSOFT_SINGLE_TENANT === "true"
+    ? `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/authorize?${params.toString()}`
+    : `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?${params.toString()}`;
 };
 
 const exchangeCodeForTokens = async (payload = {}) => {
@@ -83,8 +85,11 @@ const exchangeCodeForTokens = async (payload = {}) => {
     };
   }
 
-  // const tokenEndpoint = `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`;
-  const tokenEndpoint = `https://login.microsoftonline.com/common/oauth2/v2.0/token`;
+  // Must match the endpoint used for the authorize URL
+  const tokenEndpoint =
+    process.env.MICROSOFT_SINGLE_TENANT === "true"
+      ? `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`
+      : `https://login.microsoftonline.com/common/oauth2/v2.0/token`;
 
   const form = new URLSearchParams({
     client_id: clientId,
